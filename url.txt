@@ -1,0 +1,533 @@
+    
+
+
+
+
+
+
+
+
+
+
+<!--Copyright 2014 Cloudtreats Inc.-->
+
+
+
+    <!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" style="overflow:auto; overflow-x:hidden;">
+<head>
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
+    <meta name="viewport" content="user-scalable=yes, width=device-width, minimum-scale=0.5, maximum-scale=1.0"/>
+    <meta name="fragment" content="!">
+    <meta name="description" content="KFC provide an easy way for food ordering from a diversified menu for you and your group of friends. We offer ">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="shortcut icon" href="https://d1pvbaglzn4ury.cloudfront.net/v1.67.3.38/images/favicons/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="57x57" href="https://d1pvbaglzn4ury.cloudfront.net/v1.67.3.38/images/favicons/apple-touch-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="https://d1pvbaglzn4ury.cloudfront.net/v1.67.3.38/images/favicons/apple-touch-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="https://d1pvbaglzn4ury.cloudfront.net/v1.67.3.38/images/favicons/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="https://d1pvbaglzn4ury.cloudfront.net/v1.67.3.38/images/favicons/apple-touch-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="https://d1pvbaglzn4ury.cloudfront.net/v1.67.3.38/images/favicons/apple-touch-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="https://d1pvbaglzn4ury.cloudfront.net/v1.67.3.38/images/favicons/apple-touch-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="https://d1pvbaglzn4ury.cloudfront.net/v1.67.3.38/images/favicons/apple-touch-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="https://d1pvbaglzn4ury.cloudfront.net/v1.67.3.38/images/favicons/apple-touch-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://d1pvbaglzn4ury.cloudfront.net/v1.67.3.38/images/favicons/apple-touch-icon-180x180.png">
+    <!-- For iPhone 6 Plus with @3Ã display: -->
+    <link rel="apple-touch-icon-precomposed" sizes="180x180" href="https://d1pvbaglzn4ury.cloudfront.net/v1.67.3.38/images/favicons/apple-touch-icon-precomposed.png">
+    <link rel="icon" type="image/png" href="https://d1pvbaglzn4ury.cloudfront.net/v1.67.3.38/images/favicons/favicon-192x192.png" sizes="192x192">
+    <link rel="icon" type="image/png" href="https://d1pvbaglzn4ury.cloudfront.net/v1.67.3.38/images/favicons/favicon-160x160.png" sizes="160x160">
+    <link rel="icon" type="image/png" href="https://d1pvbaglzn4ury.cloudfront.net/v1.67.3.38/images/favicons/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="https://d1pvbaglzn4ury.cloudfront.net/v1.67.3.38/images/favicons/favicon-16x16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="https://d1pvbaglzn4ury.cloudfront.net/v1.67.3.38/images/favicons/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="https://d1pvbaglzn4ury.cloudfront.net/v1.67.3.38/images/favicons/favicon-48x48.png" sizes="48x48">
+    <meta name="msapplication-config" content="https://d1pvbaglzn4ury.cloudfront.net/v1.67.3.38/images/favicons/browserconfig.xml" />
+    <meta name="msapplication-TileColor" content="#008375">
+    <meta name="msapplication-TileImage" content="https://d1pvbaglzn4ury.cloudfront.net/v1.67.3.38/images/favicons/mstile-144x144.png">
+    <title>KFC - Order from our menu online.</title>
+
+
+    <script type="text/javascript" src="//use.typekit.net/pff3sqf.js"></script>
+    <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+
+    <link href='//fonts.googleapis.com/css?family=Roboto+Slab:300,400' rel='stylesheet'>
+
+    <link charset="utf-8" href="https://d1pvbaglzn4ury.cloudfront.net/v1.67.3.38/styles/pack-placeWeb.css" rel="stylesheet" type="text/css" />
+
+    <link rel="stylesheet" type="text/css" media="all" href="https://d1pvbaglzn4ury.cloudfront.net/v1.67.3.38/styles/pack-scssPlaceWeb.css">
+    <link charset="utf-8" href="https://d1pvbaglzn4ury.cloudfront.net/v1.67.3.38/styles/pack-scssPrint.css" rel="stylesheet" media="print" type="text/css" />
+
+    
+    
+        <style>
+            .text-overlay h3, .btn-primary, .module-search [type="text"], .widget-picker .selected {
+                background-color: #261b06
+            }
+
+            h1.beta, h2, .module-about h3,
+            .popup footer .btn-secondary, footer .price, .ck-flow article .price,
+            .btn-service:active, .btn-service.active, .btn-link, .aboutText a {
+                color: #261b06
+            }
+
+
+            .btn-link:hover,
+            .btn-link:focus,
+            .aboutText a:hover,
+            .aboutText a:focus{
+                color: #2c210f;
+            }
+
+            .btn-primary {
+                background-color: #2c210f;
+                background: -webkit-gradient(linear, left top, left bottom, from(#2c210f), to(#261b06));
+                background: -webkit-linear-gradient(top, #2c210f, #261b06);
+                background: -moz-linear-gradient(top, #2c210f, #261b06);
+                background: -ms-linear-gradient(top, #2c210f, #261b06);
+                background: -o-linear-gradient(top, #2c210f, #261b06);
+                border-color: #261b06
+            }
+
+            .btn-primary:hover {
+                background-color: #2b200d;
+                background: -webkit-gradient(linear, left top, left bottom, from(#2b200d), to(#261b06));
+                background: -webkit-linear-gradient(top, #2b200d, #261b06);
+                background: -moz-linear-gradient(top, #2b200d, #261b06);
+                background: -ms-linear-gradient(top, #2b200d, #261b06);
+                background: -o-linear-gradient(top, #2b200d, #261b06)
+            }
+
+            .btn-primary:active {
+                background-color: #261b06;
+                background: -webkit-gradient(linear, left top, left bottom, from(#261b06), to(#2c210f));
+                background: -webkit-linear-gradient(top, #261b06, #2c210f);
+                background: -moz-linear-gradient(top, #261b06, #2c210f);
+                background: -ms-linear-gradient(top, #261b06, #2c210f);
+                background: -o-linear-gradient(top, #261b06, #2c210f)
+            }
+
+            .btn.disabled, .btn[disabled], fieldset[disabled] .btn {
+                background-color: #fff;
+                background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#f3f3f3));
+                background: -webkit-linear-gradient(top, #fff, #f3f3f3);
+                background: -moz-linear-gradient(top, #fff, #f3f3f3);
+                background: -ms-linear-gradient(top, #fff, #f3f3f3);
+                background: -o-linear-gradient(top, #fff, #f3f3f3);
+                border-color: #dedede
+            }
+
+            [role="navigation"].main-nav  .nav-item.active .section,
+            [role="navigation"].main-nav .nav-item .highlighted span,
+            .btn-service .section.active{
+                background-color: #e63c49;
+                background: -webkit-gradient(linear, left top, left bottom, from(#e63c49), to(#c41232));
+                background: -webkit-linear-gradient(top, #e63c49, #c41232);
+                background: -moz-linear-gradient(top, #e63c49, #c41232);
+                background: -ms-linear-gradient(top, #e63c49, #c41232);
+                background: -o-linear-gradient(top, #e63c49, #c41232);
+            }
+            [role="navigation"].main-nav .nav-item.active span.iconBadge,
+            [role="navigation"].main-nav .nav-item .highlighted span.iconBadge {
+                background-color: #2c210f;
+            }
+            .info-badge {
+                background-color: #231800;
+                background: -webkit-gradient(linear, left top, left bottom, from(#231800), to(#261b06));
+                background: -webkit-linear-gradient(top, #231800, #261b06);
+                background: -moz-linear-gradient(top, #231800, #261b06);
+                background: -ms-linear-gradient(top, #231800, #261b06);
+                background: -o-linear-gradient(top, #231800, #261b06);
+            }
+        </style>
+    
+</head>
+<body class=" hd-ro" onload="HD.loadPlace()">
+        <!--[if lt IE 9]>
+       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+   <![endif]-->
+
+    <div id="overlay" class="overlay"></div>
+
+    <header id="topbar" style="display:none" role="banner">
+        <section id="topbarSmall" class="top-bar ">
+            <div class="top-bar-hipmenu-logo-icon"></div>
+            <a href="/?vapp=#p1" target="_parent" class="backLink">
+                
+                
+                    
+                        
+                        Înapoi la hipMenu
+                    
+                
+            </a>
+            <span class="top-bar-separator">|</span>
+            <div class="top-bar-name"><span>KFC Iulius Mall</span></div>
+            <ul class="module-profile" id="profile"></ul>
+        </section>
+
+        <div id="header-menu" class="header-menu">
+            <a id="logo" class="logo" href="#" title="KFC Iulius Mall">
+                <span id="logoInfo" class="info"></span>
+                <img src="https://d1pvbaglzn4ury.cloudfront.net/r/l/53dda0b9-1bbd-4030-86f8-951d142fe5d7">
+            </a>
+            <nav id="menuNav" role="navigation" class="main-nav">
+            </nav>
+            <nav id="secNav" role="navigation" class="secondary-nav">
+                <ul>
+                    <li class="nav-item">
+                        <a id="searchPointer" class="menu-search" href="javascript:;">
+                            <span class="section icon-search active"></span>
+                            <span class="icon-search inactive"></span>
+                            <br>Caută
+                        </a>
+                    </li>
+                    <li class="separator">
+                        <span class="separator-icon"></span>
+                    </li>
+                    <li class="nav-item">
+                        <a id="groupPointer" href="javascript:;"></a>
+                    </li>
+                    <li class="separator">
+                        <span class="separator-icon"></span>
+                    </li>
+                    <li class="nav-item">
+                        <a id="cartPointer" href="javascript:;"></a>
+                    </li>
+                    <li class="separator" id="accountSep" style="display:none">
+                        <span class="separator-icon"></span>
+                    </li>
+                    <li class="nav-item" id="accountBox" style="display:none">
+                        <a id="accountPointer" href="javascript:;"></a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section id="menuSlider" class="module-hero" data-type="background-parallax" data-stellar-ratio="2" style="display:none">
+    </section>
+
+    <div id="searchModule" class="search-box"></div>
+
+    <div id="hd-mainContent">
+        <div role="main" class="home" style="display:none">
+            <section id="aboutPanel" class="module-about">
+
+            </section>
+
+            <div id="menuContainer" class="container">
+
+            </div>
+            <div id="footerId"></div>
+        </div>
+    </div>
+
+    
+
+
+
+
+
+
+
+
+
+
+<div id="loginCtrlInt" style="display:none">
+    <form id="loginForm" method="POST" action="/endUserLogin" autocomplete="on" class="">
+        <div class="panel-info">
+            <div class="three-thirds">
+                <div class="input-set">
+                    <div class="input-container three-thirds">
+                        <div class="input-block">
+                            <input placeholder="Adresă de email" class="simple-input ui-autocomplete-input" id="loginCtrl-username" type="email" name="j_username" value="">
+                            <input placeholder="Parolă" class="simple-input ui-autocomplete-input" id="loginCtrl-pwd" type="password" name="j_password" value="">
+                            <input type="hidden" name="sourceUrl" value="" id="loginCtrl-source"/>
+                            <input type="hidden" name="tableTopic" value="" id="loginCtrl-table"/>
+                            <input type="hidden" name="tableOrderType" value="" id="loginCtrl-tableOrder"/>
+                            <input type="hidden" name="tableCode" value="" id="loginCtrl-tableCode"/>
+                            <input type="hidden" name="tableId" value="" id="loginCtrl-tableId"/>
+                            <input type="hidden" name="context" value="" id="loginCtrl-context"/>
+                            <input type="hidden" name="rId" value="" id="loginCtrl-rest"/>
+                            <input type="hidden" name="lId" value="" id="loginCtrl-loc"/>
+                        </div>
+                    </div>
+                    <div class="error-message"></div>
+                    <div class="button-set panel-login-buttons">
+                        <div class="button-container three-thirds">
+                            <button class="button-brand hipmenu-login-button" type="submit" id="loginCtrl-loginBtn">Intră cu hipMenu</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <div class="button-set">
+                <div id="loginCtrl-backBtnId" class="action-links back-button clickable">
+                    <span class="back-arrow"></span>
+                    <span class="action-link-label clickable">Înapoi</span>
+                </div>
+                <div class="action-links forgot-pass pull-right">
+                    <span class="action-link-label" id="loginCtrl-renderResetBtn">Resetează parola?</span>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div id="loginCtrl" class="popup-container-access popup-no-header" style="display:none">
+    <div class="popup-content">
+        <form id="loginForm" method="POST" action="/endUserLogin" autocomplete="on" class="input-block ">
+            <p class="popup-title">Autentificare</p>
+            <button id="loginCtrl-facebookId" class="button-facebook button-facebook-big" href="javascript:;" type="button">Intră cu Facebook</button>
+            <div class="text-middle-line">
+                <span class="text-middle-line-gray">sau intră cu hipMenu</span>
+            </div>
+            <input placeholder="Adresă de email" class="simple-input" id="loginCtrl-username" type="email" name="j_username" value="">
+            <input placeholder="Parolă" class="simple-input" id="loginCtrl-pwd" type="password" name="j_password" value="">
+            <input type="hidden" name="sourceUrl" value="" id="loginCtrl-source"/>
+            <input type="hidden" name="tableTopic" value="" id="loginCtrl-table"/>
+            <input type="hidden" name="tableOrderType" value="" id="loginCtrl-tableOrder"/>
+            <input type="hidden" name="tableCode" value="" id="loginCtrl-tableCode"/>
+            <input type="hidden" name="tableId" value="" id="loginCtrl-tableId"/>
+            <input type="hidden" name="context" value="" id="loginCtrl-context"/>
+            <input type="hidden" name="rId" value="" id="loginCtrl-rest"/>
+            <input type="hidden" name="lId" value="" id="loginCtrl-loc"/>
+            <div class="error-outside-input error-center"></div>
+            <button id="loginCtrl-loginBtn" class="button-action button-uppercase button-small-margin" type="submit">Intră cu hipMenu</button>
+            <a class="link-button-gray centered semibold" id="loginCtrl-renderResetBtn">Resetează parola</a>
+            <div class="popup-tab-link-bottom">Nu ai un cont?<a class="link-button-gray semibold" id="loginCtrl-renderSignupBtn">Creează cont</a></div>
+        </form>
+    </div>
+</div>
+
+<div id="signupCtrl" class="popup-container-access popup-no-header signup" style="display:none">
+    <div class="popup-content">
+        <form id="signupForm" method="POST" action="/endUserSignup" autocomplete="on" class="input-block ">
+            <p class="popup-title">Creează-ți cont hipMenu</p>
+            <input placeholder="Prenume" class="simple-input" id="signupCtrl-firstName" name="firstName">
+            <input placeholder="Nume" class="simple-input" id="signupCtrl-lastName" name="lastName">
+            <input placeholder="Adresă de email" autocomplete="off" class="simple-input" id="signupCtrl-username" type="email" name="j_username" value="">
+            <div class="input-group pwdGroup">
+                <input placeholder="Parolă" autocomplete="off" class="simple-input" id="signupCtrl-pwd" type="password" name="j_password" value="" data-indicator="passIndicator">
+                <div id="passIndicator" class="strengthMeter input-indicator">
+                    <div class="bar"></div>
+                    <div class="label"></div>
+                </div>
+            </div>
+            <input type="hidden" name="sourceUrl" value="" id="signupCtrl-source"/>
+            <input type="hidden" name="tableTopic" value="" id="signupCtrl-table"/>
+            <input type="hidden" name="tableOrderType" value="" id="signupCtrl-tableOrder"/>
+            <input type="hidden" name="tableCode" value="" id="signupCtrl-tableCode"/>
+            <input type="hidden" name="tableId" value="" id="signupCtrl-tableId"/>
+            <input type="hidden" name="rId" value="" id="signupCtrl-rest"/>
+            <input type="hidden" name="lId" value="" id="signupCtrl-loc"/>
+            <input type="hidden" name="oId" value="" id="signupCtrl-oId"/>
+            <input type="hidden" name="context" value="" id="signupCtrl-context"/>
+            <input type="hidden" name="isIntegrated" value="false"/>
+            <input type="hidden" name="shortCode" id="signupCtrl-shortCode" value="false"/>
+            
+                <input type="hidden" name="l" value="ro"/>
+            
+            <div class="error-message"></div>
+            <button class="button-action button-uppercase button-small-margin" id="signupCtrl-signupBtn">Creează cont</button>
+            <div class="popup-tab-link-bottom">Ai deja un cont?<a  id="signupCtrl-renderLoginBtn" class="link-button-gray semibold" href="javascript:void(0);">Intră în cont</a></div>
+        </form>
+    </div>
+</div>
+
+<div id="signupCtrlInt" style="display:none">
+    <form id="signupForm" method="POST" action="/endUserSignup" autocomplete="on" class="">
+        <div class="panel-info">
+            <div class="three-thirds">
+                <div class="input-set">
+                    <div class="input-container three-thirds">
+                        <div class="input-block">
+                            <input placeholder="Prenume" class="simple-input ui-autocomplete-input" id="signupCtrl-firstName" name="firstName">
+                            <input placeholder="Nume" class="simple-input ui-autocomplete-input" id="signupCtrl-lastName" name="lastName">
+                            <input placeholder="Adresă de email" class="simple-input ui-autocomplete-input" id="signupCtrl-username" type="email" name="j_username" value="">
+                            <div class="input-group">
+                                <input placeholder="Parolă" class="simple-input ui-autocomplete-input" id="signupCtrl-pwd" type="password" name="j_password" value="" data-indicator="passIndicator">
+                                <div id="passIndicator" class="input-indicator">
+                                    <div class="bar"></div>
+                                    <div class="label"></div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="sourceUrl" value="" id="signupCtrl-source"/>
+                            <input type="hidden" name="tableTopic" value="" id="signupCtrl-table"/>
+                            <input type="hidden" name="tableOrderType" value="" id="signupCtrl-tableOrder"/>
+                            <input type="hidden" name="tableCode" value="" id="signupCtrl-tableCode"/>
+                            <input type="hidden" name="tableId" value="" id="signupCtrl-tableId"/>
+                            <input type="hidden" name="rId" value="" id="signupCtrl-rest"/>
+                            <input type="hidden" name="lId" value="" id="signupCtrl-loc"/>
+                            <input type="hidden" name="oId" value="" id="signupCtrl-oId"/>
+                            <input type="hidden" name="context" value="" id="signupCtrl-context"/>
+                            <input type="hidden" name="isIntegrated" value="false"/>
+                            <input type="hidden" name="shortCode" id="signupCtrl-shortCode" value="false"/>
+                            
+                                <input type="hidden" name="l" value="ro"/>
+                            
+                        </div>
+                    </div>
+                    <div class="error-message"></div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <div class="button-set">
+                <div id="signupCtrl-backBtnId" class="action-links one-third back-button">
+                    <span class="back-arrow"></span>
+                    <span class="action-link-label">Înapoi</span>
+                </div>
+                <button class="button-brand hipmenu-login-button pull-right" type="submit" id="signupCtrl-signupBtn">Creează cont</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+    <script type="text/javascript" src="//cloudfront.loggly.com/js/loggly.tracker-2.1.min.js" async></script>
+    <script>
+        var _LTracker = _LTracker || [];
+        _LTracker.push({
+         'logglyKey': 'f7f29114-09ba-4b4d-ba3c-91915b9992dd',
+         'sendConsoleErrors' : true,
+         'tag' : 'loggly-jslogger'
+        });
+    </script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="https://d1pvbaglzn4ury.cloudfront.net/v1.67.3.38/js/jquery.plugins.min.js"></script>
+    <script src="https://js.braintreegateway.com/v2/braintree.js"></script>
+
+    <script type="text/javascript" src="https://d1pvbaglzn4ury.cloudfront.net/v1.67.3.38/js/I18N/LocalizablePlace_ro.js"></script>
+
+    <script type="text/javascript" src="https://d1pvbaglzn4ury.cloudfront.net/v1.67.3.38/js/build-js/packs/place.bundle.js"></script>
+
+
+    <script type="text/javascript">
+        HD.ServerSettings = {
+            Server: {
+                StaticHost: "https://d1pvbaglzn4ury.cloudfront.net/v1.67.3.38",
+                ResourceHost: "d1pvbaglzn4ury.cloudfront.net",
+                SpecialResourceHost: "d2dedmtwg22v0i.cloudfront.net",
+                ResourcePartitions: "d2vopxyk6x80vo.cloudfront.net;d2e147lbltb8cj.cloudfront.net;d2l8n1aq25rh47.cloudfront.net;d2bjx8mm52i6cz.cloudfront.net;",
+                SameDomainUrl:"/v1.67.3.38",
+                Context: "",
+                QRContext: "/qrgs",
+                SystemType: "prod",
+                Version: "1.67.3.38",
+                GoogleAPIKey: "AIzaSyD795ycNLLtCd0UX_FWbGT3gbnSe4pJoNg"
+            },
+
+            App: {
+                RestaurantId:"rsic2",
+                LocationId:"427",
+                Currency:"LEI",
+                Code: "00DMAOKMG1TB4M",
+                IsIntegrated:"false",
+                DisabledAnalytics:"false",
+                isBot:"false",
+                flags: 1,
+                menuOnly: false,
+                rp: "50,100,50",
+                vapp : "",
+                timeOffset : new Date().getTime() - new Date(1515062720059).getTime()
+            },
+            Data: {
+                MenuInfo: '{\"optTopicId\":\"e13d3622-6aaa-4a86-96dd-3ee4dd7df4ae\",\"categs\":[{\"id\":\"6wXL\",\"name\":\"Mic dejun\",\"ownType\":1,\"webCT\":3,\"topicId\":\"bf1a1e98-101e-434b-9cce-54ec6d9415ee\",\"meta\":{\"rBndl\":\"1\",\"rId\":\"2\"},\"hours\":\"-1200\",\"categs\":[]},{\"id\":\"rsic2-DefSec\",\"name\":\"Pui\",\"ownType\":1,\"webCT\":3,\"topicId\":\"c21b15e3-5760-48c0-b96e-617aeb82343e\",\"meta\":{\"rBndl\":\"2\",\"rId\":\"9\"},\"categs\":[]},{\"id\":\"\/vXL\",\"name\":\"Meniuri cu pui\",\"desc\":\"Porțiile de cartofi și băuturi care însoțesc meniurile sunt mari.\",\"ownType\":1,\"webCT\":3,\"topicId\":\"f479350e-fd7a-4be3-a710-92c52e7f8077\",\"meta\":{\"rBndl\":\"2\",\"rId\":\"6\"},\"categs\":[]},{\"id\":\"MwXL\",\"name\":\"Burgers și wraps\",\"ownType\":1,\"webCT\":3,\"topicId\":\"a88cf31c-b1c0-4826-95e7-040bc4f391dd\",\"meta\":{\"rBndl\":\"2\",\"rId\":\"1\"},\"categs\":[]},{\"id\":\"jwXL\",\"name\":\"Meniuri de burgers și wraps\",\"ownType\":1,\"webCT\":3,\"topicId\":\"d069ef97-da06-4d16-a035-e6d6cbe179ec\",\"meta\":{\"rBndl\":\"2\",\"rId\":\"16\"},\"categs\":[]},{\"id\":\"vwXL\",\"name\":\"Buckets\",\"desc\":\"Porțiile de cartofi și băuturi care însoțesc bucket-urile sunt mari, cu excepția Christmas Bucket și SoGood Bucket.\",\"ownType\":1,\"webCT\":3,\"topicId\":\"f59c0ab6-4a54-462e-9dc7-1db59bd8bf9e\",\"meta\":{\"rBndl\":\"0\",\"rId\":\"24\"},\"categs\":[]},{\"id\":\"FxXL\",\"name\":\"Diverse\",\"ownType\":1,\"webCT\":3,\"topicId\":\"d1063710-9c79-4b0b-bc6f-3f706e1ec508\",\"meta\":{\"rBndl\":\"0\",\"rId\":\"6\"},\"categs\":[]},{\"id\":\"KGbL\",\"name\":\"Sosuri\",\"ownType\":1,\"webCT\":3,\"topicId\":\"6bb93c89-171e-4c26-87f6-5ea673ab258e\",\"meta\":{\"rBndl\":\"0\",\"rId\":\"11\"},\"categs\":[]},{\"id\":\"TxXL\",\"name\":\"Deserturi\",\"ownType\":1,\"webCT\":3,\"topicId\":\"07a0311a-2f8f-4c31-b222-4be51237adb7\",\"meta\":{\"rBndl\":\"0\",\"rId\":\"12\"},\"categs\":[]},{\"id\":\"ZxXL\",\"name\":\"Băuturi\",\"ownType\":1,\"webCT\":3,\"topicId\":\"88cc15e4-11ae-4ee9-82a7-ba32909e951b\",\"meta\":{\"rBndl\":\"0\",\"rId\":\"20\"},\"categs\":[]}]}',
+                UserData: '',
+                TableJoin: false,
+                TablePointer: "",
+                TableLat: -1,
+                TableLng: -1,
+                TableFlags: 0,
+                TableCoupon: "",
+                TableOrganizer: '',
+                EllipsisInfo: 'GsvL,-1;HsvL,-1;9opL,-1;IsvL,-1;cryL,-1;dryL,79;eryL,98;fryL,96;dpuL,-1;epuL,-1;LsvL,-1;fpuL,-1;MsvL,-1;NsvL,78;OsvL,91;PsvL,87;KppL,82;LppL,-1;QsvL,87;NppL,88;gryL,-1;hryL,-1;iryL,78;jryL,98;kryL,83;lryL,85;mryL,85;nryL,86;oryL,90;pryL,-1;qryL,-1;rryL,100;ZppL,-1;appL,-1;bppL,-1;cppL,-1;RsvL,45;nppL,-1;oppL,-1;pppL,-1;qppL,-1;rppL,-1;sppL,-1;tppL,-1;uppL,-1;vppL,-1;wppL,-1;xppL,-1;SsvL,-1;jppL,-1;mppL,-1;NNwL,-1;ONwL,-1;PNwL,-1;nXZL,-1;ZCyL,-1;uXZL,-1;vXZL,-1;tXZL,-1;qXZL,-1;wXZL,-1;pXZL,-1;',
+                Restaurant: {
+                    bundles: '2|9|1|4|0|0|'
+                },
+                RestaurantData: '{\"rId\":\"rsic2\",\"name\":\"KFC\",\"c0\":\"0.60|0.02|0.94\",\"c1\":\"0.11|0.84|0.15\",\"alt0\":\"#c41232\",\"logoPath\":\"0f4aba22-2395-4d95-83ec-10edb72275e1\",\"squareLogo\":\"53dda0b9-1bbd-4030-86f8-951d142fe5d7\",\"logoBg\":\"#ebedf0\",\"exposedName\":\"kfc\",\"shortName\":\"KFC\",\"aboutUs\":\"O călătorie de 127 de ani care porneşte din copilăria Colonelului Sanders până la restaurantele KFC de astăzi\\nPovestea KFC începe pe 9 septembrie 1890, ziua în care micul și îndrăgitul nostru Harland se năștea în Henryville, Indiana.\\nAmbiția și spiritul creativ l-au însoțit pe Colonenul Sanders încă din copilărie, atunci când a fost nevoit să se descurce de unul singur. Pierderea tatălui său la vârsta de 6 ani l-a responsabilizat, ocupându-se să-și îngrijească frații cât timp mama lui era plecată să lucreze.\\nSpiritul de aventură l-a împins pe acesta să plece din casa părintească la vârsta de 12 ani şi să înceapă să lucreze la o fermă în Greenwood. De-a lungul timpului a fost soldat în Cuba (pentru 6 luni), pompier, vatman, a reuşit să studieze dreptul prin intermediul corespondenţei şi a practicat cele învăţate în vânzarea asigurărilor.\\nCu această serie de experiențe diverse, nici nu este de mirare că în scurt timp avea sa pună bazele unui imperiu culinar. Odată cu trecerea timpului a reuşit să devină un maestru în pregătirea anumitor mâncăruri tradiţionale, printre care și gustosul pui prăjit. Rețeta sa delicioasă ajunge la public pentru prima oară când Harland, la vârsta de 40 de ani, achiziţionează un motel în Corbin - Kentucky şi începe să servească puiul în restaurantul aflat în incintă.\\nTimp de nouă ani, Colonelul s-a dedicat acestei pasiuni, reţeta alcătuită din tehnici speciale de preparare, alături de 11 ierburi şi mirodenii fiind modificată de mai multe ori până s-a ajuns la varianta finală pe care o folosim în prezent.\\nÎncrezător în propria reţetă şi în calitatea puiului pregătit de el, Colonelul Sanders se dedică propriei afaceri. A străbătut America, a vizitat mai multe restaurante şi a gătit proprietarilor şi angajaţilor puiul după reţeta lui originală. La început, afacerea lui presupunea o înţelegere verbală cu proprietarul restaurantului, prin care acesta se angaja să îi ofere Colonelului Sanders câte 5 cenţi pentru fiecare bucată de pui vândută.\\nÎn scurt timp, iubitorii de pui de pretutindeni s-au îndrăgostit de secretul colonelului și peste 600 de restaurante din SUA și Canada vindeau pui pregătit după apetisanta rețetă. În acelaşi an a cedat drepturile asupra reţetei unui grup de investitori care îl includea şi pe John Y. Brown Junior, guvernatorul statului Kentucky din perioada respectivă și ușor-ușor, lanțul nostru de restaurante a început să prindă contur.\\nDin anul 1976, Colonelul Sanders a ajuns în topul personalităţilor din SUA şi a devenit purtătorul de cuvânt al companiei.\\nCurând, rețeaua restaurantelor Kentucky Fried Chicken s-a extins și a cunoscut o ascensiune rapidă datorită pasiunii pentru mâncare, bunăstării și a sprijinului oferit de noii proprietari. În anul 1969 a fost listată la bursa din New York, iar peste 3500 de restaurante din întreaga lume au început să opereze sub licenţă după achiziţionarea KFC Corporation de către Heublein Inc. pentru suma de 285 de milioane de dolari.\\nCu energia caracteristică, Colonelul Sanders a străbătut peste 250.000 de mile în fiecare an prin întreaga lume pentru a vizita restaurantele KFC. S-a stins din viață în anul 1980, dar moştenirea lui trăieşte prin reţeta originală și prin logo-ul specific, pe care milioane de oameni din întreaga lume îl recunosc imediat.\\nNoi dorim să-i ducem mai departe visul și pasiunea pentru pui. It’s finger licking good!\\u0026quot;\",\"locations\":[{\"id\":\"853\",\"name\":\"KFC Centru\",\"locale\":\"ro\",\"custId\":\"cg8f1\",\"street\":\"Str. Iuliu Maniu Nr. 1\",\"city\":\"Cluj-Napoca\",\"country\":\"România\",\"county\":\"Cluj\",\"state\":\"\",\"region\":\"\",\"zip\":\"\",\"lat\":46.770206451416016,\"long\":23.590543746948242,\"phones\":[{\"name\":\"0767801539\",\"val\":\"0767801539\"}],\"exposedName\":\"kfc-centru\",\"shortName\":\"KFC Centru\",\"mail\":\"meniu@hipmenu.ro\",\"f\":1078525960,\"f1\":73728,\"deliveryTimes\":\"1;1000-2130;1000-2130;1000-2130;1000-2130;1000-2130;1000-2130;1000-2130\",\"openedTimes\":\"1;1000-2130;1000-2130;1000-2130;1000-2130;1000-2130;1000-2130;1000-2130\",\"areas\":[{\"id\":\"086\",\"name\":\"Centru\",\"description\":\"\",\"data\":\"5|65535.0|10.0|30||65535.0;10.0;;|0E-7;|na;|\",\"shape\":\"p;46.770623;23.598397999999975;46.771628;23.602153000000044;46.774128;23.599764999999934;46.776294;23.59839999999997;46.777202;23.59823499999993;46.778757;23.598930999999993;46.778539;23.59566700000005;46.778264;23.59325799999999;46.77734;23.592446999999993;46.776657;23.591530000000034;46.77475;23.588404999999966;46.774124;23.587081000000012;46.77111;23.589605000000006;46.768859;23.584609999999998;46.767308;23.585415000000012;46.763873;23.58430999999996;46.76315;23.584508000000028;46.763692;23.588526;46.76596;23.587792000000036;46.765883;23.589490999999953;46.765936;23.591124000000036;46.767156;23.59680000000003;46.76737;23.597447999999986;46.766797;23.59776199999999;46.767393;23.60029099999997;46.770623;23.598397999999975;\",\"flags\":0},{\"id\":\"789\",\"name\":\"Centru Zona 2\",\"description\":\"\",\"data\":\"5|65535.0|10.0|30||65535.0;10.0;;|0E-7;|na;|\",\"shape\":\"p;46.766539;23.601770999999985;46.768058;23.60069299999998;46.76925;23.60388599999999;46.770339;23.607358999999974;46.772972;23.60561299999995;46.775471;23.603475000000003;46.776895;23.602438000000006;46.777378;23.603561000000013;46.778801;23.604233000000022;46.779874;23.603309999999965;46.780909;23.603278000000046;46.780043;23.593546999999944;46.781376;23.59317999999996;46.782237;23.59022200000004;46.784512;23.58820700000001;46.784327;23.58710300000007;46.777424;23.586723000000006;46.774054;23.586745000000064;46.772506;23.582803000000013;46.771884;23.583538999999973;46.769793;23.57932900000003;46.768829;23.579931999999985;46.767382;23.574986999999965;46.765243;23.57592999999997;46.764692;23.57449299999996;46.764071;23.57499699999994;46.763053;23.574252;46.762579;23.574532999999974;46.762316;23.575500000000034;46.761044;23.577428000000054;46.759982;23.57796099999996;46.759124;23.57810900000004;46.757454;23.57826399999999;46.757445;23.580929999999967;46.756842;23.582175000000007;46.755666;23.583290000000034;46.753947;23.583713999999986;46.754994;23.589146000000028;46.755828;23.59758199999999;46.756648;23.598809999999958;46.756242;23.605826999999977;46.761293;23.603161;46.762942;23.604413000000022;46.766539;23.601770999999985;\",\"flags\":4}],\"minDelOrder\":40.0,\"pickupLeadTime\":5,\"tags\":[\"Cluj#sandwiches\",\"Cluj#burger\",\"Cluj#chicken\",\"Cluj#dessert\",\"Cluj#cheesecake\"],\"schEx\":[{\"flags\":0,\"start\":\"20180102\",\"end\":\"20180102\",\"locMsg\":\"Restaurantul este închis în această perioadă. Sărbători fericite!\",\"msg\":\"The restaurant is closed during this period. Happy holidays!\",\"locMercMsg\":\"Închis din cauza sărbătorilor. Vă rugăm redeschideți dacă doriți să primiți comenzi.\",\"mercMsg\":\"Închis din cauza sărbătorilor. Vă rugăm redeschideți dacă doriți să primiți comenzi.\"},{\"flags\":0,\"start\":\"20180102\",\"end\":\"20180102\",\"locMsg\":\"Restaurantul este închis în această perioadă. Sărbători fericite!\",\"msg\":\"The restaurant is closed during this period. Happy holidays!\",\"locMercMsg\":\"Închis din cauza sărbătorilor. Vă rugăm redeschideți dacă doriți să primiți comenzi.\",\"mercMsg\":\"Închis din cauza sărbătorilor. Vă rugăm redeschideți dacă doriți să primiți comenzi.\"}],\"res\":{\"0\":\"0\"},\"code\":\"00HQMQ13DV3OC7\",\"accountStanding\":0,\"delTeamId\":\"Hipmenu-Cluj\",\"restDelTeamId\":null},{\"id\":\"427\",\"name\":\"KFC Iulius Mall\",\"locale\":\"ro\",\"custId\":\"cjlad\",\"street\":\"Str. Alexandru Vaida-Voevod, nr. 53B\",\"city\":\"Cluj-Napoca\",\"country\":\"România\",\"county\":\"Cluj\",\"state\":\"\",\"region\":\"\",\"zip\":\"\",\"lat\":46.771297454833984,\"long\":23.62589454650879,\"phones\":[{\"name\":\"0767801539\",\"val\":\"0767801539\"}],\"exposedName\":\"kfc-iulius-cluj\",\"shortName\":\"KFC Iulius Mall\",\"mail\":\"meniu@hipmenu.ro\",\"f\":1078525960,\"f1\":73728,\"deliveryTimes\":\"1;1000-2130;1000-2130;1000-2130;1000-2130;1000-2130;1000-2130;1000-2130\",\"openedTimes\":\"1;1000-2130;1000-2130;1000-2130;1000-2130;1000-2130;1000-2130;1000-2130\",\"areas\":[{\"id\":\"175\",\"name\":\"Mărăști\",\"description\":\"\",\"data\":\"5|65535.0|10.0|30||65535.0;10.0;;|0E-7;|na;|\",\"shape\":\"p;46.770328;23.618845999999962;46.768811;23.618381999999997;46.76503;23.619807000000037;46.761609;23.62113199999999;46.763148;23.62586299999998;46.765839;23.632364999999936;46.770497;23.63294300000007;46.772981;23.632706999999982;46.773848;23.629950000000008;46.774318;23.628674000000046;46.776434;23.627009000000044;46.775847;23.62232199999994;46.777251;23.621764999999982;46.776934;23.61962399999993;46.776191;23.618431999999984;46.773502;23.619471999999973;46.771232;23.620145999999977;46.770328;23.618845999999962;\",\"flags\":0},{\"id\":\"988\",\"name\":\"Mărăști Zona 2\",\"description\":\"\",\"data\":\"5|65535.0|10.0|30||65535.0;10.0;;|0E-7;|na;|\",\"shape\":\"p;46.759187;23.614823;46.760653;23.616093999999975;46.761355;23.620541000000003;46.763148;23.62586299999998;46.765839;23.632364999999936;46.770497;23.63294300000007;46.772981;23.632706999999982;46.775288;23.63910199999998;46.777118;23.639369999999985;46.778566;23.64302799999996;46.782078;23.641376000000037;46.78246;23.637888999999973;46.781432;23.62740800000006;46.779514;23.617590999999948;46.779227;23.615113000000065;46.782762;23.61358999999993;46.785002;23.61425399999996;46.7852;23.611196000000064;46.783319;23.607537999999977;46.78225;23.60570800000005;46.78099;23.604319000000032;46.780909;23.603278000000046;46.779874;23.603309999999965;46.778801;23.604233000000022;46.777378;23.603561000000013;46.776895;23.602438000000006;46.775471;23.603475000000003;46.772972;23.60561299999995;46.770339;23.607358999999974;46.76925;23.60388599999999;46.768058;23.60069299999998;46.766539;23.601770999999985;46.762942;23.604413000000022;46.761293;23.603161;46.756404;23.60569799999996;46.755024;23.606430000000046;46.755746;23.60985400000004;46.757643;23.612777999999935;46.759187;23.614823;\",\"flags\":4}],\"minDelOrder\":40.0,\"pickupLeadTime\":5,\"tags\":[\"Cluj#sandwiches\",\"Cluj#burger\",\"Cluj#chicken\",\"Cluj#dessert\",\"Cluj#cheesecake\"],\"schEx\":[{\"flags\":0,\"start\":\"20180102\",\"end\":\"20180102\",\"locMsg\":\"Restaurantul este închis în această perioadă. Sărbători fericite!\",\"msg\":\"The restaurant is closed during this period. Happy holidays!\",\"locMercMsg\":\"Închis din cauza sărbătorilor. Vă rugăm redeschideți dacă doriți să primiți comenzi.\",\"mercMsg\":\"Închis din cauza sărbătorilor. Vă rugăm redeschideți dacă doriți să primiți comenzi.\"},{\"flags\":0,\"start\":\"20180102\",\"end\":\"20180102\",\"locMsg\":\"Restaurantul este închis în această perioadă. Sărbători fericite!\",\"msg\":\"The restaurant is closed during this period. Happy holidays!\",\"locMercMsg\":\"Închis din cauza sărbătorilor. Vă rugăm redeschideți dacă doriți să primiți comenzi.\",\"mercMsg\":\"Închis din cauza sărbătorilor. Vă rugăm redeschideți dacă doriți să primiți comenzi.\"}],\"res\":{\"0\":\"1\"},\"code\":\"00DMAOKMG1TB4M\",\"accountStanding\":0,\"delTeamId\":\"Hipmenu-Cluj\",\"restDelTeamId\":null}],\"currency\":\"LEI\",\"cuisines\":\"19\",\"mapPin\":\"_;ebedf0\",\"menuLang\":\"ro\",\"hasLogin\":false,\"pointsForUnit\":0,\"pointsFromUnit\":0,\"pickupLeadTime\":5,\"tz\":\"Europe\/Bucharest|EET\",\"flags\":5,\"flags1\":0}',
+                Company: '',
+                CompanyLocationId: '',
+                featuredItems: [
+                    
+                    {
+                        id: "NsvL",
+                        image: "e7ad1f3d-9b5c-4f8c-933c-6ef63b3198f0"
+                    },
+                    
+                    {
+                        id: "qryL",
+                        image: "1575ab32-1431-4b39-8ff5-5994d1c7cc3e"
+                    },
+                    
+                    {
+                        id: "cryL",
+                        image: "0dc06ed1-999e-44de-aa62-47e19e697dd8"
+                    },
+                    
+                    {}
+                ],
+                GoogleTagManagerContainer: "GTM-MDMXWDD"
+
+            }
+        };
+        window["onGoogleMapsLoaded"] = function () {
+            HD.libraryLoaded("google.maps");
+        }
+
+    </script>
+
+    <script>
+        window.fbAsyncInit = function() {
+            FB.init({
+                appId               : '260470774027526',
+                xfbml               : true,
+                status              : true,
+                version             : 'v2.9'
+            });
+        };
+
+        (function(d, s, id){            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {return;}
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>
+
+
+
+    <script type="text/javascript">
+        (function(c,a){window.mixpanel=a;var b,d,h,e;b=c.createElement("script");
+        b.type="text/javascript";b.async=!0;b.src=("https:"===c.location.protocol?"https:":"http:")+
+        '//cdn.mxpnl.com/libs/mixpanel-2.2.min.js';d=c.getElementsByTagName("script")[0];
+        d.parentNode.insertBefore(b,d);a._i=[];a.init=function(b,c,f){function d(a,b){
+        var c=b.split(".");2==c.length&&(a=a[c[0]],b=c[1]);a[b]=function(){a.push([b].concat(
+        Array.prototype.slice.call(arguments,0)))}}var g=a;"undefined"!==typeof f?g=a[f]=[]:
+        f="mixpanel";g.people=g.people||[];h=['disable','track','track_pageview','track_links',
+        'track_forms','register','register_once','unregister','identify','alias','name_tag','set_config',
+        'people.set','people.set_once','people.increment','people.track_charge','people.append'];
+        for(e=0;e<h.length;e++)d(g,h[e]);a._i.push([b,c,f])};a.__SV=1.2;})(document,window.mixpanel||[]);
+
+        mixpanel.init("678aa5c0bb525a89e8eb36f1a5d9249d",{cookie_name:"hip_tracking_mixpanel"});
+    </script>
+
+
+    <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?key=AIzaSyD795ycNLLtCd0UX_FWbGT3gbnSe4pJoNg&libraries=geometry,places&callback=onGoogleMapsLoaded"></script>
+
+   <script>
+       UserVoice=window.UserVoice||[];(function(){var uv=document.createElement('script');uv.type='text/javascript';uv.async=true;uv.src='//widget.uservoice.com/Xm0qOqA6pnWxXkb8SgsZjw.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(uv,s)})();
+       HD.UserVoice.configure();
+   </script>
+</body>
+</html>
