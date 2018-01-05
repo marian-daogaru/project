@@ -6,10 +6,25 @@ html
     script(scr='/static/js/bootstrap.min.js')
   body
     h1 Test1
-    div Hello!
-      div Home 
-      div Login 
-      
+    div 
+      div Hello! 
+      a(href="{{ url_for('home') }}") Home 
+      | #{'{% if g.user.is_authenticated %}'}
+      | Your profile
+      a(href="{{ url_for('logout') }}") Logout 
+      | #{'{% else %}'}
+      Login #{"{% endif %}"}
+        
+    | #{"{% with messages = get_flashed_messages() %} "}
+    | #{'{% if messages %}'}
+    | <ul>
+    | #{'{% for message in messages %}'}
+    |    <li>#{'{{ message }}'}</li>
+    |#{'{% endfor %}'}
+    </ul>
+    | #{'{% endif %}'}
+    | #{'{% endwith %}'}
+    
     div 
       block content 
       

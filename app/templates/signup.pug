@@ -1,0 +1,22 @@
+extends base.pug 
+
+block content
+  .main.container
+    h1 Sign up
+    
+    form(action='' method='POST' name='login') #{'{{ form.hidden_tag() }}'}
+      div.form-group 
+        label(for='email') Email: #{'{{ form.email }}'}
+      div.form-group 
+        label(for='pw') Password: #{'{{ form.password }}'}
+        //- formy.password
+      div.form-group 
+        label(for='cpw') Confirm Password: #{'{{ form.confPWD }}'}
+      div.form-Group
+        label(for='rememberMe') Remember me: #{'{{ form.rememberMe }}'}
+        
+      button.btn.btn-primary(type='submit') Sign me UP
+    
+  
+  
+  
