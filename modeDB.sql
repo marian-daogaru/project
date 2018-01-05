@@ -18,7 +18,7 @@ USE `mydb` ;
 -- Table `mydb`.`User`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`User` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `email` VARCHAR(60) NOT NULL,
   `password` VARCHAR(45) NOT NULL,
   `aboutMe` VARCHAR(200) NULL,
@@ -33,7 +33,7 @@ ENGINE = InnoDB;
 -- Table `mydb`.`UserAvatar`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`UserAvatar` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `avatarPath` VARCHAR(200) NOT NULL,
   `User_id` INT NOT NULL,
   PRIMARY KEY (`id`, `User_id`),
@@ -50,7 +50,7 @@ ENGINE = InnoDB;
 -- Table `mydb`.`Group`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`Group` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `aboutGroup` VARCHAR(200) NULL,
   PRIMARY KEY (`id`))
@@ -84,7 +84,7 @@ ENGINE = InnoDB;
 -- Table `mydb`.`GroupAvatar`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`GroupAvatar` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `Group_id` INT NOT NULL,
   `avatarPath` VARCHAR(200) NOT NULL,
   PRIMARY KEY (`id`, `Group_id`),
@@ -101,12 +101,13 @@ ENGINE = InnoDB;
 -- Table `mydb`.`Restaurant`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`Restaurant` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `website` VARCHAR(200) NOT NULL,
   `aboutMe` VARCHAR(200) NULL,
   `joinDate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`))
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `website_UNIQUE` (`website` ASC))
 ENGINE = InnoDB;
 
 
@@ -114,7 +115,7 @@ ENGINE = InnoDB;
 -- Table `mydb`.`RestaurantAvatar`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`RestaurantAvatar` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `avatarPath` VARCHAR(200) NOT NULL,
   `Restaurants_id` INT NOT NULL,
   PRIMARY KEY (`id`, `Restaurants_id`),

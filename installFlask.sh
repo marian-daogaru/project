@@ -3,7 +3,7 @@ flask/bin/pip install flask-login
 flask/bin/pip install flask-openid
 flask/bin/pip install flask-mail
 flask/bin/pip install flask-sqlalchemy
-flask/bin/pip install sqlalchemy-migrate
+flask/bin/pip install MySQL-python
 flask/bin/pip install flask-whooshalchemy
 flask/bin/pip install flask-wtf
 flask/bin/pip install flask-babel
