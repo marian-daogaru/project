@@ -28,7 +28,9 @@ class User(db.Model):
         return False
 
     def get_id(self):
+        # self.id = User.query.filter_by(email = self.email).first().id
         try:
+            print(unicode(self.id), '!!!', type(self.id), self.password)
             return unicode(self.id)  # python 2
         except NameError:
             return str(self.id)  # python 3

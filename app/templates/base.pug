@@ -1,19 +1,20 @@
 html
   head
     title Rodica 2.0
-    script(src='/static/css/bootstrap.min.css')
-    script(src='/static/js/moment.min.js')
-    script(scr='/static/js/bootstrap.min.js')
+    style include ../static/css/bootstrap.min.css
+    script(src='../static/js/moment.min.js')
+    script(scr='../static/js/bootstrap.min.js')
   body
     h1 Test1
-    div 
+    div.container
       div Hello! 
-      a(href="{{ url_for('home') }}") Home 
+      a(href="{{ url_for('home') }}") Home
       | #{'{% if g.user.is_authenticated %}'}
       | Your profile
       a(href="{{ url_for('logout') }}") Logout 
-      | #{'{% else %}'}
-      Login #{"{% endif %}"}
+      | #{'{% else %}'} 
+      a(href="{{ url_for('login') }}") Login 
+      | #{"{% endif %}"}
         
     | #{"{% with messages = get_flashed_messages() %} "}
     | #{'{% if messages %}'}

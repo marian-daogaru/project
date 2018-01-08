@@ -4,16 +4,17 @@ block content
   .main.container
     h1 Login
     
-    form(action='' method='POST' name='login')
-      form.hidden_tag()
+    form(action='' method='POST' name='login') #{'{{ form.hidden_tag() }}'}
       div.form-group 
-        label(for='email') Name:
-        input#email.form-control(type='text', placeholder='email@domain.ext' name='email')
+        label(for='email') Email: #{'{{ form.email }}'} 
+        | #{'{% for error in form.email.errors %}'}
+        span(style='color: red;') [#{' {{ error }}'}]
+        | #{'{% endfor %}'} 
       div.form-group 
-        label(for='pw') Password:
-        input#pw.form-control(type='password' name='password' placeholder='*****')
+        label(for='pw') Password: #{'{{ form.password }}'}
+        | #{'{% for error in form.password.errors %}'}
+        span(style='color: red;') [#{' {{ error }}'}]
+        | #{'{% endfor %}'} 
+      div.form-Group
+        p Remember me: #{'{{ form.rememberMe }}'}
       button.btn.btn-primary(type='submit') Login 
-    
-  
-  
-  
