@@ -10,7 +10,7 @@ class LoginForm(FlaskForm):
                         validators=[DataRequired()],
                         render_kw={"placeholder": "email"})
     password = PasswordField('password',
-                        validators=[Length(min=8, max=20)],
+                        validators=[Length(min=1, max=20)],
                         render_kw={"placeholder": "*****"})
     rememberMe = BooleanField('rememberMe',
                                 default=False)
@@ -20,15 +20,12 @@ class LoginForm(FlaskForm):
 
     def validate(self):
         if not FlaskForm.validate(self):
-            print("rosu")
             return False
         user = User.query.filter_by(email = self.email.data).first()
         if user is None:
-            print('verde')
             self.email.errors.append('Email not registered. Please sign up.')
             return False
         if user.password != self.password.data:
-            print('portocaliu')
             self.password.errors.append('Incorrect password!')
             return False
         print('albastru')
@@ -41,10 +38,24 @@ class SignUpForm(FlaskForm):
                         validators=[DataRequired()],
                         render_kw={"placeholder": "email"})
     password = PasswordField('password',
-                        validators=[Length(min=8, max=20)],
+                        validators=[Length(min=1, max=20)],
                         render_kw={"placeholder": "*****"})
     confPWD = PasswordField('confPWD',
-                        validators=[Length(min=8, max=20)],
+                        validators=[Length(min=1, max=20)],
                         render_kw={"placeholder": "*****"})
     rememberMe = BooleanField('rememberMe',
                                 default=False)
+
+    def validate(self):
+        if not FlaskForm.validate(self):
+            return False
+        if User.query.filter_by(email = self.email.data).first():
+            self.email.errors.append('Email already registered')
+            return False
+        if self.password.data != self.confPWD.data:
+            self.confPWD.errors.append('Password not matching')
+            return False
+        if User.isValidPassword(self.password.data):
+            self.password.errors.append('!!! Invalid Passwword !!!')
+            return False
+        return True

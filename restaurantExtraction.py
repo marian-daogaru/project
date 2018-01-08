@@ -5,7 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 link = 'https://www.caserola.ro/restaurant/zexezahana'
 
-mediaFolderPath = 'app/data/media/avatars/restaurants/'
+mediaFolderPath = 'app/static/data/media/avatars/restaurants/'
 
 def openWebsite(link):
     opener = urllib2.build_opener()

@@ -1,7 +1,11 @@
-import re
+import MySQLdb
 
+db = MySQLdb.connect(host="localhost",
+                     user="root",
+                     passwd="root",
+                     db='projectDB')
 
-
-a = None
-if not a:
-    print(1)
+cur = db.cursor()
+cur.execute("select password from User where email = 'md';")
+res = cur.fetchall()
+print(type(len(res)))

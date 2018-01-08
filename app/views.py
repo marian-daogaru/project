@@ -1,7 +1,7 @@
 from app import app, db, lm
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask_login import login_user, logout_user, current_user, login_required
-from .models import Group, UserAvatar, User
+from .models import Group, Media, User
 from .forms import SignUpForm, LoginForm
 
 
@@ -9,70 +9,66 @@ from .forms import SignUpForm, LoginForm
 
 @app.before_request
 def before_request():
-    print('fasole')
     g.user = current_user
-    print('fasole2',g.user  )
 
 
 @lm.user_loader
 def load_user(id):
-    print(id, "@@@")
-    print('mov', User.query.get((id)), str(id))
     return User.query.get((id))
 
 
 @app.route('/')
 @app.route('/home')
 def home():
-    print(g.user)
     return render_template('home.html')
 
+@app.route('/user/<nickname>')
+@login_required
+def user(nickname, page=1):
+    user = User.query.filter_by(nickname=nickname).first()
+    if user is None:
+        flash('User %s not found.' % nickname)
+        return redirect(url_for('index'))
+    avatarPath = Media.query.filter_by(id = user.Media_id).first().avatarPath
+    return render_template('profile.html',
+                            user = user,
+                            avatarPath = avatarPath)
 
+
+@app.route('/edit', methods=['GET', 'POST'])
+@login_required
+def edit():
+    return render_template('edit.html')
+
+# ##############################################################################
+# LOGIN / SIGNUP
+# ##############################################################################
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if g.user is not None and g.user.is_authenticated:
         return redirect(url_for('index'))
 
     form = SignUpForm()
-    if request.method == 'GET':
-        return render_template('signup.html',
-                                form = form)
-    elif request.method == 'POST':
-        if form.validate_on_submit():
-            if User.query.filter_by(email = form.email.data).first():
-                print('albastru')
-                flash('Email already registered')
-                return redirect(url_for('signup'))
-            elif form.password.data != form.confPWD.data:
-                print('rosu')
-                flash('Password not matching')
-                return redirect(url_for('signup'))
-            elif User.isValidPassword(form.password.data):
-                print('galben')
-                flash('!!! Invalid Passwword !!!')
-                return redirect(url_for('signup'))
-            else:
-                print('verde')
-                nickname = form.email.data.split('@')[0]
-                nickname = User.make_valid_nickname(nickname)
-                user = User(email = form.email.data,
-                            password = form.password.data,
-                            nickname = nickname)
-                print(user)
-                db.session.add(user)
-                db.session.commit()
+    if form.validate_on_submit():
+        avatar = Media(avatarPath = '../static/data/media/avatars/users/_defautlUserAvatarSmileyFace.png')
+        db.session.add(avatar)
+        db.session.commit()
 
-                rememberMe = False
-                if 'rememberMe' in session:
-                    rememberMe = session['rememberMe']
-                    session.pop('rememberMe', None)
-                login_user(user, remember=rememberMe)
-
-            print(form.email.data, form.password.data, form.email.data.split('@'))
-            return redirect(request.args.get('next') or url_for('home'))
-        else:
-            print('portocaliu')
-            return redirect(url_for('signup'))
+        nickname = form.email.data.split('@')[0]
+        print(nickname, "verde")
+        nickname = User.make_valid_nickname(nickname)
+        user = User(email = form.email.data,
+                    password = form.password.data,
+                    nickname = nickname,
+                    Media_id = avatar.id)
+        db.session.add(user)
+        db.session.commit()
+        print(nickname, 'abastru')
+        rememberMe = form.rememberMe.data
+        login_user(user, remember=rememberMe)
+        return redirect(request.args.get('next') or url_for('home'))
+    return render_template('signup.html',
+                            form = form)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -81,9 +77,6 @@ def login():
         return redirect(url_for('index'))
 
     form = LoginForm()
-    # if request.method == 'GET':
-    #     return render_template('login.html', form = form)
-    # elif request.method == 'POST':
     if form.validate_on_submit():
         user = User.query.filter_by(email = form.email.data).first()
 
@@ -93,24 +86,6 @@ def login():
 
     return render_template('login.html',
                             form = form)
-        #     user = User.query.filter_by(email = form.email.data).first()
-        #     if user is None:
-        #         flash("Email not registered! Please Sign Up")
-        #         return redirect(url_for('login'))
-        #     else:
-        #         if user.password != form.password.data:
-        #             flash("Wrong Password!")
-        #             return redirect(url_for('login'))
-        #         else:
-        #             rememberMe = False
-        #             if 'rememberMe' in session:
-        #                 rememberMe = session['rememberMe']
-        #                 session.pop('rememberMe', None)
-        #             login_user(user, remember = rememberMe)
-        #             return redirect(url_for('home'))
-        # else:
-        #     flash('form not valid')
-        #     return redirect(url_for('login'))
 
 
 @app.route('/logout')
@@ -118,3 +93,18 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('home'))
+
+
+
+# ##############################################################################
+# ERROR HANDLING
+# ##############################################################################
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html'), 404
+
+
+@app.errorhandler(500)
+def internal_error(error):
+    db.session.rollback()
+    return render_template('500.html'), 500

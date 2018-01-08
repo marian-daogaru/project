@@ -36,14 +36,14 @@ class User(db.Model):
             return str(self.id)  # python 3
 
     def get_avatar(self):
-        return UserAvatar.query.filter_by(
-                 UserAvatar.User_id == self.id).first()   # NMOT SURE DOUGH...
+        return Media.query.filter_by(
+                 Media.User_id == self.id).first()   # NMOT SURE DOUGH...
 
     # TODO the rest of the the functions
 
 
-class UserAvatar(db.Model):
-    __table__ = db.Model.metadata.tables['UserAvatar']
+class Media(db.Model):
+    __table__ = db.Model.metadata.tables['Media']
 
 
 class Group(db.Model):

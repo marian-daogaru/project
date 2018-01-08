@@ -4,4 +4,4 @@
 {% for message in messages %}
    <li>{{ message }}</li>
 {% endfor %}</ul>{% endif %}
-{% endwith %}<div> </div></body></html>
+{% endwith %}<div> <div class="main container"><table> </table><td> <img class="image" src="{{ avatarPath }}" width="200" height="auto"/></td><td> <h1>Hello, {{ user.nickname }}</h1> {% if user.aboutMe %}<p> {{ user.aboutMe }}</p> {% endif %}<p> {% if user.id == g.user.id %}</p><a href="{{ url_for('edit') }}">Edit your profile </a> {% endif %}</td></div></div></body></html>

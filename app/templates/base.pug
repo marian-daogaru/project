@@ -10,13 +10,14 @@ html
       div Hello! 
       a(href="{{ url_for('home') }}") Home
       | #{'{% if g.user.is_authenticated %}'}
-      | Your profile
+      a(href="{{ url_for('user', nickname=g.user.nickname) }}") Your profile 
       a(href="{{ url_for('logout') }}") Logout 
       | #{'{% else %}'} 
       a(href="{{ url_for('login') }}") Login 
+      a(href="{{ url_for('signup') }}") Signup
       | #{"{% endif %}"}
         
-    | #{"{% with messages = get_flashed_messages() %} "}
+    | #{'{% with messages = get_flashed_messages() %} '}
     | #{'{% if messages %}'}
     | <ul>
     | #{'{% for message in messages %}'}
