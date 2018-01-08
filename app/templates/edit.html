@@ -4,4 +4,4 @@
 {% for message in messages %}
    <li>{{ message }}</li>
 {% endfor %}</ul>{% endif %}
-{% endwith %}<div> </div></body></html>
+{% endwith %}<div> <div class="main container"><h1>Edit your profile </h1><form action="" method="POST" name="editProfile">{{ form.hidden_tag() }}<table> <tr><td>Your nickname: </td><td>{{ form.nickname(size=30) }} {% for error in form.errors.nickname %}<strong> <span style="color: red;">[ {{ error }}] </span></strong> {% endfor %}</td></tr><tr><td>About me: </td><td>{{ form.aboutMe(cols=50, rows=4) }}</td></tr><tr> <td></td><td><button class="btn btn-primary" type="submit">Submit changes </button></td></tr></table></form></div></div></body></html>

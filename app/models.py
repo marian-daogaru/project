@@ -13,7 +13,7 @@ class User(db.Model):
 
     @staticmethod
     def make_valid_nickname(nickname):
-        return re.sub(r'^[a-zA-Z0-9_\.]', '', nickname)
+        return re.sub(r'[^a-zA-Z0-9_\.]', '', nickname)
 
     @property
     def is_authenticated(self):

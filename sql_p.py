@@ -1,11 +1,9 @@
-import MySQLdb
+import re
 
-db = MySQLdb.connect(host="localhost",
-                     user="root",
-                     passwd="root",
-                     db='projectDB')
+nickname = '123456'
 
-cur = db.cursor()
-cur.execute("select password from User where email = 'md';")
-res = cur.fetchall()
-print(type(len(res)))
+print(re.sub(r'[^a-zA-Z0-9_\.]', '', nickname))
+
+
+b = re.sub('^[a-zA-Z0-9_\.]', '', nickname)
+print(b)

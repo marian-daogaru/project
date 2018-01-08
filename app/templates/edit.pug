@@ -1,0 +1,14 @@
+extends base.pug 
+
+block content
+  .main.container
+    h1 Edit your profile
+    form(action='' method='POST' name='editProfile') #{'{{ form.hidden_tag() }}'}
+      div.form-group 
+        label(for='nickname') Nickname: #{'{{ form.nickname(size=30) }}'} 
+        | #{'{% for error in form.nickname.errors %}'}
+        span(style='color: red;') [#{' {{ error }}'}]
+        | #{'{% endfor %}'} 
+      div.form-group 
+        label(for='aboutMe') Password: #{'{{ form.aboutMe(cols=50, rows=4) }}'}
+      button.btn.btn-primary(type='submit') Submit changes 

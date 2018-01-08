@@ -32,7 +32,6 @@ class LoginForm(FlaskForm):
         return True
 
 
-
 class SignUpForm(FlaskForm):
     email = StringField('email',
                         validators=[DataRequired()],
@@ -59,3 +58,35 @@ class SignUpForm(FlaskForm):
             self.password.errors.append('!!! Invalid Passwword !!!')
             return False
         return True
+
+
+class EditForm(FlaskForm):
+    nickname = StringField('nickname', validators=[DataRequired()])
+    aboutMe = TextAreaField('aboutMe', validators=[Length(min=0, max=200)])
+
+    def __init__(self, original_nickname, *args, **kwargs):
+        FlaskForm.__init__(self, *args, **kwargs)
+        self.original_nickname = original_nickname
+
+    def validate(self):
+        if not FlaskForm.validate(self):
+            print("rosu")
+            return False
+        if self.nickname.data == self.original_nickname:
+            print("verde")
+            return True
+        if self.nickname.data != User.make_valid_nickname(self.nickname.data):
+            print("mov")
+            self.nickname.errors.append(gettext('This nickname has invalid characters. Please use letters, numbers, dots and underscores only.'))
+            return False
+        return True
+
+
+class GroupCreateForm(FlaskForm):
+    name = StringField('name', validators=[DataRequired()])
+    aboutGroup = TextAreaField('aboutGroup', validators=[Length(min=0, max=200)])
+
+    def validate(self):
+        if not FlaskForm.validate(self):
+            return False
+        return True 
