@@ -110,6 +110,28 @@ class EditForm(FlaskForm):
         return True
 
 
+class EditGroupForm(FlaskForm):
+    name = StringField('name', validators=[DataRequired()])
+    aboutGroup = TextAreaField('aboutGroup', validators=[Length(min=0, max=200)])
+
+    def __init__(self, original_name, *args, **kwargs):
+        FlaskForm.__init__(self, *args, **kwargs)
+        self.original_name = original_name
+
+    def validate(self):
+        if not FlaskForm.validate(self):
+            print("rosu")
+            return False
+        if self.name.data == self.original_name:
+            print("verde")
+            return True
+        if self.name.data != User.make_valid_nickname(self.name.data):
+            print("mov")
+            self.name.errors.append(gettext('This nickname has invalid characters. Please use letters, numbers, dots and underscores only.'))
+            return False
+        return True
+
+
 class GroupCreateForm(FlaskForm):
     name = StringField('name', validators=[DataRequired()])
     aboutGroup = TextAreaField('aboutGroup', validators=[Length(min=0, max=200)])

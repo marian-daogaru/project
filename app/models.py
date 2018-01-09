@@ -1,5 +1,6 @@
 from hashlib import md5
 from app import db, app
+from sqlalchemy import and_
 import re
 
 
@@ -59,8 +60,13 @@ class User(db.Model):
 
     def joinedGroups(self):
         return Group.query.join(
-        UsersInGroups, (UsersInGroups.Group_id == Group.id)).filter(
-        UsersInGroups.User_id == self.id).order_by(Group.name.desc())
+            UsersInGroups, (UsersInGroups.Group_id == Group.id)).filter(
+            UsersInGroups.User_id == self.id).order_by(Group.name.desc())
+
+    def isAdmin(self, groupID):
+        return UsersInGroups.query.filter(and_(UsersInGroups.User_id.like(self.id),
+                                                UsersInGroups.Group_id.like(groupID))).first().admin
+
     # TODO the rest of the the functions
 
 

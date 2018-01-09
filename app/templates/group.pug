@@ -12,4 +12,8 @@ block content
           | #{' {% if group.aboutGroup %}'}
           tr #{' {{ group.aboutGroup }}'}
           | #{' {% endif %}'}
+      tr
+        td #{'{% if g.user.isAdmin(group.id) %}'}
+          a(href="{{ url_for('editGroup', id=group.id) }}") Edit this group #{'{{ group.id }}'}
+          | #{'{% endif %}'}
       

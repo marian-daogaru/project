@@ -5,7 +5,7 @@ from config import USERPATH, GROUPPATH, basedir
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask_login import login_user, logout_user, current_user, login_required
 from .models import Group, Media, User
-from .forms import SignUpForm, LoginForm, EditForm, GroupCreateForm
+from .forms import SignUpForm, LoginForm, EditForm, GroupCreateForm,  EditGroupForm
 from werkzeug.utils import secure_filename
 
 
@@ -186,15 +186,51 @@ def createGroup():
 @login_required
 def group(id):
     group = Group.query.filter_by(id = id).first()
-    avatarPath = Media.query.filter_by(id = group.Media_id).first().mediaPath
+
     if group is None:
         flash("Group {} not found.".format(group.name))
         return redirect(url_for('index'))
+    avatarPath = Media.query.filter_by(id = group.Media_id).first().mediaPath
 
     return render_template('group.html',
                             group = group,
                             avatarPath = avatarPath)
 
+@app.route('/group/<id>/edit', methods=['GET', 'POST'])
+@login_required
+def editGroup(id):
+    print("in edit")
+    group = Group.query.filter_by(id = id).first()
+    if group is None:
+        flash("no such group")
+        return redirect(url_for('user', id=g.user.id))
+
+    form = EditGroupForm(group.name)
+    if form.validate_on_submit():
+        group.name = form.name.data
+        group.aboutGroup = form.aboutGroup.data
+
+        db.session.add(g.user)
+        db.session.commit()
+
+        if 'file' in request.files:
+            file = request.files['file']
+            if file.filename == '':
+                flash ("No file Selected")
+                return redirect(url_for('user', id=g.user.id))
+
+            filename = os.path.join(app.config['GROUPPATH'], secure_filename(file.filename))
+            file.save(os.path.join(basedir + '/app/', filename[3:]))
+            media = Media.query.filter_by(id = group.Media_id).first()
+            media.mediaPath = filename
+            db.session.add(media)
+            db.session.commit()
+        return redirect(url_for('group', id=group.id))
+    elif request.method != "POST":
+        form.name.data = group.name
+        form.aboutGroup.data = group.aboutGroup
+    return render_template('editGroup.html',
+                            form  = form)
 
 # ##############################################################################
 # ERROR HANDLING
