@@ -3,15 +3,29 @@ extends base.pug
 block content
   .main.container
     table 
-    td 
-      img.image(src='{{ mediaPath }}' width="200" height="auto")
-    td 
-      h1 Hello, #{'{{ user.nickname }}'}
-      | #{' {% if user.aboutMe %}'}
-      p #{' {{ user.aboutMe }}'}
-      | #{' {% endif %}'}
-      p #{' {% if user.id == g.user.id %}'}
-      a(href="{{ url_for('edit') }}") Edit your profile 
-      | #{' {% endif %}'}
-      
+      tr
+        td 
+          img.image(src='{{ avatarPath }}' width="200" height="auto")
+        td 
+          tr
+            h1 Hello, #{'{{ user.nickname }}'}
+          | #{' {% if user.aboutMe %}'}
+          tr #{' {{ user.aboutMe }}'}
+          | #{' {% endif %}'}
+          | #{' {% if user.id == g.user.id %}'}
+      tr
+        td
+        td
+          a(href="{{ url_for('edit') }}") Edit your profile 
+        td
+          a(href="{{ url_for('createGroup') }}") Create a new group 
+          | #{' {% endif %} '}
+          
+    table(name="test")
+      | #{"{% for group, groupPath in zipped %}"}
+      tr
+        td #{"{% include 'groupTemplate.html' %}"}
+          
+        | #{"{% endfor %}"}
+        
       

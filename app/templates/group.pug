@@ -1,0 +1,15 @@
+extends base.pug 
+
+block content
+  .main.container
+    table 
+      tr
+        td 
+          img.image(src='{{ avatarPath }}' width="200" height="auto")
+        td 
+          tr
+            h1 #{'{{ group.name }}'}
+          | #{' {% if group.aboutGroup %}'}
+          tr #{' {{ group.aboutGroup }}'}
+          | #{' {% endif %}'}
+      

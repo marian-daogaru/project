@@ -6,7 +6,6 @@ import re
 class User(db.Model):
     __table__ = db.Model.metadata.tables['User']
 
-
     @staticmethod
     def isValidPassword(password):
         return not bool(re.compile(r'[^a-zA-Z0-9_\.]'))
@@ -37,13 +36,37 @@ class User(db.Model):
 
     def get_avatar(self):
         return Media.query.filter_by(
-                 Media.User_id == self.id).first()   # NMOT SURE DOUGH...
+                 id = self.Media_id).first()   # NMOT SURE DOUGH...
 
+    def isInGroup(self, user, group):
+        print("### DIR UsersInGroups", dir(UsersInGroups))
+        return UsersInGroups.query.filter_by(User_id = user.id).filter_by(
+                                    Group_id = group.id).count() > 0
+
+    def joinGroup(self, user, group):
+        if not self.isInGroup(user, group):
+            new = UsersInGroups(User_id = user.id,
+                                Group_id = group.id)
+            db.session.add(new)
+            db.session.commit()
+            return new
+
+    def leaveGroup(self, user, group):
+        if self.isInGroup(user, group):
+            UsersInGroups.query.filter_by(User_id = user.id).filter_by(
+                                        Group_id = group.id).delete()
+            db.session.commit()
+
+    def joinedGroups(self):
+        return Group.query.join(
+        UsersInGroups, (UsersInGroups.Group_id == Group.id)).filter(
+        UsersInGroups.User_id == self.id).order_by(Group.name.desc())
     # TODO the rest of the the functions
 
 
-class Media(db.Model):
-    __table__ = db.Model.metadata.tables['Media']
+class UsersInGroups(db.Model):
+    __table__ = db.Model.metadata.tables['UsersInGroups']
+
 
 
 class Group(db.Model):
@@ -55,3 +78,6 @@ class Group(db.Model):
 
 class Restaurant(db.Model):
     __table__ = db.Model.metadata.tables['Restaurant']
+
+class Media(db.Model):
+    __table__ = db.Model.metadata.tables['Media']

@@ -3,12 +3,30 @@ extends base.pug
 block content
   .main.container
     h1 Edit your profile
-    form(action='' method='POST' name='editProfile') #{'{{ form.hidden_tag() }}'}
+    form(action='' method='POST' name='editProfile' enctype='multipart/form-data') #{'{{ form.hidden_tag() }}'}
       div.form-group 
         label(for='nickname') Nickname: #{'{{ form.nickname(size=30) }}'} 
         | #{'{% for error in form.nickname.errors %}'}
         span(style='color: red;') [#{' {{ error }}'}]
         | #{'{% endfor %}'} 
       div.form-group 
-        label(for='aboutMe') Password: #{'{{ form.aboutMe(cols=50, rows=4) }}'}
+        label(for='aboutMe') About me: #{'{{ form.aboutMe(cols=50, rows=4) }}'}
+      div.form-group
+      div.form-group 
+        label(for='password') New Password: #{'{{ form.password(size=30) }}'} 
+        | #{'{% for error in form.password.errors %}'}
+        span(style='color: red;') [#{' {{ error }}'}]
+        | #{'{% endfor %}'} 
+        div.form-group 
+          label(for='confPWD') Confirm New Password: #{'{{ form.confPWD(size=30) }}'} 
+          | #{'{% for error in form.confPWD.errors %}'}
+          span(style='color: red;') [#{' {{ error }}'}]
+          | #{'{% endfor %}'} 
+        div.form-group 
+          input(type='file' name='file')
       button.btn.btn-primary(type='submit') Submit changes 
+      
+      
+      
+      
+      

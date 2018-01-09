@@ -60,9 +60,31 @@ class SignUpForm(FlaskForm):
         return True
 
 
+# class PasswordInput(Input):
+#     """
+#     Render a password input.
+#
+#     For security purposes, this field will not reproduce the value on a form
+#     submit by default. To have the value filled in, set `hide_value` to
+#     `False`.
+#     """
+#     input_type = 'password'
+#
+#     def __init__(self, hide_value=True):
+#         self.hide_value = hide_value
+#
+#     def __call__(self, field, **kwargs):
+#         if self.hide_value:
+#             kwargs['value'] = ''
+#         return super()
+
 class EditForm(FlaskForm):
     nickname = StringField('nickname', validators=[DataRequired()])
     aboutMe = TextAreaField('aboutMe', validators=[Length(min=0, max=200)])
+    password = PasswordField('password',
+        render_kw={"placeholder": "*****"})
+    confPWD = PasswordField('confPWD',
+        render_kw={"placeholder": "*****"})
 
     def __init__(self, original_nickname, *args, **kwargs):
         FlaskForm.__init__(self, *args, **kwargs)
@@ -79,6 +101,12 @@ class EditForm(FlaskForm):
             print("mov")
             self.nickname.errors.append(gettext('This nickname has invalid characters. Please use letters, numbers, dots and underscores only.'))
             return False
+        if self.password.data != self.confPWD.data:
+            self.confPWD.errors.append('Password not matching')
+            return False
+        if User.isValidPassword(self.password.data):
+            self.password.errors.append('!!! Invalid Passwword !!!')
+            return False
         return True
 
 
@@ -89,4 +117,4 @@ class GroupCreateForm(FlaskForm):
     def validate(self):
         if not FlaskForm.validate(self):
             return False
-        return True 
+        return True

@@ -7,6 +7,11 @@ SECRET_KEY = 'you-will-never-guess'
 
 SQLALCHEMY_DATABASE_URI = 'mysql://root:root@localhost:3306/projectDB'
 
+# paths
+GROUPPATH = '../static/data/media/avatars/groups/'
+USERPATH = '../static/data/media/avatars/users/'
+
+
 # mail server settings
 MAIL_SERVER = 'smtp.googlemail.com'
 MAIL_PORT = 465

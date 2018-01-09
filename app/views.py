@@ -1,10 +1,12 @@
+import os
 from datetime import timedelta
 from app import app, db, lm
+from config import USERPATH, GROUPPATH, basedir
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask_login import login_user, logout_user, current_user, login_required
 from .models import Group, Media, User
 from .forms import SignUpForm, LoginForm, EditForm, GroupCreateForm
-
+from werkzeug.utils import secure_filename
 
 
 
@@ -42,10 +44,20 @@ def user(id, page=1):
     if user is None:
         flash('User %s not found.' % nickname)
         return redirect(url_for('index'))
-    mediaPath = Media.query.filter_by(id = user.Media_id).first().mediaPath
+    avatarPath = Media.query.filter_by(id = user.Media_id).first().mediaPath
+    groups = g.user.joinedGroups().all()
+    groupPaths = []
+    for group in groups:
+        groupPaths.append(Media.query.filter_by(id = group.Media_id).first().mediaPath)
+
+    # groupPaths = Media.query.join(groups, (groups.Media_id == Media.id)).filter()
+    # groupsPath = Media.query.filter_by()
+    # print(groupPaths)
+    # print("###", dir(groups), type(groups)) #, len(groups), "@@@",  ([group.Media_id for group in groups]), "@@@", dir(Media.id))
     return render_template('profile.html',
                             user = user,
-                            mediaPath = mediaPath)
+                            avatarPath = avatarPath,
+                            zipped = zip(groups, groupPaths))
 
 @app.route('/edit', methods=['GET', 'POST'])
 @login_required
@@ -55,9 +67,25 @@ def edit():
     if form.validate_on_submit():
         g.user.nickname = form.nickname.data
         g.user.aboutMe = form.aboutMe.data
+        if len(form.password.data) > 0:
+            g.user.password = form.password.data
         db.session.add(g.user)
         db.session.commit()
-        flash('Your changes have been saved.')
+        flash('Your smaller changes have been saved.')
+
+        if 'file' in request.files:
+            file = request.files['file']
+            if file.filename == '':
+                flash ("No file Selected")
+                return redirect(url_for('user', id=g.user.id))
+
+            filename = os.path.join(app.config['USERPATH'], secure_filename(file.filename))
+            file.save(os.path.join(basedir + '/app/', filename[3:]))
+            flash("It worked!!!! {}".format(filename))
+            media = Media.query.filter_by(id = g.user.Media_id).first()
+            media.mediaPath = filename
+            db.session.add(media)
+            db.session.commit()
         return redirect(url_for('user', id=g.user.id))
     elif request.method != "POST":
         form.nickname.data = g.user.nickname
@@ -76,7 +104,7 @@ def signup():
 
     form = SignUpForm()
     if form.validate_on_submit():
-        avatar = Media(mediaPath = '../static/data/media/avatars/users/_defautlUserAvatarSmileyFace.png')
+        avatar = Media(mediaPath = USERPATH + '_defautlUserAvatarSmileyFace.png')
         db.session.add(avatar)
         db.session.commit()
 
@@ -86,7 +114,6 @@ def signup():
                     password = form.password.data,
                     nickname = nickname,
                     Media_id = avatar.id)
-        print("!!!!", user.Media_id, user.email)
         db.session.add(user)
         db.session.commit()
         rememberMe = form.rememberMe.data
@@ -129,7 +156,7 @@ def createGroup():
     form = GroupCreateForm()
 
     if form.validate_on_submit():
-        avatar = Media(mediaPath = '../static/data/media/avatars/groups/_defautlGroupAvatar.png')
+        avatar = Media(mediaPath = GROUPPATH + '_defaultGroupAvatar.jpg')
         db.session.add(avatar)
         db.session.commit()
 
@@ -139,9 +166,34 @@ def createGroup():
         db.session.add(group)
         db.session.commit()
 
+        admin = g.user.joinGroup(g.user, group)
+        admin.admin = True
+        db.session.add(admin)
+        db.session.commit()
+
+        return redirect(url_for('user', id=g.user.id))
         # REDO THE DB
         # MAKE SO THAT THAT WHEN YOU CREATE A GROUP YOU ARE IN THE GROUP AND YOU BECOME THE ADMIN ALSO
-    return redirect(url_for('user', id=g.user.id))
+
+    return render_template('createGroup.html',
+                            form = form)
+
+# ##############################################################################
+# GROUP MANAGEMENT
+# ##############################################################################
+
+@app.route('/group/<id>')
+@login_required
+def group(id):
+    group = Group.query.filter_by(id = id).first()
+    avatarPath = Media.query.filter_by(id = group.Media_id).first().mediaPath
+    if group is None:
+        flash("Group {} not found.".format(group.name))
+        return redirect(url_for('index'))
+
+    return render_template('group.html',
+                            group = group,
+                            avatarPath = avatarPath)
 
 
 # ##############################################################################
