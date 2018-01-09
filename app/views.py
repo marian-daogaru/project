@@ -1,3 +1,4 @@
+from datetime import timedelta
 from app import app, db, lm
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask_login import login_user, logout_user, current_user, login_required
@@ -7,14 +8,20 @@ from .forms import SignUpForm, LoginForm, EditForm, GroupCreateForm
 
 
 
+
 @app.before_request
 def before_request():
     g.user = current_user
+    session.permanent = True
+    app.permanent_session_lifetime = timedelta(minutes=10)
 
 
 @lm.user_loader
 def load_user(id):
-    return User.query.get((id))
+    print("@@@", id)
+    for key in session.keys():
+        print("$$$ ", key)
+    return User.query.get(int(id))
 
 
 @app.route('/')
@@ -35,10 +42,10 @@ def user(id, page=1):
     if user is None:
         flash('User %s not found.' % nickname)
         return redirect(url_for('index'))
-    avatarPath = Media.query.filter_by(id = user.Media_id).first().avatarPath
+    mediaPath = Media.query.filter_by(id = user.Media_id).first().mediaPath
     return render_template('profile.html',
                             user = user,
-                            avatarPath = avatarPath)
+                            mediaPath = mediaPath)
 
 @app.route('/edit', methods=['GET', 'POST'])
 @login_required
@@ -69,7 +76,7 @@ def signup():
 
     form = SignUpForm()
     if form.validate_on_submit():
-        avatar = Media(avatarPath = '../static/data/media/avatars/users/_defautlUserAvatarSmileyFace.png')
+        avatar = Media(mediaPath = '../static/data/media/avatars/users/_defautlUserAvatarSmileyFace.png')
         db.session.add(avatar)
         db.session.commit()
 
@@ -79,6 +86,7 @@ def signup():
                     password = form.password.data,
                     nickname = nickname,
                     Media_id = avatar.id)
+        print("!!!!", user.Media_id, user.email)
         db.session.add(user)
         db.session.commit()
         rememberMe = form.rememberMe.data
@@ -108,6 +116,7 @@ def login():
 @login_required
 def logout():
     logout_user()
+    session.clear()
     return redirect(url_for('home'))
 
 
@@ -120,7 +129,7 @@ def createGroup():
     form = GroupCreateForm()
 
     if form.validate_on_submit():
-        avatar = Media(avatarPath = '../static/data/media/avatars/groups/_defautlGroupAvatar.png')
+        avatar = Media(mediaPath = '../static/data/media/avatars/groups/_defautlGroupAvatar.png')
         db.session.add(avatar)
         db.session.commit()
 

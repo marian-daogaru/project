@@ -53,13 +53,5 @@ class Group(db.Model):
     #     return '<Group {}'.format(self.aboutGroup)
 
 
-class GroupAvatar(db.Model):
-    __table__ = db.Model.metadata.tables['GroupAvatar']
-
-
 class Restaurant(db.Model):
     __table__ = db.Model.metadata.tables['Restaurant']
-
-
-class RestaurantAvatar(db.Model):
-    __table__ = db.Model.metadata.tables['RestaurantAvatar']
