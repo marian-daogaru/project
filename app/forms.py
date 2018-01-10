@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, BooleanField, TextAreaField, PasswordField
 from wtforms.validators import DataRequired, Length
 from .models import User
-
+import re
 
 
 class LoginForm(FlaskForm):
@@ -59,25 +59,6 @@ class SignUpForm(FlaskForm):
             return False
         return True
 
-
-# class PasswordInput(Input):
-#     """
-#     Render a password input.
-#
-#     For security purposes, this field will not reproduce the value on a form
-#     submit by default. To have the value filled in, set `hide_value` to
-#     `False`.
-#     """
-#     input_type = 'password'
-#
-#     def __init__(self, hide_value=True):
-#         self.hide_value = hide_value
-#
-#     def __call__(self, field, **kwargs):
-#         if self.hide_value:
-#             kwargs['value'] = ''
-#         return super()
-
 class EditForm(FlaskForm):
     nickname = StringField('nickname', validators=[DataRequired()])
     aboutMe = TextAreaField('aboutMe', validators=[Length(min=0, max=200)])
@@ -109,6 +90,17 @@ class EditForm(FlaskForm):
             return False
         return True
 
+# ##############################################################################
+# GROUP Forms
+# ##############################################################################
+class GroupCreateForm(FlaskForm):
+    name = StringField('name', validators=[DataRequired()])
+    aboutGroup = TextAreaField('aboutGroup', validators=[Length(min=0, max=200)])
+
+    def validate(self):
+        if not FlaskForm.validate(self):
+            return False
+        return True
 
 class EditGroupForm(FlaskForm):
     name = StringField('name', validators=[DataRequired()])
@@ -131,12 +123,38 @@ class EditGroupForm(FlaskForm):
             return False
         return True
 
-
-class GroupCreateForm(FlaskForm):
-    name = StringField('name', validators=[DataRequired()])
-    aboutGroup = TextAreaField('aboutGroup', validators=[Length(min=0, max=200)])
+class AddPeopleGroupForm(FlaskForm):
+    emails = TextAreaField('emails',
+                            validators=[Length(max=1000)])
 
     def validate(self):
+        comp = re.compile(r"^[-A-Za-z0-9_\s\.,@]*$")
+        print("!!!!", bool(comp.match(self.emails.data)))
+        print(self.validateCorrectEmails(), "!!!!")
         if not FlaskForm.validate(self):
             return False
+        if not bool(comp.match(self.emails.data)):
+            self.emails.errors.append("The field contains characters that are not permitted. \n The only permitted characters are Letters, Numbers, '@', Space, '_', '-', '.', ','.")
+            return False
+        if not self.validateCorrectEmails()[0]:
+            self.emails.errors.append("This is not correct: {}".format(self.validateCorrectEmails()[1]))
+            return False
         return True
+
+    def validateCorrectEmails(self):
+        text = self.emails.data
+        text = text.replace(",", " ")
+        emails = text.split()
+        if len(emails) == 0:
+            return True, []
+
+        for email in emails:
+            if "@" not in email:
+                return False, [email]
+            parts = email.split("@")
+            if "." not in parts[1]:
+                return False, [email]
+            if len(parts[1].split('.')[0]) == 0:
+                return False, [email]
+
+        return True, emails

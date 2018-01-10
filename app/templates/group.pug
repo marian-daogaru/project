@@ -14,7 +14,19 @@ block content
           | #{' {% endif %}'}
       tr
         td #{'{% if g.user.isAdmin(group.id) %}'}
-          a(href="{{ url_for('editGroup', id=group.id) }}") Edit this group #{'{{ group.id }}'}
+          a(href="{{ url_for('editGroup', id=group.id) }}") Edit this group 
           button(class="btn btn-danger testDelete" onclick="testDel({{group.id}}, {{g.user.id}})") Delete Group
           | #{'{% endif %}'}
-      
+      tr 
+        td #{'{% if g.user.isInGroup(g.user, group) %}'}
+          form(action='' method='POST' name='addPeople') #{'{{ form.hidden_tag() }}'}
+            div.form-group 
+              label(for='emails') Add new people to the group: 
+            div.form-group 
+              p [separate by ',' or ' ' otherwise you have to restart]
+            div.form-group  #{'{{ form.emails(size=100) }}'}  
+              | #{'{% for error in form.emails.errors %}'}
+              span(style='color: red;') [#{' {{ error }}'}]
+              | #{'{% endfor %}'} 
+            button.btn.btn-primary(type='submit') Add  
+            | #{'{% endif %}'}

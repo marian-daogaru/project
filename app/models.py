@@ -40,7 +40,7 @@ class User(db.Model):
                  id = self.Media_id).first()   # NMOT SURE DOUGH...
 
     def isInGroup(self, user, group):
-        print("### DIR UsersInGroups", dir(UsersInGroups))
+        # print("### DIR UsersInGroups", dir(UsersInGroups))
         return UsersInGroups.query.filter_by(User_id = user.id).filter_by(
                                     Group_id = group.id).count() > 0
 

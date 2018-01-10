@@ -5,7 +5,7 @@ from config import USERPATH, GROUPPATH, basedir
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask_login import login_user, logout_user, current_user, login_required
 from .models import Group, Media, User, UsersInGroups
-from .forms import SignUpForm, LoginForm, EditForm, GroupCreateForm,  EditGroupForm
+from .forms import SignUpForm, LoginForm, EditForm, GroupCreateForm,  EditGroupForm, AddPeopleGroupForm
 from werkzeug.utils import secure_filename
 
 
@@ -188,19 +188,23 @@ def createGroup():
 # GROUP MANAGEMENT
 # ##############################################################################
 
-@app.route('/group/<id>')
+@app.route('/group/<id>', methods=['GET', 'POST'])
 @login_required
 def group(id):
     group = Group.query.filter_by(id = id).first()
-
     if group is None:
         flash("Group {} not found.".format(group.name))
         return redirect(url_for('index'))
+    form = AddPeopleGroupForm()
     avatarPath = Media.query.filter_by(id = group.Media_id).first().mediaPath
+
+    if form.validate_on_submit():
+        print(form.emails.data)
 
     return render_template('group.html',
                             group = group,
-                            avatarPath = avatarPath)
+                            avatarPath = avatarPath,
+                            form = form)
 
 @app.route('/group/<id>/edit', methods=['GET', 'POST'])
 @login_required
@@ -239,25 +243,19 @@ def editGroup(id):
                             form  = form)
 
 
-
 def deleteGroup(groupID):
-    print("in delete")
     group = Group.query.filter_by(id = groupID).first()
     if group is None:
         flash("No such group")
         return render_template(url_for('home'))
-    print("before users in groups delete")
-    UsersInGroups.query.filter_by(Group_id = group.id).delete()
+
     mediaID = group.Media_id
-    # # will have to add here the restaurants delete part.
-    print("before grroup delete")
+    UsersInGroups.query.filter_by(Group_id = group.id).delete()
     Group.query.filter_by(id = groupID).delete()
-    print('before media delete')
     Media.query.filter_by(id = group.Media_id).delete()
     db.session.commit()
     flash("Group Successfully deleted!")
 
-    # return redirect(url_for('edit'), id=g.user.id)
 
 # ##############################################################################
 # ERROR HANDLING
