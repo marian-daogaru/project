@@ -15,6 +15,6 @@ block content
       tr
         td #{'{% if g.user.isAdmin(group.id) %}'}
           a(href="{{ url_for('editGroup', id=group.id) }}") Edit this group #{'{{ group.id }}'}
-          button(class="btn btn-primary testDelete" onclick="testDel();") Try It
+          button(class="btn btn-danger testDelete" onclick="testDel({{group.id}}, {{g.user.id}})") Delete Group
           | #{'{% endif %}'}
       

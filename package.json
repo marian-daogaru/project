@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/marian-daogaru/project/issues"
   },
-  "homepage": "https://github.com/marian-daogaru/project#readme"
+  "homepage": "https://github.com/marian-daogaru/project#readme",
+  "dependencies": {
+    "sweetalert": "^2.1.0"
+  }
 }

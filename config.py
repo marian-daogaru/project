@@ -5,12 +5,16 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 WTF_CSRF_ENABLED = True
 SECRET_KEY = 'you-will-never-guess'
 
+# CACHE FOR STATIC FILES - used so the js will actually be loaded
+SEND_FILE_MAX_AGE_DEFAULT = 0
+
+# SQL ALCHEMY MySQL path
 SQLALCHEMY_DATABASE_URI = 'mysql://root:root@localhost:3306/projectDB'
 
-# paths
+# PATHS
 GROUPPATH = '../static/data/media/avatars/groups/'
 USERPATH = '../static/data/media/avatars/users/'
-
+RESTAURANTPATH = '../static/data/media/avatars/restaurants/'
 
 # mail server settings
 MAIL_SERVER = 'smtp.googlemail.com'
