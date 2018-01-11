@@ -18,5 +18,9 @@
   "homepage": "https://github.com/marian-daogaru/project#readme",
   "dependencies": {
     "sweetalert": "^2.1.0"
+  },
+  "devDependencies": {
+    "gulp-livereload": "^3.8.1",
+    "gulp-watch": "^5.0.0"
   }
 }

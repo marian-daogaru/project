@@ -2,14 +2,13 @@ import os
 from datetime import timedelta
 from app import app, db, lm
 from config import USERPATH, GROUPPATH, basedir
-from flask import render_template, flash, redirect, session, url_for, request, g
+from flask import render_template, flash, redirect, session, url_for, request, g, jsonify
 from flask_login import login_user, logout_user, current_user, login_required
 from .models import Group, Media, User, UsersInGroups
-from .forms import SignUpForm, LoginForm, EditForm, GroupCreateForm,  EditGroupForm, AddPeopleGroupForm
+from .forms import SignUpForm, LoginForm, EditForm, GroupCreateForm,  EditGroupForm, PeopleGroupForm
 from werkzeug.utils import secure_filename
 
-
-
+row2dict = lambda r: {c.name: str(getattr(r, c.name)) for c in r.__table__.columns}
 
 @app.before_request
 def before_request():
@@ -39,14 +38,14 @@ def home():
 
 @app.route('/user/<int:id>', methods=['GET'])
 @login_required
-def user(id, page=1, groupID=None):
+def user(id, page=1):
     user = User.query.filter_by(id = id).first()
     if user is None:
         flash('User {} not found.'.format(id))
         return redirect(url_for('index'))
     # flash(groupID)
-    if 'groupID' in request.args:
-        groupID = request.args['groupID']
+    if 'groupIDDelete' in request.args:
+        groupID = request.args['groupIDDelete']
         flash("was here")
         deleteGroup(groupID)
 
@@ -64,6 +63,33 @@ def user(id, page=1, groupID=None):
                             user = user,
                             avatarPath = avatarPath,
                             zipped = zip(groups, groupPaths))
+
+@app.route('/api/user/<int:id>', methods=['GET'])
+def userApi(id, page=1):
+    user = User.query.filter_by(id = id).first()
+    if user is None:
+        flash('User {} not found.'.format(id))
+        return redirect(url_for('index'))
+    # flash(groupID)
+    if 'groupIDDelete' in request.args:
+        groupID = request.args['groupIDDelete']
+        flash("was here")
+        deleteGroup(groupID)
+
+    groups = user.joinedGroups().all()
+    user = row2dict(user)
+    user['avatar'] = row2dict(Media.query.filter_by(id = user["Media_id"]).first())
+    user['Group'] = []
+    for group in groups:
+        group = row2dict(group)
+        group['Media'] = row2dict(Media.query.filter_by(id = group["Media_id"]).first())
+        user['Group'].append(group)
+
+    # groupPaths = Media.query.join(groups, (groups.Media_id == Media.id)).filter()
+    # groupsPath = Media.query.filter_by()
+    # print(groupPaths)
+    # print("###", dir(groups), type(groups)) #, len(groups), "@@@",  ([group.Media_id for group in groups]), "@@@", dir(Media.id))
+    return jsonify(user)
 
 @app.route('/edit', methods=['GET', 'POST'])
 @login_required
@@ -191,15 +217,17 @@ def createGroup():
 @app.route('/group/<id>', methods=['GET', 'POST'])
 @login_required
 def group(id):
-    group = Group.query.filter_by(id = id).first()
+    group = Group.query.filter_by(id = eval(id)).first()
     if group is None:
         flash("Group {} not found.".format(group.name))
         return redirect(url_for('index'))
-    form = AddPeopleGroupForm()
+    form = PeopleGroupForm()
     avatarPath = Media.query.filter_by(id = group.Media_id).first().mediaPath
 
     if form.validate_on_submit():
-        print(form.emails.data)
+        valid, emails = form.validateCorrectEmails()
+        AddPeopletoGroup(emails, group)
+        flash("Flash everyone was added successfully!")
 
     return render_template('group.html',
                             group = group,
@@ -249,12 +277,22 @@ def deleteGroup(groupID):
         flash("No such group")
         return render_template(url_for('home'))
 
-    mediaID = group.Media_id
-    UsersInGroups.query.filter_by(Group_id = group.id).delete()
-    Group.query.filter_by(id = groupID).delete()
-    Media.query.filter_by(id = group.Media_id).delete()
+    mediaID = group.Media_id  # because of how the FK work, group will be delete first, then media. so if we dont store it, Media_id will be gone...
+    UsersInGroups.query.filter_by(Group_id = group.id).delete()  # remove all records of all the users in that group
+    # add the Restaurants in Groups when implemented
+    Group.query.filter_by(id = groupID).delete()  # remove the group
+    Media.query.filter_by(id = group.Media_id).delete()  # remove the media part
     db.session.commit()
     flash("Group Successfully deleted!")
+
+def AddPeopletoGroup(emails, group):
+    # emails must be a list
+    for email in emails:
+        user = User.query.filter_by(email = email).first()
+        if user is None:
+            flash("The email {} is not registered!".format(email))
+        else:
+            user.joinGroup(user, group)
 
 
 # ##############################################################################

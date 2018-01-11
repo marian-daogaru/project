@@ -123,20 +123,22 @@ class EditGroupForm(FlaskForm):
             return False
         return True
 
-class AddPeopleGroupForm(FlaskForm):
+class PeopleGroupForm(FlaskForm):
     emails = TextAreaField('emails',
                             validators=[Length(max=1000)])
 
     def validate(self):
+        if not FlaskForm.validate(self):
+            return False
         comp = re.compile(r"^[-A-Za-z0-9_\s\.,@]*$")
         print("!!!!", bool(comp.match(self.emails.data)))
         print(self.validateCorrectEmails(), "!!!!")
-        if not FlaskForm.validate(self):
-            return False
         if not bool(comp.match(self.emails.data)):
-            self.emails.errors.append("The field contains characters that are not permitted. \n The only permitted characters are Letters, Numbers, '@', Space, '_', '-', '.', ','.")
+            self.emails.errors.append("The field contains characters that are not permitted. \n ")
+            self.emails.errors.append("The only permitted characters are Letters, Numbers, '@', Space, '_', '-', '.', ','.")
             return False
-        if not self.validateCorrectEmails()[0]:
+        isValid, emails = self.validateCorrectEmails()
+        if not isValid:
             self.emails.errors.append("This is not correct: {}".format(self.validateCorrectEmails()[1]))
             return False
         return True

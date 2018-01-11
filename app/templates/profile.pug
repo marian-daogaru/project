@@ -15,6 +15,7 @@ block content
           | #{' {% if user.id == g.user.id %}'}
       tr
         td
+          p hello 5
         td
           a(href="{{ url_for('edit') }}") Edit your profile 
         td
@@ -27,5 +28,32 @@ block content
         td #{"{% include 'groupTemplate.html' %}"}
           
         | #{"{% endfor %}"}
-        
+    script.
+      var ID = "{{ g.user.id }}";
       
+    
+    div(id='userAPI')
+      .container
+        .row
+          .col
+            .name ${user.nickname}
+ 
+        .row
+          .col
+            .groups
+              h3 Groups
+            template(v-for="group in user.Group")
+              //- hello(:name='group') 
+              p ${group.id}
+              a(v-bind:href="/group/ + group.id" name='fasole')
+                .row
+                  .col
+                    img.image(v-bind:src="group.Media.mediaPath" width="200" height="auto")
+                    
+                    
+                  .col
+                    h4 ${group.name}
+                    .col 
+                      p ${group.aboutGroup}
+                      
+    

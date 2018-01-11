@@ -1,0 +1,15 @@
+extends base.pug 
+
+block content
+  .main.container
+    h1 Create new Group 
+    
+    form(action='' method='POST' name='login') #{'{{ form.hidden_tag() }}'}
+      div.form-group 
+        label(for='groupName') GroupName: #{'{{ form.name(size=30) }}'} 
+        | #{'{% for error in form.name.errors %}'}
+        span(style='color: red;') [#{' {{ error }}'}]
+        | #{'{% endfor %}'} 
+      div.form-group 
+        label(for='aboutGroup') About this group: #{'{{ form.aboutGroup(cols=50, rows=4) }}'}
+      button.btn.btn-primary(type='submit') Create Group  

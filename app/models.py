@@ -54,9 +54,9 @@ class User(db.Model):
 
     def leaveGroup(self, user, group):
         if self.isInGroup(user, group):
-            UsersInGroups.query.filter_by(User_id = user.id).filter_by(
-                                        Group_id = group.id).delete()
-            db.session.commit()
+            print(UsersInGroups.query.filter(and_(UsersInGroups.User_id.like(user.id),
+                                                    UsersInGroups.Group_id.like(group.id))))#.delete()
+            # db.session.commit()
 
     def joinedGroups(self):
         return Group.query.join(
