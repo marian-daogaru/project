@@ -80,6 +80,8 @@ class Group(db.Model):
 
     # def __repr__(self):
     #     return '<Group {}'.format(self.aboutGroup)
+    def users(self):
+        return UsersInGroups.query.filter_by(Group_id = self.id).all()
 
 
 class Restaurant(db.Model):

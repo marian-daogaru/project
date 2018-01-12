@@ -1,29 +1,49 @@
-Vue.component("hello", {
-  template: "<div><h1> Hellom {{name.id}}  hh! </h1> \
-            <p><a href='{{ url_for(\"group\", id={{name.id}})}}'> Click me </a></p></div>",
-  props: ['name']
-})
 
 var userAPI = new Vue({
   el: "#userAPI",
   delimiters: ['${', '}'],
   data: {
-    user: null,
-    id: ID,
+    userLocal: null,
+    user: null
   },
+  // async created(){
+  //   await this.loadID(),
+  //   await console.log("print this")
+  //
+  // },
   mounted() {
-    this.loadUser(),
+    // console.log("this should be second.")
+    // this.loadID().then( function() {
+    //   this.loadUser()
+    // }),
     // this.id = res.ID,
-    console.log(this.id),
-    console.log(typeof this.id)
+    this.loadID()
   },
   methods: {
+    loadID: function() {
+    this.$http.get(
+      '/api/home'
+    ).then(
+      function(res) {
+        this.userLocal = res.data,
+        console.log("this should be first")
+      },
+      function(err) {
+        console.error(err),
+        console.log('error')
+      },
+    ).then( function() {
+      if (this.userLocal){
+        this.loadUser()
+      }})
+  },
     loadUser: function() {
       this.$http.get(
-        '/api/user/' + this.id
+        '/api' + window.location.pathname
       ).then(
         function(res) {
           this.user = res.data
+          console.log("this should be last")
         },
         function(err) {
           console.error(err)

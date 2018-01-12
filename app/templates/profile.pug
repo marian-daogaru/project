@@ -1,59 +1,41 @@
 extends base.pug 
 
 block content
-  .main.container
-    table 
-      tr
-        td 
-          img.image(src='{{ avatarPath }}' width="200" height="auto")
-        td 
-          tr
-            h1 Hello, #{'{{ user.nickname }}'}
-          | #{' {% if user.aboutMe %}'}
-          tr #{' {{ user.aboutMe }}'}
-          | #{' {% endif %}'}
-          | #{' {% if user.id == g.user.id %}'}
-      tr
-        td
-          p hello 5
-        td
-          a(href="{{ url_for('edit') }}") Edit your profile 
-        td
-          a(href="{{ url_for('createGroup') }}") Create a new group 
-          | #{' {% endif %} '}
-          
-    table(name="test")
-      | #{"{% for group, groupPath in zipped %}"}
-      tr
-        td #{"{% include 'groupTemplate.html' %}"}
-          
-        | #{"{% endfor %}"}
-    script.
-      var ID = "{{ g.user.id }}";
-      
-    
-    div(id='userAPI')
+  div(id='userAPI')
+    div(v-if="user")
       .container
-        .row
-          .col
-            .name ${user.nickname}
- 
+        h1 Hello ${userLocal.nickname}
+        .div(v-if='user.id !== userLocal.id')
+          h3 Your are current viewing the profile of 
+            strong ${user.nickname}
+        .row 
+          .col-lg-3.col-sm-6
+            img.image(:src="user.avatar.mediaPath" width="200" height="auto")
+          .col-lg-3.col-sm-6
+            .row
+              strong About: 
+              .p ${user.aboutMe}
+            .row(v-if="user.id === userLocal.id")
+              .btn.btn-primary 
+                a(href="{{ url_for('edit') }}") Edit your profile 
+              .btn.btn-primary 
+                a(href="{{ url_for('createGroup') }}") Create a new group 
         .row
           .col
             .groups
               h3 Groups
             template(v-for="group in user.Group")
-              //- hello(:name='group') 
-              p ${group.id}
               a(v-bind:href="/group/ + group.id" name='fasole')
                 .row
-                  .col
-                    img.image(v-bind:src="group.Media.mediaPath" width="200" height="auto")
-                    
-                    
-                  .col
+                  .col-lg-3
+                    img.image(v-bind:src="group.Media.mediaPath" width="200" height="auto")                    
+                  .col-lg-3
                     h4 ${group.name}
                     .col 
                       p ${group.aboutGroup}
+                      
+                
+                      
+    
                       
     

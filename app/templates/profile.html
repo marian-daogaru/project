@@ -9,7 +9,9 @@
   <body>
     <h1>Test1</h1>
     <div class="container">
-      <div>Hello! <a href="{{ url_for('home') }}">Home</a>{% if g.user.is_authenticated %}<a href="{{ url_for('user', id=g.user.id) }}">Your profile </a><a href="{{ url_for('logout') }}">Logout </a>{% else %} <a href="{{ url_for('login') }}">Login </a><a href="{{ url_for('signup') }}">Signup</a>{% endif %}</div>
+      <div id="baseAPI">Hello! <a href="{{ url_for('home') }}">Home</a>
+        <div v-if="User"><span v-if="User.id !== '-1'"><a :href="/user/+User.id">Your profile </a><a href="{{ url_for('logout') }}">Logout </a></span><span v-else="v-else"><a href="{{ url_for('login') }}">Login </a><a href="{{ url_for('signup') }}">Signup</a></span></div>
+      </div>
     </div>{% with messages = get_flashed_messages() %} 
 {% if messages %}
     <ul>
@@ -18,41 +20,23 @@
 {% endfor %}</ul>{% endif %}
 {% endwith %}
     <div>
-      <div class="main container">
-        <table> 
-          <tr>
-            <td> <img class="image" src="{{ avatarPath }}" width="200" height="auto"/></td>
-            <td> 
-              <tr>
-                <h1>Hello, {{ user.nickname }}</h1>
-              </tr> {% if user.aboutMe %}
-              <tr> {{ user.aboutMe }}</tr> {% endif %}
- {% if user.id == g.user.id %}
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <p>hello 5</p>
-            </td>
-            <td><a href="{{ url_for('edit') }}">Edit your profile </a></td>
-            <td><a href="{{ url_for('createGroup') }}">Create a new group </a> {% endif %} </td>
-          </tr>
-        </table>
-        <table name="test">{% for group, groupPath in zipped %}
-          <tr>
-            <td>{% include 'groupTemplate.html' %}</td>{% endfor %}
-          </tr>
-        </table>
-        <script>
-          var ID = "{{ g.user.id }}";
-          
-          
-        </script>
-        <div id="userAPI">
+      <div id="userAPI">
+        <div v-if="user">
           <div class="container">
-            <div class="row">
-              <div class="col">
-                <div class="name">${user.nickname}</div>
+            <h1>Hello ${userLocal.nickname}</h1>
+            <div class="div" v-if="user.id !== userLocal.id">
+              <h3>Your are current viewing the profile of <strong>${user.nickname}</strong></h3>
+            </div>
+            <div class="row"> 
+              <div class="col-lg-3 col-sm-6"><img class="image" :src="user.avatar.mediaPath" width="200" height="auto"/></div>
+              <div class="col-lg-3 col-sm-6">
+                <div class="row"><strong>About: </strong>
+                  <div class="p">${user.aboutMe}</div>
+                </div>
+                <div class="row" v-if="user.id === userLocal.id">
+                  <div class="btn btn-primary"> <a href="{{ url_for('edit') }}">Edit your profile </a></div>
+                  <div class="btn btn-primary"> <a href="{{ url_for('createGroup') }}">Create a new group </a></div>
+                </div>
               </div>
             </div>
             <div class="row">
@@ -60,18 +44,16 @@
                 <div class="groups">
                   <h3>Groups</h3>
                 </div>
-                <template v-for="group in user.Group">
-                  <p>${group.id}</p><a v-bind:href="/group/ + group.id" name="fasole">
+                <template v-for="group in user.Group"><a v-bind:href="/group/ + group.id" name="fasole">
                     <div class="row">
-                      <div class="col"><img class="image" v-bind:src="group.Media.mediaPath" width="200" height="auto"/></div>
-                      <div class="col">
+                      <div class="col-lg-3"><img class="image" v-bind:src="group.Media.mediaPath" width="200" height="auto"/></div>
+                      <div class="col-lg-3">
                         <h4>${group.name}</h4>
                         <div class="col"> 
                           <p>${group.aboutGroup}</p>
                         </div>
                       </div>
-                    </div></a>
-                </template>
+                    </div></a></template>
               </div>
             </div>
           </div>
@@ -83,7 +65,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
     <script src="https://unpkg.com/vue"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.5"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/base.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/profile.js') }}"></script>
   </body>
 </html>

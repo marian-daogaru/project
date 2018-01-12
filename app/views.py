@@ -30,7 +30,18 @@ def load_user(id):
 def home():
     return render_template('home.html')
 
+@app.route('/api/home', methods=['GET'])
+def homeApi():
+    print(dir(g.user), g.user.is_authenticated, "fasole2")
+    # user['isActive'] = g.user.isActive
 
+    if not g.user.is_authenticated:  # user not loggedin
+        user = g.user.__dict__
+        user['id'] = "-1"
+    else:
+        user = row2dict(g.user)
+    # print(jsonify(user))
+    return jsonify(user)
 
 # ##############################################################################
 # PROFILE
@@ -39,32 +50,33 @@ def home():
 @app.route('/user/<int:id>', methods=['GET'])
 @login_required
 def user(id, page=1):
-    user = User.query.filter_by(id = id).first()
-    if user is None:
-        flash('User {} not found.'.format(id))
-        return redirect(url_for('index'))
-    # flash(groupID)
-    if 'groupIDDelete' in request.args:
-        groupID = request.args['groupIDDelete']
-        flash("was here")
-        deleteGroup(groupID)
-
-    avatarPath = Media.query.filter_by(id = user.Media_id).first().mediaPath
-    groups = g.user.joinedGroups().all()
-    groupPaths = []
-    for group in groups:
-        groupPaths.append(Media.query.filter_by(id = group.Media_id).first().mediaPath)
+    # user = User.query.filter_by(id = id).first()
+    # if user is None:
+    #     flash('User {} not found.'.format(id))
+    #     return redirect(url_for('index'))
+    # # flash(groupID)
+    # if 'groupIDDelete' in request.args:
+    #     groupID = request.args['groupIDDelete']
+    #     flash("was here")
+    #     deleteGroup(groupID)
+    #
+    # avatarPath = Media.query.filter_by(id = user.Media_id).first().mediaPath
+    # groups = g.user.joinedGroups().all()
+    # groupPaths = []
+    # for group in groups:
+    #     groupPaths.append(Media.query.filter_by(id = group.Media_id).first().mediaPath)
 
     # groupPaths = Media.query.join(groups, (groups.Media_id == Media.id)).filter()
     # groupsPath = Media.query.filter_by()
     # print(groupPaths)
     # print("###", dir(groups), type(groups)) #, len(groups), "@@@",  ([group.Media_id for group in groups]), "@@@", dir(Media.id))
-    return render_template('profile.html',
-                            user = user,
-                            avatarPath = avatarPath,
-                            zipped = zip(groups, groupPaths))
+    return render_template('profile.html')
+                            # user = user,
+                            # avatarPath = avatarPath)
+                            # zipped = zip(groups, groupPaths))
 
 @app.route('/api/user/<int:id>', methods=['GET'])
+@login_required
 def userApi(id, page=1):
     user = User.query.filter_by(id = id).first()
     if user is None:
@@ -233,6 +245,43 @@ def group(id):
                             group = group,
                             avatarPath = avatarPath,
                             form = form)
+
+@app.route('/api/group/<id>', methods=['GET'])
+@login_required
+def groupApiGet(id):
+    group = Group.query.filter_by(id = eval(id)).first()
+    if group is None:
+        flash("Group {} not found.".format(group.name))
+        return redirect(url_for('index'))
+
+    print(group.users())
+    group = row2dict(group)
+    group['MediaPath'] = Media.query.filter_by(id = group["Media_id"]).first().mediaPath
+    print(group)
+    return jsonify(group)
+
+
+
+
+        # user = User.query.filter_by(id = id).first()
+        # if user is None:
+        #     flash('User {} not found.'.format(id))
+        #     return redirect(url_for('index'))
+        # # flash(groupID)
+        # if 'groupIDDelete' in request.args:
+        #     groupID = request.args['groupIDDelete']
+        #     flash("was here")
+        #     deleteGroup(groupID)
+        #
+        # groups = user.joinedGroups().all()
+        # user = row2dict(user)
+        # user['avatar'] = row2dict(Media.query.filter_by(id = user["Media_id"]).first())
+        # user['Group'] = []
+        # for group in groups:
+        #     group = row2dict(group)
+        #     group['Media'] = row2dict(Media.query.filter_by(id = group["Media_id"]).first())
+        #     user['Group'].append(group)
+
 
 @app.route('/group/<id>/edit', methods=['GET', 'POST'])
 @login_required
