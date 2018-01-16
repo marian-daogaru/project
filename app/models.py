@@ -28,9 +28,7 @@ class User(db.Model):
         return False
 
     def get_id(self):
-        # self.id = User.query.filter_by(email = self.email).first().id
         try:
-            print(unicode(self.id), '!!!', type(self.id), self.password)
             return unicode(self.id)  # python 2
         except NameError:
             return str(self.id)  # python 3
@@ -54,7 +52,7 @@ class User(db.Model):
 
     def leaveGroup(self, user, group):
         if self.isInGroup(user, group):
-            print(UsersInGroups.query.filter(and_(UsersInGroups.User_id.like(user.id),
+            print("@@@", UsersInGroups.query.filter(and_(UsersInGroups.User_id.like(user.id),
                                                     UsersInGroups.Group_id.like(group.id))))#.delete()
             # db.session.commit()
 

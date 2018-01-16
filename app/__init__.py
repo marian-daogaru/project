@@ -5,12 +5,15 @@ from flask_cors import CORS
 import MySQLdb
 from flask_sqlalchemy import SQLAlchemy
 from flask_jsglue import JSGlue
+import wtforms_json
+
 
 
 app = Flask(__name__)
 CORS(app)
 jsglue = JSGlue(app)
 app.config.from_object('config')
+wtforms_json.init()
 lm = LoginManager()
 lm.init_app(app)
 lm.login_view = 'login'

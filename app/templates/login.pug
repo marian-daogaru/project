@@ -3,21 +3,36 @@ extends base.pug
 block content
   .main.container
     h1 Login
-    
-    form(action='' method='POST' name='login') #{'{{ form.hidden_tag() }}'}
-      div.form-group 
-        label(for='email') Email: #{'{{ form.email }}'} 
-        | #{'{% for error in form.email.errors %}'}
-        span(style='color: red;') [#{' {{ error }}'}]
-        | #{'{% endfor %}'} 
-      div.form-group 
-        label(for='pw') Password: #{'{{ form.password }}'}
-        | #{'{% for error in form.password.errors %}'}
-        span(style='color: red;') [#{' {{ error }}'}]
-        | #{'{% endfor %}'} 
-      div.form-Group
-        p Remember me: #{'{{ form.rememberMe }}'}
-      button.btn.btn-primary(type='submit') Login 
-      
-    div Not Signed up? 
-      a(href="{{ url_for('signup') }}") Do it now!
+    div(id="loginAPI")
+      form(action='' name='login' method='POST' v-on:submit.prevent="pr()") 
+        //- | #{'{{ form.hidden_tag() }}'}
+        
+        //-   | #{'{% for error in form.email.errors %}'}
+        //-   span(style='color: red;') [#{' {{ error }}'}]
+        //-   | #{'{% endfor %}'} 
+        //- div.form-group 
+        //-   label(for='pw' ref='pwd') Password: #{'{{ form.password }}'}
+        //-   | #{'{% for error in form.password.errors %}'}
+        //-   span(style='color: red;') [#{' {{ error }}'}]
+        //-   | #{'{% endfor %}'} 
+        //- div.form-Group
+        //-   p Remember me: #{'{{ form.rememberMe }}'}
+
+        div.form-group 
+          label(for='email') Email: 
+            input(v-model="email" type="email" class="form-control" name="email" placeholder="Enter email" requried)
+        div.form-group 
+          label(for='password') Password: 
+            input(v-model="password" type="password" class="form-control" name="password" placeholder="*****" required)
+        div.form-check 
+          label(class="form-check-label" for="checkbox") Remember me: 
+            input(v-model="rememberMe" type="checkbox" class="form-check-input" name="rememberMe")
+        button.btn.btn-primary(type='submit') Login 
+        div(v-if="errors")
+          template(v-for="error in errors")
+            .div(class="alert alert-danger") 
+              strong ${error}  
+            
+        
+      div Not Signed up? 
+        a(href="{{ url_for('signup') }}") Do it now!

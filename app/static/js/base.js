@@ -9,7 +9,7 @@ var baseAPI = new Vue({
   data: {
     User: null
   },
-  // beforeMount() {
+
   mounted() {
     this.loadUser()
   },

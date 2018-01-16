@@ -5,28 +5,27 @@ from .models import User
 import re
 
 
-class LoginForm(FlaskForm):
-    email = StringField('email',
-                        validators=[DataRequired()],
-                        render_kw={"placeholder": "email"})
-    password = PasswordField('password',
-                        validators=[Length(min=1, max=20)],
-                        render_kw={"placeholder": "*****"})
-    rememberMe = BooleanField('rememberMe',
-                                default=False)
+class LoginForm(object):
 
-    def __init__(self, *args, **kwargs):
-        FlaskForm.__init__(self, *args, **kwargs)
+    def __init__(self, inputDict, *args, **kwargs):
+        self.email = inputDict['email']
+        self.password = inputDict['password']
+        self.rememberMe = inputDict['rememberMe']
+        self.errors = []
 
     def validate(self):
-        if not FlaskForm.validate(self):
+        if len(self.email) ==  0 or len(self.password) == 0:
+            print("rosu")
+            self.errors.append("Invalid username / password.")
             return False
-        user = User.query.filter_by(email = self.email.data).first()
+        user = User.query.filter_by(email = self.email).first()
         if user is None:
-            self.email.errors.append('Email not registered. Please sign up.')
+            self.errors.append("Invalid username / password.")
+            print("galben")
             return False
-        if user.password != self.password.data:
-            self.password.errors.append('Incorrect password!')
+        if user.password != self.password:
+            self.errors.append("Invalid username / password.")
+            print("portocaliu")
             return False
         print('albastru')
         return True

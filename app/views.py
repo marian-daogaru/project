@@ -7,21 +7,17 @@ from flask_login import login_user, logout_user, current_user, login_required
 from .models import Group, Media, User, UsersInGroups
 from .forms import SignUpForm, LoginForm, EditForm, GroupCreateForm,  EditGroupForm, PeopleGroupForm
 from werkzeug.utils import secure_filename
+import json
 
 row2dict = lambda r: {c.name: str(getattr(r, c.name)) for c in r.__table__.columns}
 
 @app.before_request
 def before_request():
     g.user = current_user
-    session.permanent = True
-    app.permanent_session_lifetime = timedelta(minutes=10)
 
 
 @lm.user_loader
 def load_user(id):
-    print("@@@", id)
-    for key in session.keys():
-        print("$$$ ", key)
     return User.query.get(int(id))
 
 
@@ -32,22 +28,18 @@ def home():
 
 @app.route('/api/home', methods=['GET'])
 def homeApi():
-    print(dir(g.user), g.user.is_authenticated, "fasole2")
-    # user['isActive'] = g.user.isActive
-
     if not g.user.is_authenticated:  # user not loggedin
         user = g.user.__dict__
         user['id'] = "-1"
     else:
         user = row2dict(g.user)
-    # print(jsonify(user))
     return jsonify(user)
 
 # ##############################################################################
 # PROFILE
 # ##############################################################################
 
-@app.route('/user/<int:id>', methods=['GET'])
+@app.route('/user/<int:id>')
 @login_required
 def user(id, page=1):
     # user = User.query.filter_by(id = id).first()
@@ -107,7 +99,6 @@ def userApi(id, page=1):
 @login_required
 def edit():
     form = EditForm(g.user.nickname)
-    print("rosu2")
     if form.validate_on_submit():
         g.user.nickname = form.nickname.data
         g.user.aboutMe = form.aboutMe.data
@@ -166,28 +157,46 @@ def signup():
     return render_template('signup.html',
                             form = form)
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login')
 def login():
+    # if g.user is not None and g.user.is_authenticated:
+    #     return redirect(url_for('index'))
+    # form = LoginForm()
+    # if form.validate_on_submit():
+    #     user = User.query.filter_by(email = form.email.data).first()
+    #
+    #     rememberMe = form.rememberMe.data
+    #     login_user(user, remember=rememberMe)
+    #     return redirect(request.args.get('next') or url_for('home'))
+
+    return render_template('login.html')
+
+@app.route('/api/login', methods=['POST'])
+def loginApiPost():
+    form = LoginForm(request.get_json())
+    if form.validate():
+        user = User.query.filter_by(email = form.email).first()
+        login_user(user, remember=form.rememberMe)
+        return jsonify({'id': user.id})
+    return jsonify({'id': -1, 'errors': form.errors}), 201
+
+@app.route('/api/login', methods=['GET'])
+def loginApiGet():
     if g.user is not None and g.user.is_authenticated:
-        return redirect(url_for('index'))
-
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(email = form.email.data).first()
-
-        rememberMe = form.rememberMe.data
-        login_user(user, remember=rememberMe)
-        return redirect(request.args.get('next') or url_for('home'))
-
-    return render_template('login.html',
-                            form = form)
+        user = row2dict(g.user)
+        return jsonify(user)
+    user = {'id': '-1',
+            'errors': []}
+    return jsonify(user)
 
 
 @app.route('/logout')
 @login_required
 def logout():
+    print("in logout")
     logout_user()
     session.clear()
+    print(g.user, current_user)
     return redirect(url_for('home'))
 
 
@@ -237,10 +246,13 @@ def group(id):
     avatarPath = Media.query.filter_by(id = group.Media_id).first().mediaPath
 
     if form.validate_on_submit():
+        print("after Validate")
         valid, emails = form.validateCorrectEmails()
         AddPeopletoGroup(emails, group)
         flash("Flash everyone was added successfully!")
-
+    print("outside if")
+    print(request.form, "###")
+    # return jsonify({})
     return render_template('group.html',
                             group = group,
                             avatarPath = avatarPath,
@@ -254,12 +266,22 @@ def groupApiGet(id):
         flash("Group {} not found.".format(group.name))
         return redirect(url_for('index'))
 
-    print(group.users())
+    print("group.users", group.users())
     group = row2dict(group)
     group['MediaPath'] = Media.query.filter_by(id = group["Media_id"]).first().mediaPath
-    print(group)
+    print("groupo", group)
+    print(request.form, "$$$")
+    form = PeopleGroupForm()
+    print(dir(form))
     return jsonify(group)
 
+@app.route('/api/group/<id>', methods=['POST'])
+@login_required
+def groupApiPost(id):
+    testDict = {'hello': 'this works'}
+    print("in POST")
+    form = PeopleGroupForm()
+    return jsonify(dict(form))
 
 
 
