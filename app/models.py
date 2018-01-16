@@ -52,9 +52,11 @@ class User(db.Model):
 
     def leaveGroup(self, user, group):
         if self.isInGroup(user, group):
-            print("@@@", UsersInGroups.query.filter(and_(UsersInGroups.User_id.like(user.id),
-                                                    UsersInGroups.Group_id.like(group.id))))#.delete()
-            # db.session.commit()
+            print("@@@", dir(UsersInGroups.query.filter(and_(UsersInGroups.User_id.like(user.id),
+                                                    UsersInGroups.Group_id.like(group.id)))))#.delete()
+            UsersInGroups.query.filter(and_(UsersInGroups.User_id.like(user.id),
+                                            UsersInGroups.Group_id.like(group.id))).delete(synchronize_session='fetch')
+            db.session.commit()
 
     def joinedGroups(self):
         return Group.query.join(

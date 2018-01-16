@@ -1,5 +1,6 @@
 import os
 from datetime import timedelta
+import uuid
 from app import app, db, lm
 from config import USERPATH, GROUPPATH, basedir
 from flask import render_template, flash, redirect, session, url_for, request, g, jsonify
@@ -52,10 +53,6 @@ def userApi(id, page=1):
         flash('User {} not found.'.format(id))
         return redirect(url_for('index'))
     # flash(groupID)
-    if 'groupIDDelete' in request.args:
-        groupID = request.args['groupIDDelete']
-        flash("was here")
-        deleteGroup(groupID)
 
     groups = user.joinedGroups().all()
     user = row2dict(user)
@@ -68,65 +65,66 @@ def userApi(id, page=1):
 
     return jsonify(user)
 
-@app.route('/edit', methods=['GET', 'POST'])
+
+
+# ##############################################################################
+# EDIT
+# ##############################################################################
+@app.route('/edit')
 @login_required
 def edit():
-    form = EditForm(g.user.nickname)
-    if form.validate_on_submit():
-        g.user.nickname = form.nickname.data
-        g.user.aboutMe = form.aboutMe.data
-        if len(form.password.data) > 0:
-            g.user.password = form.password.data
+    return render_template('edit.html')
+
+@app.route('/api/edit', methods=['GET'])
+@login_required
+def editApiGet():
+    if g.user is not None and g.user.is_authenticated:
+        return jsonify({'nickname': g.user.nickname,
+                        'aboutMe': g.user.aboutMe}), 201
+    user = {'id': '-1',
+            'errors': []}
+    return jsonify(user), 201
+
+@app.route('/api/edit', methods=['POST'])
+@login_required
+def editApiPost():
+    form = EditForm(request.get_json())
+    if form.validate():
+        g.user.nickname = form.nickname
+        g.user.aboutMe = form.aboutMe
+        if len(form.password) > 0:  # it was already checked in validate
+            g.user.password = form.password
         db.session.add(g.user)
         db.session.commit()
-        flash('Your smaller changes have been saved.')
 
-        if 'file' in request.files:
-            file = request.files['file']
-            if file.filename == '':
-                flash ("No file Selected")
-                return redirect(url_for('user', id=g.user.id))
+        if len(form.avatar) > 0:
+            form.avatar = form.avatar.split(',')[1]
+            print("hello", dir(form.avatar), len(form.avatar))
 
-            filename = os.path.join(app.config['USERPATH'], secure_filename(file.filename))
-            file.save(os.path.join(basedir + '/app/', filename[3:]))
-            flash("It worked!!!! {}".format(filename))
+            filename = str(uuid.uuid4().hex) + '.png'
+            filename = os.path.join(app.config['USERPATH'], secure_filename(filename))
+            print(filename)
+            with open(os.path.join(basedir + '/app/', filename[3:]), 'w') as myImage:
+                # missing_padding = len(form.avatar) % 4
+                # if missing_padding != 0:
+                #     form.avatar += b'='* (4 - missing_padding)
+                myImage.write(form.avatar.decode('base64'))
             media = Media.query.filter_by(id = g.user.Media_id).first()
             media.mediaPath = filename
             db.session.add(media)
             db.session.commit()
-        return redirect(url_for('user', id=g.user.id))
-    elif request.method != "POST":
-        form.nickname.data = g.user.nickname
-        form.aboutMe.data = g.user.aboutMe
-    return render_template('edit.html',
-                            form  = form)
-
+        return jsonify({'nickname': g.user.nickname,
+                        'aboutMe': g.user.aboutMe,
+                        'id': g.user.id}), 201
+    print(form.errors)
+    return jsonify({'id': -1,
+                    'errors': form.errors}), 201
 
 # ##############################################################################
 # SIGNUP
 # ##############################################################################
 @app.route('/signup')
 def signup():
-    # if g.user is not None and g.user.is_authenticated:
-    #     return redirect(url_for('index'))
-    #
-    # form = SignUpForm()
-    # if form.validate_on_submit():
-    #     avatar = Media(mediaPath = USERPATH + '_defautlUserAvatarSmileyFace.png')
-    #     db.session.add(avatar)
-    #     db.session.commit()
-    #
-    #     nickname = form.email.data.split('@')[0]
-    #     nickname = User.make_valid_nickname(nickname)
-    #     user = User(email = form.email.data,
-    #                 password = form.password.data,
-    #                 nickname = nickname,
-    #                 Media_id = avatar.id)
-    #     db.session.add(user)
-    #     db.session.commit()
-    #     rememberMe = form.rememberMe.data
-    #     login_user(user, remember=rememberMe)
-    #     return redirect(request.args.get('next') or url_for('home'))
     return render_template('signup.html')
 
 
@@ -237,7 +235,7 @@ def createGroup():
 # GROUP MANAGEMENT
 # ##############################################################################
 
-@app.route('/group/<id>', methods=['GET', 'POST'])
+@app.route('/group/<id>')
 @login_required
 def group(id):
     group = Group.query.filter_by(id = eval(id)).first()
@@ -266,15 +264,20 @@ def groupApiGet(id):
     group = Group.query.filter_by(id = eval(id)).first()
     if group is None:
         flash("Group {} not found.".format(group.name))
-        return redirect(url_for('index'))
-
-    print("group.users", group.users())
+        return jsonify({'id': -1,
+                        'errors': ['No such group.']})
+    users = group.users()
+    inGroup = g.user.isInGroup(g.user, group)  # do this before we change group
+    print("222", inGroup, users)
     group = row2dict(group)
-    group['MediaPath'] = Media.query.filter_by(id = group["Media_id"]).first().mediaPath
-    print("groupo", group)
-    print(request.form, "$$$")
-    form = PeopleGroupForm()
-    print(dir(form))
+    group['mediaPath'] = Media.query.filter_by(id = group["Media_id"]).first().mediaPath
+    if inGroup:
+        group['isAdmin'] = g.user.isAdmin(group['id'])
+    group['inGroup'] = inGroup
+    group['users'] = []
+    for user in users:
+        user = row2dict(user)
+        group['users'].append(user)
     return jsonify(group)
 
 @app.route('/api/group/<id>', methods=['POST'])
@@ -305,6 +308,18 @@ def groupApiPost(id):
         #     group = row2dict(group)
         #     group['Media'] = row2dict(Media.query.filter_by(id = group["Media_id"]).first())
         #     user['Group'].append(group)
+
+@app.route('/api/group/leave', methods=['POST'])
+@login_required
+def leaveGroup():
+    data = request.get_json()
+    group = group = Group.query.filter_by(id = data['groupID']).first()
+    if g.user.isInGroup(g.user, group):
+        print("hello")
+        g.user.leaveGroup(g.user, group)
+        return jsonify({'left': True})
+    print("not hello")
+    return jsonify({'left': False})
 
 
 @app.route('/group/<id>/edit', methods=['GET', 'POST'])
@@ -343,9 +358,10 @@ def editGroup(id):
     return render_template('editGroup.html',
                             form  = form)
 
-
-def deleteGroup(groupID):
-    group = Group.query.filter_by(id = groupID).first()
+@app.route('/api/group/<id>/delete', methods=['POST'])
+@login_required
+def deleteGroup(id):
+    group = Group.query.filter_by(id = id).first()
     if group is None:
         flash("No such group")
         return render_template(url_for('home'))

@@ -69,35 +69,45 @@ class SignUpForm():
             return False
         return True
 
-class EditForm(FlaskForm):
-    nickname = StringField('nickname', validators=[DataRequired()])
-    aboutMe = TextAreaField('aboutMe', validators=[Length(min=0, max=200)])
-    password = PasswordField('password',
-        render_kw={"placeholder": "*****"})
-    confPWD = PasswordField('confPWD',
-        render_kw={"placeholder": "*****"})
-
-    def __init__(self, original_nickname, *args, **kwargs):
-        FlaskForm.__init__(self, *args, **kwargs)
-        self.original_nickname = original_nickname
+class EditForm():
+    def __init__(self, inputDict, *args, **kwargs):
+        self.nickname = inputDict['nickname']
+        self.aboutMe = inputDict['aboutMe']
+        self.password = inputDict['password']
+        self.confpwd =  inputDict['confpwd']
+        self.avatar = inputDict['avatar']
+        self.errors = []
 
     def validate(self):
-        if not FlaskForm.validate(self):
+        if len(self.nickname) ==  0:
             print("rosu")
+            self.errors.append("Nickname must be present.")
             return False
-        if self.nickname.data == self.original_nickname:
-            print("verde")
-            return True
-        if self.nickname.data != User.make_valid_nickname(self.nickname.data):
+        if len(self.nickname) > 30:
+            print("rosu 2")
+            self.errors.append("Nickname too large.")
+            return False
+        if self.nickname != User.make_valid_nickname(self.nickname):
             print("mov")
-            self.nickname.errors.append(gettext('This nickname has invalid characters. Please use letters, numbers, dots and underscores only.'))
+            self.errors.append('This nickname has invalid characters. Please use letters, numbers, dots and underscores only.')
             return False
-        if self.password.data != self.confPWD.data:
-            self.confPWD.errors.append('Password not matching')
-            return False
-        if User.isValidPassword(self.password.data):
-            self.password.errors.append('!!! Invalid Passwword !!!')
-            return False
+        if len(self.password) > 0:
+            if self.password != self.confpwd:
+                self.errors.append('Password not matching')
+                return False
+            if len(self.password) > 20 or len(self.password) < 8:
+                print("beige")
+                self.errors.append("Password not the right dimension. It must be between 8 and 20 chracters long.")
+                return False
+            if self.password != self.confpwd:
+                print("portocaliu")
+                self.errors.append('Password not matching')
+                return False
+            if User.isValidPassword(self.password):
+                print("maro")
+                self.errors.append('Invalid Passwword.')
+                return False
+        # must do something about the aboutMe, to check it is not injecting stuff
         return True
 
 # ##############################################################################

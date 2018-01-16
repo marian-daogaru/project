@@ -23,25 +23,41 @@
       <div class="main container">
         <h1>Edit your profile</h1>
         <div id="editUserApi">
-          <form action="" method="POST" name="editProfile" v-on:submit.prevent="sendUpdate">{{ form.hidden_tag() }}
+          <div v-if="errors">
+            <template v-for="error in errors">
+              <div class="div alert alert-danger"> <strong>${error}  </strong></div>
+            </template>
+          </div>
+          <div>     
             <div class="form-group"> 
-              <label for="nickname">Nickname: {{ form.nickname(size=30) }} </label>{% for error in form.nickname.errors %}<span style="color: red;">[ {{ error }}]</span>{% endfor %} 
+              <label for="nickname">Nickname: 
+                <input class="form-control" v-model="nickname" type="text" name="nickname" required="required"/>
+              </label>
             </div>
             <div class="form-group"> 
-              <label for="aboutMe">About me: {{ form.aboutMe(cols=50, rows=4) }}</label>
+              <label for="aboutMe">About me: 
+                <textarea class="form-control" v-model="aboutMe" rows="5" cols="50" name="aboutMe"></textarea>
+              </label>
             </div>
             <div class="form-group"></div>
+            <div class="form-group"> </div>
             <div class="form-group"> 
-              <label for="password">New Password: {{ form.password(size=30) }} </label>{% for error in form.password.errors %}<span style="color: red;">[ {{ error }}]</span>{% endfor %} 
-              <div class="form-group"> 
-                <label for="confPWD">Confirm New Password: {{ form.confPWD(size=30) }} </label>{% for error in form.confPWD.errors %}<span style="color: red;">[ {{ error }}]</span>{% endfor %} 
-              </div>
-              <div class="form-group"> 
-                <input type="file" name="file"/>
-              </div>
+              <label for="password">Password: 
+                <input class="form-control" v-model="password" type="password" name="password" placeholder="*****" required="required"/>
+              </label>
             </div>
-            <button class="btn btn-primary" type="submit">Submit changes </button>
-          </form>
+            <div class="form-group"> 
+              <label for="password">Confirm Password: 
+                <input class="form-control" v-model="confpwd" type="password" name="confpwd" placeholder="*****" required="required"/>
+              </label>
+            </div>
+            <div class="form-group"> 
+              <label for="avatarImage">Change profile picture: 
+                <input type="file" name="file" @change="onFileChange"/>
+              </label>
+            </div>
+            <button class="btn btn-primary" v-on:click="sendUpdate()">Submit changes </button>
+          </div>
         </div>
       </div>
     </div>
@@ -55,5 +71,6 @@
     <script type="text/javascript" src="{{ url_for('static', filename='js/base.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/login.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/user.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/group.js') }}"></script>
   </body>
 </html>

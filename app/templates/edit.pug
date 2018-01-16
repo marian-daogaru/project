@@ -4,28 +4,32 @@ block content
   .main.container
     h1 Edit your profile
     div(id='editUserApi')
-      form(action='' method='POST' name='editProfile' v-on:submit.prevent="sendUpdate") #{'{{ form.hidden_tag() }}'}
+      div(v-if="errors")
+        template(v-for="error in errors")
+          .div(class="alert alert-danger") 
+            strong ${error}  
+      div      
         div.form-group 
-          label(for='nickname') Nickname: #{'{{ form.nickname(size=30) }}'} 
-          | #{'{% for error in form.nickname.errors %}'}
-          span(style='color: red;') [#{' {{ error }}'}]
-          | #{'{% endfor %}'} 
+          label(for='nickname') Nickname: 
+            input(v-model='nickname' type='text' class='form-control' name='nickname' required)
         div.form-group 
-          label(for='aboutMe') About me: #{'{{ form.aboutMe(cols=50, rows=4) }}'}
+          label(for='aboutMe') About me: 
+            textarea(v-model='aboutMe' rows="5" cols="50" class='form-control' name='aboutMe')
         div.form-group
         div.form-group 
-          label(for='password') New Password: #{'{{ form.password(size=30) }}'} 
-          | #{'{% for error in form.password.errors %}'}
-          span(style='color: red;') [#{' {{ error }}'}]
-          | #{'{% endfor %}'} 
-          div.form-group 
-            label(for='confPWD') Confirm New Password: #{'{{ form.confPWD(size=30) }}'} 
-            | #{'{% for error in form.confPWD.errors %}'}
-            span(style='color: red;') [#{' {{ error }}'}]
-            | #{'{% endfor %}'} 
-          div.form-group 
-            input(type='file' name='file')
-        button.btn.btn-primary(type='submit') Submit changes 
+        div.form-group 
+          label(for='password') Password: 
+            input(v-model="password" type="password" class="form-control" name="password" placeholder="*****" required)
+        div.form-group 
+          label(for='password') Confirm Password: 
+            input(v-model="confpwd" type="password" class="form-control" name="confpwd" placeholder="*****" required) 
+        div.form-group 
+          label(for='avatarImage') Change profile picture: 
+            input(type='file' name='file' @change="onFileChange")
+              
+              
+              
+        button.btn.btn-primary(v-on:click='sendUpdate()') Submit changes 
       
       
       
