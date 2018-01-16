@@ -23,7 +23,7 @@
       <div class="main container">
         <h1>Login</h1>
         <div id="loginAPI">
-          <form action="" name="login" method="POST" v-on:submit.prevent="pr()"> 
+          <form action="" name="login" method="POST" v-on:submit.prevent="login()"> 
             <div class="form-group"> 
               <label for="email">Email: 
                 <input class="form-control" v-model="email" type="email" name="email" placeholder="Enter email" requried="requried"/>
@@ -59,6 +59,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/3.0.1/vue-router.min.js"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/base.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/login.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/profile.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/user.js') }}"></script>
   </body>
 </html>

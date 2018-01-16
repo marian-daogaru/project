@@ -3,28 +3,28 @@ extends base.pug
 block content
   .main.container
     h1 Sign up
-    
-    form(action='' method='POST' name='login') #{'{{ form.hidden_tag() }}'}
-      div.form-group 
-        label(for='email') Email: #{'{{ form.email }}'}
-        | #{'{% for error in form.email.errors %}'}
-        span(style='color: red;') [#{' {{ error }}'}]
-        | #{'{% endfor %}'} 
-      div.form-group 
-        label(for='pw') Password: #{'{{ form.password }}'}
-        | #{'{% for error in form.password.errors %}'}
-        span(style='color: red;') [#{' {{ error }}'}]
-        | #{'{% endfor %}'} 
-        //- formy.password
-      div.form-group 
-        label(for='cpw') Confirm Password: #{'{{ form.confPWD }}'}
-        | #{'{% for error in form.confPWD.errors %}'}
-        span(style='color: red;') [#{' {{ error }}'}]
-        | #{'{% endfor %}'} 
-      div.form-Group
-        label(for='rememberMe') Remember me: #{'{{ form.rememberMe }}'}
+    div(id='signupAPI')
+      form(action='' method='POST' name='signUP' v-on:submit.prevent="signUp()") 
+        div.form-group 
+          label(for='email') Email: 
+            input(v-model="email" type="email" class="form-control" name="email" placeholder="Enter email" requried)
+        div.form-group 
+          label(for='password') Password: 
+            input(v-model="password" type="password" class="form-control" name="password" placeholder="*****" required)
+        div.form-group 
+          label(for='password') Confirm Password: 
+            input(v-model="confpwd" type="password" class="form-control" name="confpwd" placeholder="*****" required)      
+        div.form-check 
+          label(class="form-check-label" for="checkbox") Remember me: 
+            input(v-model="rememberMe" type="checkbox" class="form-check-input" name="rememberMe")
+        button.btn.btn-primary(type='submit') Sign me UP 
+      
+      div(v-if="errors")
+        template(v-for="error in errors")
+          .div(class="alert alert-danger") 
+            strong ${error}  
+          
         
-      button.btn.btn-primary(type='submit') Sign me UP
     
   
   

@@ -10,3 +10,31 @@ var groupAPI = new Vue({
 
     }
   }
+
+  var createGroupApi = new Vue({
+    el: "#createGroupAPI",
+    delimiters: ['${','}'],
+    data:{
+
+    }, // data
+
+    methods:
+    {
+
+    } // methods
+
+  }) // main brackets
+
+  // var editGroupAPI = new Vue({
+  //   el: "#editGroupAPI",
+  //   delimiters: ['${','}'],
+  //   data:{
+  //
+  //   }, // data
+  //
+  //   methods:
+  //   {
+  //
+  //   } // methods
+  //
+  // }) // main brackets

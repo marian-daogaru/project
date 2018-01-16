@@ -4,20 +4,7 @@ block content
   .main.container
     h1 Login
     div(id="loginAPI")
-      form(action='' name='login' method='POST' v-on:submit.prevent="pr()") 
-        //- | #{'{{ form.hidden_tag() }}'}
-        
-        //-   | #{'{% for error in form.email.errors %}'}
-        //-   span(style='color: red;') [#{' {{ error }}'}]
-        //-   | #{'{% endfor %}'} 
-        //- div.form-group 
-        //-   label(for='pw' ref='pwd') Password: #{'{{ form.password }}'}
-        //-   | #{'{% for error in form.password.errors %}'}
-        //-   span(style='color: red;') [#{' {{ error }}'}]
-        //-   | #{'{% endfor %}'} 
-        //- div.form-Group
-        //-   p Remember me: #{'{{ form.rememberMe }}'}
-
+      form(action='' name='login' method='POST' v-on:submit.prevent="login()") 
         div.form-group 
           label(for='email') Email: 
             input(v-model="email" type="email" class="form-control" name="email" placeholder="Enter email" requried)
@@ -32,7 +19,6 @@ block content
           template(v-for="error in errors")
             .div(class="alert alert-danger") 
               strong ${error}  
-            
         
       div Not Signed up? 
         a(href="{{ url_for('signup') }}") Do it now!

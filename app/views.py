@@ -42,30 +42,7 @@ def homeApi():
 @app.route('/user/<int:id>')
 @login_required
 def user(id, page=1):
-    # user = User.query.filter_by(id = id).first()
-    # if user is None:
-    #     flash('User {} not found.'.format(id))
-    #     return redirect(url_for('index'))
-    # # flash(groupID)
-    # if 'groupIDDelete' in request.args:
-    #     groupID = request.args['groupIDDelete']
-    #     flash("was here")
-    #     deleteGroup(groupID)
-    #
-    # avatarPath = Media.query.filter_by(id = user.Media_id).first().mediaPath
-    # groups = g.user.joinedGroups().all()
-    # groupPaths = []
-    # for group in groups:
-    #     groupPaths.append(Media.query.filter_by(id = group.Media_id).first().mediaPath)
-
-    # groupPaths = Media.query.join(groups, (groups.Media_id == Media.id)).filter()
-    # groupsPath = Media.query.filter_by()
-    # print(groupPaths)
-    # print("###", dir(groups), type(groups)) #, len(groups), "@@@",  ([group.Media_id for group in groups]), "@@@", dir(Media.id))
     return render_template('profile.html')
-                            # user = user,
-                            # avatarPath = avatarPath)
-                            # zipped = zip(groups, groupPaths))
 
 @app.route('/api/user/<int:id>', methods=['GET'])
 @login_required
@@ -89,10 +66,6 @@ def userApi(id, page=1):
         group['Media'] = row2dict(Media.query.filter_by(id = group["Media_id"]).first())
         user['Group'].append(group)
 
-    # groupPaths = Media.query.join(groups, (groups.Media_id == Media.id)).filter()
-    # groupsPath = Media.query.filter_by()
-    # print(groupPaths)
-    # print("###", dir(groups), type(groups)) #, len(groups), "@@@",  ([group.Media_id for group in groups]), "@@@", dir(Media.id))
     return jsonify(user)
 
 @app.route('/edit', methods=['GET', 'POST'])
@@ -130,66 +103,95 @@ def edit():
 
 
 # ##############################################################################
-# LOGIN / SIGNUP
+# SIGNUP
 # ##############################################################################
-@app.route('/signup', methods=['GET', 'POST'])
+@app.route('/signup')
 def signup():
-    if g.user is not None and g.user.is_authenticated:
-        return redirect(url_for('index'))
+    # if g.user is not None and g.user.is_authenticated:
+    #     return redirect(url_for('index'))
+    #
+    # form = SignUpForm()
+    # if form.validate_on_submit():
+    #     avatar = Media(mediaPath = USERPATH + '_defautlUserAvatarSmileyFace.png')
+    #     db.session.add(avatar)
+    #     db.session.commit()
+    #
+    #     nickname = form.email.data.split('@')[0]
+    #     nickname = User.make_valid_nickname(nickname)
+    #     user = User(email = form.email.data,
+    #                 password = form.password.data,
+    #                 nickname = nickname,
+    #                 Media_id = avatar.id)
+    #     db.session.add(user)
+    #     db.session.commit()
+    #     rememberMe = form.rememberMe.data
+    #     login_user(user, remember=rememberMe)
+    #     return redirect(request.args.get('next') or url_for('home'))
+    return render_template('signup.html')
 
-    form = SignUpForm()
-    if form.validate_on_submit():
+
+@app.route('/api/signup', methods=['GET'])
+def signUpApiGet():
+    if g.user is not None and g.user.is_authenticated:
+        return jsonify({'id': g.user.id}), 201
+    user = {'id': '-1',
+            'errors': []}
+    return jsonify(user), 201
+
+@app.route('/api/signup', methods=['POST'])
+def signUpApiPost():
+    form = SignUpForm(request.get_json())
+    if form.validate():
         avatar = Media(mediaPath = USERPATH + '_defautlUserAvatarSmileyFace.png')
         db.session.add(avatar)
         db.session.commit()
 
-        nickname = form.email.data.split('@')[0]
+        nickname = form.email.split('@')[0]
         nickname = User.make_valid_nickname(nickname)
-        user = User(email = form.email.data,
-                    password = form.password.data,
+        user = User(email = form.email,
+                    password = form.password,
                     nickname = nickname,
                     Media_id = avatar.id)
         db.session.add(user)
         db.session.commit()
-        rememberMe = form.rememberMe.data
-        login_user(user, remember=rememberMe)
-        return redirect(request.args.get('next') or url_for('home'))
-    return render_template('signup.html',
-                            form = form)
 
+        login_user(user, remember=form.rememberMe)
+        print(user.id, "@@@@@")
+        return jsonify({'id': user.id})
+    return jsonify({'id': -1, 'errors': form.errors}), 201
+
+
+# ##############################################################################
+# LOGIN
+# ##############################################################################
 @app.route('/login')
 def login():
-    # if g.user is not None and g.user.is_authenticated:
-    #     return redirect(url_for('index'))
-    # form = LoginForm()
-    # if form.validate_on_submit():
-    #     user = User.query.filter_by(email = form.email.data).first()
-    #
-    #     rememberMe = form.rememberMe.data
-    #     login_user(user, remember=rememberMe)
-    #     return redirect(request.args.get('next') or url_for('home'))
-
     return render_template('login.html')
 
 @app.route('/api/login', methods=['POST'])
 def loginApiPost():
+    print("111")
     form = LoginForm(request.get_json())
     if form.validate():
         user = User.query.filter_by(email = form.email).first()
         login_user(user, remember=form.rememberMe)
-        return jsonify({'id': user.id})
+        return jsonify({'id': user.id}), 201
+    print("@@@")
     return jsonify({'id': -1, 'errors': form.errors}), 201
 
 @app.route('/api/login', methods=['GET'])
 def loginApiGet():
     if g.user is not None and g.user.is_authenticated:
-        user = row2dict(g.user)
-        return jsonify(user)
+        # user = row2dict(g.user)
+        return jsonify({'id': g.user.id}), 201
     user = {'id': '-1',
             'errors': []}
-    return jsonify(user)
+    return jsonify(user), 201
 
 
+# ##############################################################################
+# LOGOUT
+# ##############################################################################
 @app.route('/logout')
 @login_required
 def logout():

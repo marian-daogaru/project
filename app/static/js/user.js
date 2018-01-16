@@ -6,17 +6,8 @@ var userAPI = new Vue({
     userLocal: null,
     user: null
   },
-  // async created(){
-  //   await this.loadID(),
-  //   await console.log("print this")
-  //
-  // },
+
   mounted() {
-    // console.log("this should be second.")
-    // this.loadID().then( function() {
-    //   this.loadUser()
-    // }),
-    // this.id = res.ID,
     this.loadID()
   },
   methods: {
@@ -52,3 +43,24 @@ var userAPI = new Vue({
     },
   },
 })
+
+
+var editUserAPI = new Vue({
+  el: "#editUserAPI",
+  delimiters: ['${','}'],
+  data:{
+    nickname: '',
+    aboutMe: '',
+    pasword: '',
+    confpwd: '',
+    error: ''
+
+  }, // data
+
+  methods:
+  {
+    sendUpdate: function() {
+
+    } // sendUpdate
+  } // methods
+}) // main brackets

@@ -6,7 +6,6 @@ import re
 
 
 class LoginForm(object):
-
     def __init__(self, inputDict, *args, **kwargs):
         self.email = inputDict['email']
         self.password = inputDict['password']
@@ -14,9 +13,11 @@ class LoginForm(object):
         self.errors = []
 
     def validate(self):
+        """email check for @ is done by bootstrap.
+        length is also checked, but not an issue if we double check"""
         if len(self.email) ==  0 or len(self.password) == 0:
             print("rosu")
-            self.errors.append("Invalid username / password.")
+            self.errors.append("Missing field.")
             return False
         user = User.query.filter_by(email = self.email).first()
         if user is None:
@@ -31,30 +32,40 @@ class LoginForm(object):
         return True
 
 
-class SignUpForm(FlaskForm):
-    email = StringField('email',
-                        validators=[DataRequired()],
-                        render_kw={"placeholder": "email"})
-    password = PasswordField('password',
-                        validators=[Length(min=1, max=20)],
-                        render_kw={"placeholder": "*****"})
-    confPWD = PasswordField('confPWD',
-                        validators=[Length(min=1, max=20)],
-                        render_kw={"placeholder": "*****"})
-    rememberMe = BooleanField('rememberMe',
-                                default=False)
+class SignUpForm():
+    def __init__(self, inputDict, *args, **kwargs):
+        self.email = inputDict['email']
+        self.password = inputDict['password']
+        self.confpwd = inputDict['confpwd']
+        self.rememberMe = inputDict['rememberMe']
+        self.errors = []
 
     def validate(self):
-        if not FlaskForm.validate(self):
+        """email check for @ is done by bootstrap.
+        length is also checked, but not an issue if we double check"""
+        if len(self.email) ==  0 or len(self.password) == 0 or len(self.confpwd) == 0:
+            print("rosu")
+            self.errors.append("Missing field.")
             return False
-        if User.query.filter_by(email = self.email.data).first():
-            self.email.errors.append('Email already registered')
+        if User.query.filter_by(email = self.email).first():
+            print("galben")
+            self.errors.append('Email already registered')
             return False
-        if self.password.data != self.confPWD.data:
-            self.confPWD.errors.append('Password not matching')
+        if len(self.email) > 30:
+            print("beige 22")
+            self.errors.append("Email too long.")
             return False
-        if User.isValidPassword(self.password.data):
-            self.password.errors.append('!!! Invalid Passwword !!!')
+        if len(self.password) > 20 or len(self.password) < 8:
+            print("beige")
+            self.errors.append("Password not the right dimension. It must be between 8 and 20 chracters long.")
+            return False
+        if self.password != self.confpwd:
+            print("portocaliu")
+            self.errors.append('Password not matching')
+            return False
+        if User.isValidPassword(self.password):
+            print("maro")
+            self.errors.append('Invalid Passwword.')
             return False
         return True
 
