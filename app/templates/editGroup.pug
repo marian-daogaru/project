@@ -2,19 +2,25 @@ extends base.pug
 
 block content
   .main.container
-    h1 Edit your profile
-    form(action='' method='POST' name='editProfile' enctype='multipart/form-data') #{'{{ form.hidden_tag() }}'}
-      div.form-group 
-        label(for='name') Name: #{'{{ form.name(size=30) }}'} 
-        | #{'{% for error in form.name.errors %}'}
-        span(style='color: red;') [#{' {{ error }}'}]
-        | #{'{% endfor %}'} 
-      div.form-group 
-        label(for='aboutGroup') About group: #{'{{ form.aboutGroup(cols=50, rows=4) }}'}
-      div.form-group
-      div.form-group 
-        input(type='file' name='file')
-      button.btn.btn-primary(type='submit') Submit changes 
+    h1 Edit this group:
+    
+    div(id='editGroupAPI')
+      div(v-if="errors")
+        template(v-for="error in errors")
+          .div(class="alert alert-danger") 
+            strong ${error} 
+      div(v-if='group')      
+        div.form-group 
+          label(for='name') Name: 
+            input(v-model='name' type='text' class='form-control' name='name' required)
+        div.form-group 
+          label(for='aboutGroup') About group: 
+            textarea(v-model='aboutGroup' rows="5" cols="50" class='form-control' name='aboutGroup')
+        
+        div.form-group 
+          label(for='avatarImage') Change profile picture: 
+            input(type='file' name='file' @change="onFileChange")
+        button.btn.btn-primary(v-on:click='sendUpdate()') Submit changes
       
       
       

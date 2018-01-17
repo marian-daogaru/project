@@ -31,6 +31,17 @@ var baseAPI = new Vue({
   },
 })
 
+var general = new Vue({
+  el: "#general",
+  delimiters: ['${', '}'],
+  data: {
+  },
+  methods: {
+    goHome: function() {
+      window.location.href = '/home'
+    }
+  }
+})
 
 // async created() {
 //       this.user = await axios.get('/api/home', {

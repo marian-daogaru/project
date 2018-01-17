@@ -136,27 +136,27 @@ class GroupCreateForm():
             self.errors.append("""The about section is too long.
                                   Max 200 characters.
                                   Currently {} long.""".format(len(self.aboutGroup)))
-            return False 
+            return False
         return True
 
-class EditGroupForm(FlaskForm):
-    name = StringField('name', validators=[DataRequired()])
-    aboutGroup = TextAreaField('aboutGroup', validators=[Length(min=0, max=200)])
-
-    def __init__(self, original_name, *args, **kwargs):
-        FlaskForm.__init__(self, *args, **kwargs)
-        self.original_name = original_name
+class EditGroupForm():
+    def __init__(self, inputDict, *args, **kwargs):
+        self.name = inputDict['name']
+        self.aboutGroup = inputDict['aboutGroup']
+        self.errors = []
 
     def validate(self):
-        if not FlaskForm.validate(self):
-            print("rosu")
+        if len(self.name) == 0:
+            # this is already checked by browser
+            self.errors.append("Name must be present!")
             return False
-        if self.name.data == self.original_name:
-            print("verde")
-            return True
-        if self.name.data != User.make_valid_nickname(self.name.data):
-            print("mov")
-            self.name.errors.append(gettext('This nickname has invalid characters. Please use letters, numbers, dots and underscores only.'))
+        if len(self.name) > 30:
+            self.errors.append("Name too long.")
+            return False
+        if len(self.aboutGroup) > 200:
+            self.errors.append("""The about section is too long.
+                                  Max 200 characters.
+                                  Currently {} long.""".format(len(self.aboutGroup)))
             return False
         return True
 

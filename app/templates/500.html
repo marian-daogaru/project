@@ -22,7 +22,9 @@
     <div>
       <h1>An unexpected error hjas occured. Lol rekt... </h1>
       <h3>The admins are hopefully onto it, but they are most likely drunk... </h3>
-      <h4><a href="{{ url_for('home') }}">Go back home... </a></h4>
+      <div id="general">
+        <div class="btn btn-primary" v-on:click="goHome()">Go home </div>
+      </div>
     </div>
     <script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>

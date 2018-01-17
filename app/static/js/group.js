@@ -249,16 +249,90 @@ var groupAPI = new Vue({
 
 
 
-  // var editGroupAPI = new Vue({
-  //   el: "#editGroupAPI",
-  //   delimiters: ['${','}'],
-  //   data:{
-  //
-  //   }, // data
-  //
-  //   methods:
-  //   {
-  //
-  //   } // methods
-  //
-  // }) // main brackets
+  var editGroupAPI = new Vue({
+    el: "#editGroupAPI",
+    delimiters: ['${','}'],
+    data:{
+      group: null,
+      errors: '',
+      name: '',
+      aboutGroup: '',
+      avatar: '',
+      update: ''
+    }, // data
+
+    mounted() {
+      this.loadGroup()
+    },  // mounted
+
+    methods: {
+      loadGroup: function() {
+        if (window.location.pathname.substring(0, 6) === '/group'){
+          this.$http.get(
+            '/api' + window.location.pathname
+          ).then(
+            function(response) {
+              this.group = response.data,
+              this.name = this.group.name,
+              this.aboutGroup = this.group.aboutGroup
+            },
+            function(err) {
+              console.error(err),
+              console.log('error')
+            }
+          ).then(  // first then
+              function() {
+                if (this.group.accessDenied) {
+                  window.location.href = '/accessDenied'
+                }
+              }
+            )
+        }  // if
+      }, //loadGroup
+
+      sendUpdate: function(){
+        form = {
+          name: this.name,
+          aboutGroup: this.aboutGroup,
+          avatar: this.avatar
+        },
+        this.$http.post(
+          '/api' + window.location.pathname, form
+        ).then(
+          function(response) {
+            this.errors = response.data.errors,
+            this.updated = response.data.updated
+          },
+          function(err) {
+            console.error(err),
+            console.log('error')
+          }
+        ).then(
+          function() {
+            if (this.updated) {
+              window.location.href = '/group/' + this.group.id
+            }
+          }
+        )
+      },  // sendUpdate
+
+      onFileChange(e) {
+        var files = e.target.files || e.dataTransfer.files;
+        if (!files.length)
+          return;
+        this.createImage(files[0]);
+      },
+
+      createImage(file) {
+        var image = new Image();
+        var reader = new FileReader();
+        var vm = this;
+
+        reader.onload = (e) => {
+          this.avatar = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      },
+    } // methods
+
+  }) // main brackets

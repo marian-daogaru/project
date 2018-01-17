@@ -27,6 +27,7 @@ def load_user(id):
 def home():
     return render_template('home.html')
 
+@app.route('/api/', methods=['GET'])
 @app.route('/api/home', methods=['GET'])
 def homeApi():
     if not g.user.is_authenticated:  # user not loggedin
@@ -54,17 +55,19 @@ def userApi(id, page=1):
         return redirect(url_for('index'))
     # flash(groupID)
 
-    groups = user.joinedGroups().all()
-    user = row2dict(user)
-    user['avatar'] = row2dict(Media.query.filter_by(id = user["Media_id"]).first())
-    user['Group'] = []
-    for group in groups:
-        group = row2dict(group)
-        group['Media'] = row2dict(Media.query.filter_by(id = group["Media_id"]).first())
-        user['Group'].append(group)
+    if g.user.id == user.id:
+        groups = user.joinedGroups().all()
+        user = row2dict(user)
+        user['avatar'] = row2dict(Media.query.filter_by(id = user["Media_id"]).first())
+        user['Group'] = []
+        for group in groups:
+            group = row2dict(group)
+            group['Media'] = row2dict(Media.query.filter_by(id = group["Media_id"]).first())
+            user['Group'].append(group)
 
-    return jsonify(user)
-
+        return jsonify(user)
+    else:
+        return jsonify({'accessDenied': True})
 
 
 # ##############################################################################
@@ -342,43 +345,81 @@ def deleteGroup(id):
 # ##############################################################################
 # EDIT GROUP
 # ##############################################################################
-@app.route('/group/<id>/edit', methods=['GET', 'POST'])
+@app.route('/group/<id>/edit')
 @login_required
 def editGroup(id):
-    print("in edit", dir(app))
+    # print("in edit", dir(app))
+    # group = Group.query.filter_by(id = id).first()
+    # if group is None:
+    #     flash("no such group")
+    #     return redirect(url_for('user', id=g.user.id))
+    #
+    # form = EditGroupForm(group.name)
+    # if form.validate_on_submit():
+        # group.name = form.name.data
+        # group.aboutGroup = form.aboutGroup.data
+        #
+        # db.session.add(g.user)
+        # db.session.commit()
+    #
+    #     if 'file' in request.files:
+    #         file = request.files['file']
+    #         if file.filename == '':
+    #             flash ("No file Selected")
+    #             return redirect(url_for('user', id=g.user.id))
+    #
+    #         filename = os.path.join(app.config['GROUPPATH'], secure_filename(file.filename))
+    #         file.save(os.path.join(basedir + '/app/', filename[3:]))
+    #         media = Media.query.filter_by(id = group.Media_id).first()
+    #         media.mediaPath = filename
+    #         db.session.add(media)
+    #         db.session.commit()
+    #     return redirect(url_for('group', id=group.id))
+    # elif request.method != "POST":
+    #     form.name.data = group.name
+    #     form.aboutGroup.data = group.aboutGroup
+    return render_template('editGroup.html')
+
+@app.route('/api/group/<id>/edit', methods=['GET'])
+@login_required
+def editGroupGet(id):
     group = Group.query.filter_by(id = id).first()
-    if group is None:
-        flash("no such group")
-        return redirect(url_for('user', id=g.user.id))
+    if g.user.isInGroup(g.user, group) and g.user.isAdmin(group.id):
+        group = row2dict(group)
+        group['mediaPath'] = Media.query.filter_by(id = group["Media_id"]).first().mediaPath
+        return jsonify(group)
+    else:
+        return jsonify({'accessDenied': True})
 
-    form = EditGroupForm(group.name)
-    if form.validate_on_submit():
-        group.name = form.name.data
-        group.aboutGroup = form.aboutGroup.data
+@app.route('/api/group/<id>/edit', methods=['POST'])
+@login_required
+def editGroupPost(id):
+    response = request.get_json()
+    group = Group.query.filter_by(id = id).first()
 
-        db.session.add(g.user)
+    form = EditGroupForm(response)
+    if form.validate():
+        group.name = form.name
+        group.aboutGroup = form.aboutGroup
+
+        db.session.add(group)
         db.session.commit()
+        if len(response['avatar']) > 0:
+            avatar = response['avatar'].split(',')[1]
 
-        if 'file' in request.files:
-            file = request.files['file']
-            if file.filename == '':
-                flash ("No file Selected")
-                return redirect(url_for('user', id=g.user.id))
-
-            filename = os.path.join(app.config['GROUPPATH'], secure_filename(file.filename))
-            file.save(os.path.join(basedir + '/app/', filename[3:]))
+            filename = str(uuid.uuid4().hex) + '.png'
+            filename = os.path.join(app.config['USERPATH'], secure_filename(filename))
+            with open(os.path.join(basedir + '/app/', filename[3:]), 'w') as myImage:
+                # missing_padding = len(form.avatar) % 4
+                # if missing_padding != 0:
+                #     form.avatar += b'='* (4 - missing_padding)
+                myImage.write(avatar.decode('base64'))
             media = Media.query.filter_by(id = group.Media_id).first()
             media.mediaPath = filename
             db.session.add(media)
             db.session.commit()
-        return redirect(url_for('group', id=group.id))
-    elif request.method != "POST":
-        form.name.data = group.name
-        form.aboutGroup.data = group.aboutGroup
-    return render_template('editGroup.html',
-                            form  = form)
-
-
+        return jsonify({'updated': True})
+    return jsonify({'errors': form.errors})
 # ##############################################################################
 # ERROR HANDLING
 # ##############################################################################
@@ -391,3 +432,7 @@ def not_found_error(error):
 def internal_error(error):
     db.session.rollback()
     return render_template('500.html'), 500
+
+@app.route('/accessDenied')
+def not_found_error():
+    return render_template('accessDenied.html')

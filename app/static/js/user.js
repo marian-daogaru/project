@@ -40,6 +40,12 @@ var userAPI = new Vue({
         function(err) {
           console.error(err)
         },
+      ).then(
+        function() {
+          if (this.user.accessDenied){
+            window.location.href = '/accessDenied'
+          }
+        }
       )
     },  // loadUser
 
