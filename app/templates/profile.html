@@ -50,7 +50,7 @@
                       <div class="col-lg-3">
                         <h4>${group.name}</h4>
                         <div class="col"> 
-                          <p>${group.aboutGroup}</p>
+                          <p v-if="group.aboutGroup !== 'None'">${group.aboutGroup}</p>
                         </div>
                       </div>
                     </div></a></template>

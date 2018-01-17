@@ -32,7 +32,7 @@ block content
                   .col-lg-3
                     h4 ${group.name}
                     .col 
-                      p ${group.aboutGroup}
+                      p(v-if="group.aboutGroup !== 'None'") ${group.aboutGroup}
                       
                 
                       

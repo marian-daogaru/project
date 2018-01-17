@@ -143,28 +143,28 @@ class EditGroupForm(FlaskForm):
             return False
         return True
 
-class PeopleGroupForm(FlaskForm):
-    emails = TextAreaField('emails',
-                            validators=[Length(max=1000)])
+
+class PeopleGroupForm():
+    def __init__(self, inputDict, *args, **kwargs):
+        self.emails = str(inputDict['emails'])
+        self.errors = []
 
     def validate(self):
-        if not FlaskForm.validate(self):
-            return False
         comp = re.compile(r"^[-A-Za-z0-9_\s\.,@]*$")
-        print("!!!!", bool(comp.match(self.emails.data)))
+        print("!!!!", bool(comp.match(self.emails)))
         print(self.validateCorrectEmails(), "!!!!")
-        if not bool(comp.match(self.emails.data)):
-            self.emails.errors.append("The field contains characters that are not permitted. \n ")
-            self.emails.errors.append("The only permitted characters are Letters, Numbers, '@', Space, '_', '-', '.', ','.")
+        if not bool(comp.match(self.emails)):
+            self.errors.append("The field contains characters that are not permitted. \n ")
+            self.errors.append("The only permitted characters are Letters, Numbers, '@', Space, '_', '-', '.', ','.")
             return False
-        isValid, emails = self.validateCorrectEmails()
+        isValid, self.emails = self.validateCorrectEmails()
         if not isValid:
-            self.emails.errors.append("This is not correct: {}".format(self.validateCorrectEmails()[1]))
+            self.errors.append("This email is not correct: {}".format(self.emails[0]))
             return False
         return True
 
     def validateCorrectEmails(self):
-        text = self.emails.data
+        text = self.emails
         text = text.replace(",", " ")
         emails = text.split()
         if len(emails) == 0:

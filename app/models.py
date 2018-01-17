@@ -83,6 +83,11 @@ class Group(db.Model):
     def users(self):
         return UsersInGroups.query.filter_by(Group_id = self.id).all()
 
+    def lastAdmin(self):
+        adminCount = UsersInGroups.query.filter(
+                        and_(UsersInGroups.Group_id.like(self.id),
+                             UsersInGroups.admin.like(1))).count()
+        return adminCount <= 1
 
 class Restaurant(db.Model):
     __table__ = db.Model.metadata.tables['Restaurant']

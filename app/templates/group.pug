@@ -4,13 +4,20 @@ block content
   .main.container
     
     div(id='groupAPI')
+      div(v-if="errors")
+        template(v-for="error in errors")
+          .div(class="alert alert-danger") 
+            strong ${error}  
+      div(v-if="confirmation")
+        .div(class="alert alert-success") 
+          strong ${confirmation}  
       div(v-if="group")
         .row
           .col-lg-3.col-sm-6
             img.image(:src="group.mediaPath" width="200" height="auto")
           .col-log-2.col-sm-6
             h1 ${group.name}
-            h3 ${group.aboutGroup}
+            h3(v-if="group.aboutGroup !== 'None'") ${group.aboutGroup}
         .row(v-if="group.isAdmin")
           .btn.btn-primary(v-on:click='editRedirect()') Edit Group
           .btn.btn-danger(v-on:click='deleteGroupAlert()') Delete Group
@@ -18,6 +25,7 @@ block content
           .row 
             div.form-group 
               label(for='emails') Add new People to the group:
+                p If you want to add multiple people, please separate the emails by comma(,) or whitespace( ). 
                 textarea(v-model='emails' rows="5" cols="50" class='form-control' name='aboutMe')
             button.btn.btn-primary(v-on:click='addPeople()') Add people 
           .row 

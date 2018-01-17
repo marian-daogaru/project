@@ -3,7 +3,10 @@ var groupAPI = new Vue({
   delimiters: ['${', '}'],
   data: {
     group: null,
-    emails: ''
+    emails: '',
+    errors: null,
+    confirmation: null,
+    response: null,
   },
 
   mounted() {
@@ -15,8 +18,7 @@ var groupAPI = new Vue({
         '/api' + window.location.pathname
       ).then(
         function(result) {
-          this.group = result.data,
-          console.log(this.group)
+          this.group = result.data
         },
         function(err) {
           console.log(err),
@@ -37,8 +39,38 @@ var groupAPI = new Vue({
       form = {
         emails: this.emails
       },
-      console.log(form)
+      console.log(form),
+      this.$http.post(
+        '/api/group/' + this.group.id, form
+      ).then(
+        function(response) {
+          this.errors = response.data.errors,
+          this.confirmation = response.data.added,
+          this.emails = null,
+          console.log(response)
+
+        },
+        function(err) {
+          console.log(err),
+          console.log('error')
+        })
     },  // addPeople
+
+    successfullyLeft: function(){
+      var thisVue = this;  // otherwise in swal this is replaced by local inst
+      swal({
+        title: "Left",
+        text: "You left the group successfully!",
+        type: "success",
+        closeOnConfirm: true,
+        confirmButtonClass: 'btn-success',
+        confirmButtonText: 'Go back to profile'
+      },
+      function() {
+        console.log('/user/' + thisVue.response.id),
+        window.location.href = '/user/' + thisVue.response.id
+      })
+    },
 
     leaveGroupAlert: function() {
       var thisVue = this;  // otherwise in swal this is replaced by local inst
@@ -52,24 +84,39 @@ var groupAPI = new Vue({
         confirmButtonText: 'Leave group',
       },
       function(){
-        swal("Left", "You left the group successfully!", "success");
-        thisVue.leaveGroup()
+        thisVue.leaveGroup(false)
       })
     },  //leaveGroupAlert
 
-    leaveGroup: function() {
+    leaveGroupAlertLastAdmin: function() {
+      var thisVue = this;  // otherwise in swal this is replaced by local inst
+      swal({
+        title: "You are the last admin!",
+        text: "You are the last admin of this group. If you leave, the group will be deleted",
+        type: "warning",
+        showCancelButton: true,
+        closeOnConfirm: false,
+        confirmButtonClass: 'btn-danger',
+        confirmButtonText: 'Leave group',
+      },
+      function(){
+        thisVue.leaveGroup(true)
+      })
+    },  //finalAdmin
+
+    leaveGroup: function(consentToLeave) {
       console.log(this.parent),
       console.log(this.group.id),
       form = {
-        groupID: this.group.id
+        groupID: this.group.id,
+        consent: consentToLeave
       },
       console.log(form)
       this.$http.post(
         '/api/group/leave', form
       ).then(
         function(res) {
-          response = res.data,
-          console.log(response)
+          this.response = res.data
         },
         function(err) {
           console.error(err),
@@ -77,12 +124,17 @@ var groupAPI = new Vue({
         }
       ).then(
         function() {
-          console.log(response)
+          if (this.response.lastAdmin){
+            this.leaveGroupAlertLastAdmin()
+          }
+          if (this.response.left){
+            this.successfullyLeft()
+          }
         })
     },
 
     deleteGroupAlert: function () {
-      // THIS MUST BE FINISHED!!!
+      var thisVue = this;  // otherwise in swal this is replaced by local inst
       swal({
         title: "Are you sure?",
         text: "Deleted groups cannot be recovered!",
@@ -93,11 +145,30 @@ var groupAPI = new Vue({
         confirmButtonText: 'Yes, delete group',
       },
       function(){
-        swal("Deleted", "Your group was deleted!", "success");
-        // window.location.replace({{"/user/"}} + groupID);
-        // window.location.replace(Flask.url_for('user', {id: userID, groupIDDelete: groupID}));
-      });
-    } //deleteGroup
+        thisVue.deleteGroup()
+      })
+    }, //deleteGroupAlert
+
+    deleteGroup: function(){
+      this.$http.delete(
+        '/api/group/' + this.group.id + '/delete'
+      ).then(
+        function(response) {
+          this.response = response.data,
+          this.errors = response.data.errors,
+          console.log(response)
+        },
+        function(err) {
+          console.error(err),
+          console.log('error')
+        }).then(
+          function(){
+            if (this.response.deleted){
+              this.successfullyLeft()
+            }
+          }
+        )
+    } // deleteGroup
   }  // methods
 })  //groupAPI
 

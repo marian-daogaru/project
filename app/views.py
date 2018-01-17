@@ -238,25 +238,25 @@ def createGroup():
 @app.route('/group/<id>')
 @login_required
 def group(id):
-    group = Group.query.filter_by(id = eval(id)).first()
-    if group is None:
-        flash("Group {} not found.".format(group.name))
-        return redirect(url_for('index'))
-    form = PeopleGroupForm()
-    avatarPath = Media.query.filter_by(id = group.Media_id).first().mediaPath
-
-    if form.validate_on_submit():
-        print("after Validate")
-        valid, emails = form.validateCorrectEmails()
-        AddPeopletoGroup(emails, group)
-        flash("Flash everyone was added successfully!")
-    print("outside if")
-    print(request.form, "###")
+    # group = Group.query.filter_by(id = eval(id)).first()
+    # if group is None:
+    #     flash("Group {} not found.".format(group.name))
+    #     return redirect(url_for('index'))
+    # form = PeopleGroupForm()
+    # avatarPath = Media.query.filter_by(id = group.Media_id).first().mediaPath
+    #
+    # if form.validate_on_submit():
+    #     print("after Validate")
+    #     valid, emails = form.validateCorrectEmails()
+    #     AddPeopletoGroup(emails, group)
+    #     flash("Flash everyone was added successfully!")
+    # print("outside if")
+    # print(request.form, "###")
     # return jsonify({})
-    return render_template('group.html',
-                            group = group,
-                            avatarPath = avatarPath,
-                            form = form)
+    return render_template('group.html')
+                            # group = group,
+                            # avatarPath = avatarPath,
+                            # form = form)
 
 @app.route('/api/group/<id>', methods=['GET'])
 @login_required
@@ -283,11 +283,31 @@ def groupApiGet(id):
 @app.route('/api/group/<id>', methods=['POST'])
 @login_required
 def groupApiPost(id):
-    testDict = {'hello': 'this works'}
-    print("in POST")
-    form = PeopleGroupForm()
-    return jsonify(dict(form))
+    response = request.get_json()
+    print(response)
+    if 'emails' in response.keys():
+        if len(response['emails']) > 0:
+            form = PeopleGroupForm(response)
 
+            if form.validate():
+                group = Group.query.filter_by(id = eval(id)).first()
+                return AddPeopletoGroup(form.emails, group)
+
+        return jsonify({'errors': form.errors}), 201
+    return ({'errors': ['Not a valid post form!']}), 400
+
+
+def AddPeopletoGroup(emails, group):
+    # emails must be a list
+    for email in emails:
+        user = User.query.filter_by(email = email).first()
+        print(user)
+        if user is None:
+            print('here')
+            return jsonify({'errors': ["The email {} is not registered!".format(email)]}), 201
+        else:
+            user.joinGroup(user, group)
+    return jsonify({'added': 'All people were added succesfully to this group.'}), 201
 
 
         # user = User.query.filter_by(id = id).first()
@@ -315,10 +335,17 @@ def leaveGroup():
     data = request.get_json()
     group = group = Group.query.filter_by(id = data['groupID']).first()
     if g.user.isInGroup(g.user, group):
-        print("hello")
-        g.user.leaveGroup(g.user, group)
-        return jsonify({'left': True})
-    print("not hello")
+        print("hello", group.lastAdmin())
+        lastAdmin = group.lastAdmin()
+        if (lastAdmin and data['consent'] == 1) or not lastAdmin:
+            # g.user.leaveGroup(g.user, group)
+            # delete group if last admin
+            return jsonify({'left': True,
+                            'id': g.user.id})
+        else:
+            return jsonify({'left': False,
+                            'lastAdmin': True})
+
     return jsonify({'left': False})
 
 
@@ -358,30 +385,19 @@ def editGroup(id):
     return render_template('editGroup.html',
                             form  = form)
 
-@app.route('/api/group/<id>/delete', methods=['POST'])
+@app.route('/api/group/<id>/delete', methods=['DELETE'])
 @login_required
 def deleteGroup(id):
     group = Group.query.filter_by(id = id).first()
-    if group is None:
-        flash("No such group")
-        return render_template(url_for('home'))
-
+    Media_id = group.Media_id
     mediaID = group.Media_id  # because of how the FK work, group will be delete first, then media. so if we dont store it, Media_id will be gone...
     UsersInGroups.query.filter_by(Group_id = group.id).delete()  # remove all records of all the users in that group
     # add the Restaurants in Groups when implemented
-    Group.query.filter_by(id = groupID).delete()  # remove the group
-    Media.query.filter_by(id = group.Media_id).delete()  # remove the media part
+    Group.query.filter_by(id = group.id).delete()  # remove the group
+    Media.query.filter_by(id = Media_id).delete()  # remove the media part
     db.session.commit()
-    flash("Group Successfully deleted!")
-
-def AddPeopletoGroup(emails, group):
-    # emails must be a list
-    for email in emails:
-        user = User.query.filter_by(email = email).first()
-        if user is None:
-            flash("The email {} is not registered!".format(email))
-        else:
-            user.joinGroup(user, group)
+    return jsonify({"deleted": True,
+                    'id': g.user.id})
 
 
 # ##############################################################################
