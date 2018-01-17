@@ -5,6 +5,12 @@ from .models import User
 import re
 
 
+def makeValid(string):
+    """this function will make a string, a nickname, name of group, about me
+    valid by removing the special characters {} so we dont have injections. """
+    pass
+
+
 class LoginForm(object):
     def __init__(self, inputDict, *args, **kwargs):
         self.email = inputDict['email']
@@ -113,13 +119,24 @@ class EditForm():
 # ##############################################################################
 # GROUP Forms
 # ##############################################################################
-class GroupCreateForm(FlaskForm):
-    name = StringField('name', validators=[DataRequired()])
-    aboutGroup = TextAreaField('aboutGroup', validators=[Length(min=0, max=200)])
-
+class GroupCreateForm():
+    def __init__(self, inputDict, *args, **kwargs):
+        self.name = inputDict['name']
+        self.aboutGroup = inputDict['aboutGroup']
+        self.errors = []
     def validate(self):
-        if not FlaskForm.validate(self):
+        if len(self.name) == 0:
+            # this is already checked by browser
+            self.errors.append("Name must be present!")
             return False
+        if len(self.name) > 30:
+            self.errors.append("Name too long.")
+            return False
+        if len(self.aboutGroup) > 200:
+            self.errors.append("""The about section is too long.
+                                  Max 200 characters.
+                                  Currently {} long.""".format(len(self.aboutGroup)))
+            return False 
         return True
 
 class EditGroupForm(FlaskForm):

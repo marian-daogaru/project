@@ -24,10 +24,11 @@ var userAPI = new Vue({
         console.log('error')
       },
     ).then( function() {
-      if (this.userLocal){
+      if (this.userLocal && window.location.pathname.substring(0, 5) === '/user') {
         this.loadUser()
       }})
-  },
+    },  // loadID
+
     loadUser: function() {
       this.$http.get(
         '/api' + window.location.pathname
@@ -40,7 +41,15 @@ var userAPI = new Vue({
           console.error(err)
         },
       )
-    },
+    },  // loadUser
+
+    redirectEdit: function() {
+      window.location.href = '/edit'
+    },  // redirectEdit
+
+    redirectCreateGroup: function() {
+      window.location.href = '/createGroup'
+    }  // redirectCreateGroup
   },
 })
 

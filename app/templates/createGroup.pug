@@ -4,12 +4,16 @@ block content
   .main.container
     h1 Create new Group 
     
-    form(action='' method='POST' name='login') #{'{{ form.hidden_tag() }}'}
+    div(id='createGroupApi')
+      div(v-if="errors")
+        template(v-for="error in errors")
+          .div(class="alert alert-danger") 
+            strong ${error} 
+            
       div.form-group 
-        label(for='groupName') GroupName: #{'{{ form.name(size=30) }}'} 
-        | #{'{% for error in form.name.errors %}'}
-        span(style='color: red;') [#{' {{ error }}'}]
-        | #{'{% endfor %}'} 
+        label(for='groupName') Group Name: 
+          input(v-model='groupName' type='text' class='form-control' name='groupName' placeholder="group name" required)
       div.form-group 
-        label(for='aboutGroup') About this group: #{'{{ form.aboutGroup(cols=50, rows=4) }}'}
-      button.btn.btn-primary(type='submit') Create Group  
+        label(for='aboutGroup') About this roup: 
+          textarea(v-model='aboutGroup' rows="5" cols="50" class='form-control' name='aboutGroup' placeholder="something about the group. max 200 characters")
+      button.btn.btn-primary(v-on:click='createGroup()') Create Group  

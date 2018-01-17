@@ -16,10 +16,8 @@ block content
               strong About: 
               .p ${user.aboutMe}
             .row(v-if="user.id === userLocal.id")
-              .btn.btn-primary 
-                a(href="{{ url_for('edit') }}") Edit your profile 
-              .btn.btn-primary 
-                a(href="{{ url_for('createGroup') }}") Create a new group 
+              .btn.btn-primary(v-on:click="redirectEdit()") Edit your profile 
+              .btn.btn-primary(v-on:click="redirectCreateGroup()") Create a new group 
         .row
           .col
             .groups

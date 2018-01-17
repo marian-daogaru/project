@@ -193,28 +193,37 @@ def loginApiGet():
 @app.route('/logout')
 @login_required
 def logout():
-    print("in logout")
     logout_user()
     session.clear()
-    print(g.user, current_user)
     return redirect(url_for('home'))
 
 
 # ##############################################################################
 # GROUP CREATE
 # ##############################################################################
-@app.route('/createGroup', methods=['GET', 'POST'])
+@app.route('/createGroup')
 @login_required
 def createGroup():
-    form = GroupCreateForm()
+    return render_template('createGroup.html')
 
-    if form.validate_on_submit():
+@app.route('/api/createGroup', methods=['GET'])
+@login_required
+def createGroupGet():
+    return jsonify(row2dict(g.user))
+
+@app.route('/api/createGroup', methods=['POST'])
+@login_required
+def createGroupPost():
+    response = request.get_json()
+    form = GroupCreateForm(response)
+
+    if form.validate():
         avatar = Media(mediaPath = GROUPPATH + '_defaultGroupAvatar.jpg')
         db.session.add(avatar)
         db.session.commit()
 
-        group = Group(name = form.name.data,
-                      aboutGroup = form.aboutGroup.data,
+        group = Group(name = form.name,
+                      aboutGroup = form.aboutGroup,
                       Media_id = avatar.id)
         db.session.add(group)
         db.session.commit()
@@ -224,13 +233,11 @@ def createGroup():
         db.session.add(admin)
         db.session.commit()
 
-        return redirect(url_for('user', id=g.user.id))
-        # REDO THE DB
-        # MAKE SO THAT THAT WHEN YOU CREATE A GROUP YOU ARE IN THE GROUP AND YOU BECOME THE ADMIN ALSO
+        return jsonify({'created': True,
+                        'groupID' : group.id})
 
-    return render_template('createGroup.html',
-                            form = form)
-
+    return jsonify({'created': False,
+                    'errors': form.errors})
 # ##############################################################################
 # GROUP MANAGEMENT
 # ##############################################################################
@@ -238,25 +245,8 @@ def createGroup():
 @app.route('/group/<id>')
 @login_required
 def group(id):
-    # group = Group.query.filter_by(id = eval(id)).first()
-    # if group is None:
-    #     flash("Group {} not found.".format(group.name))
-    #     return redirect(url_for('index'))
-    # form = PeopleGroupForm()
-    # avatarPath = Media.query.filter_by(id = group.Media_id).first().mediaPath
-    #
-    # if form.validate_on_submit():
-    #     print("after Validate")
-    #     valid, emails = form.validateCorrectEmails()
-    #     AddPeopletoGroup(emails, group)
-    #     flash("Flash everyone was added successfully!")
-    # print("outside if")
-    # print(request.form, "###")
-    # return jsonify({})
     return render_template('group.html')
-                            # group = group,
-                            # avatarPath = avatarPath,
-                            # form = form)
+
 
 @app.route('/api/group/<id>', methods=['GET'])
 @login_required
@@ -310,25 +300,6 @@ def AddPeopletoGroup(emails, group):
     return jsonify({'added': 'All people were added succesfully to this group.'}), 201
 
 
-        # user = User.query.filter_by(id = id).first()
-        # if user is None:
-        #     flash('User {} not found.'.format(id))
-        #     return redirect(url_for('index'))
-        # # flash(groupID)
-        # if 'groupIDDelete' in request.args:
-        #     groupID = request.args['groupIDDelete']
-        #     flash("was here")
-        #     deleteGroup(groupID)
-        #
-        # groups = user.joinedGroups().all()
-        # user = row2dict(user)
-        # user['avatar'] = row2dict(Media.query.filter_by(id = user["Media_id"]).first())
-        # user['Group'] = []
-        # for group in groups:
-        #     group = row2dict(group)
-        #     group['Media'] = row2dict(Media.query.filter_by(id = group["Media_id"]).first())
-        #     user['Group'].append(group)
-
 @app.route('/api/group/leave', methods=['POST'])
 @login_required
 def leaveGroup():
@@ -353,6 +324,24 @@ def leaveGroup():
     return jsonify({'left': False})
 
 
+@app.route('/api/group/<id>/delete', methods=['DELETE'])
+@login_required
+def deleteGroup(id):
+    group = Group.query.filter_by(id = id).first()
+    Media_id = group.Media_id
+    mediaID = group.Media_id  # because of how the FK work, group will be delete first, then media. so if we dont store it, Media_id will be gone...
+    UsersInGroups.query.filter_by(Group_id = group.id).delete()  # remove all records of all the users in that group
+    # add the Restaurants in Groups when implemented
+    Group.query.filter_by(id = group.id).delete()  # remove the group
+    Media.query.filter_by(id = Media_id).delete()  # remove the media part
+    db.session.commit()
+    return jsonify({"deleted": True,
+                    'id': g.user.id})
+
+
+# ##############################################################################
+# EDIT GROUP
+# ##############################################################################
 @app.route('/group/<id>/edit', methods=['GET', 'POST'])
 @login_required
 def editGroup(id):
@@ -388,20 +377,6 @@ def editGroup(id):
         form.aboutGroup.data = group.aboutGroup
     return render_template('editGroup.html',
                             form  = form)
-
-@app.route('/api/group/<id>/delete', methods=['DELETE'])
-@login_required
-def deleteGroup(id):
-    group = Group.query.filter_by(id = id).first()
-    Media_id = group.Media_id
-    mediaID = group.Media_id  # because of how the FK work, group will be delete first, then media. so if we dont store it, Media_id will be gone...
-    UsersInGroups.query.filter_by(Group_id = group.id).delete()  # remove all records of all the users in that group
-    # add the Restaurants in Groups when implemented
-    Group.query.filter_by(id = group.id).delete()  # remove the group
-    Media.query.filter_by(id = Media_id).delete()  # remove the media part
-    db.session.commit()
-    return jsonify({"deleted": True,
-                    'id': g.user.id})
 
 
 # ##############################################################################

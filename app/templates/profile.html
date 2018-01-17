@@ -34,8 +34,8 @@
                   <div class="p">${user.aboutMe}</div>
                 </div>
                 <div class="row" v-if="user.id === userLocal.id">
-                  <div class="btn btn-primary"> <a href="{{ url_for('edit') }}">Edit your profile </a></div>
-                  <div class="btn btn-primary"> <a href="{{ url_for('createGroup') }}">Create a new group </a></div>
+                  <div class="btn btn-primary" v-on:click="redirectEdit()">Edit your profile </div>
+                  <div class="btn btn-primary" v-on:click="redirectCreateGroup()">Create a new group </div>
                 </div>
               </div>
             </div>
