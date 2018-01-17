@@ -1,6 +1,8 @@
 import os
 from datetime import timedelta
 import uuid
+import numpy as np
+import json
 from app import app, db, lm
 from config import USERPATH, GROUPPATH, basedir
 from flask import render_template, flash, redirect, session, url_for, request, g, jsonify
@@ -8,7 +10,7 @@ from flask_login import login_user, logout_user, current_user, login_required
 from .models import Group, Media, User, UsersInGroups
 from .forms import SignUpForm, LoginForm, EditForm, GroupCreateForm,  EditGroupForm, PeopleGroupForm
 from werkzeug.utils import secure_filename
-import json
+
 
 row2dict = lambda r: {c.name: str(getattr(r, c.name)) for c in r.__table__.columns}
 
@@ -348,36 +350,6 @@ def deleteGroup(id):
 @app.route('/group/<id>/edit')
 @login_required
 def editGroup(id):
-    # print("in edit", dir(app))
-    # group = Group.query.filter_by(id = id).first()
-    # if group is None:
-    #     flash("no such group")
-    #     return redirect(url_for('user', id=g.user.id))
-    #
-    # form = EditGroupForm(group.name)
-    # if form.validate_on_submit():
-        # group.name = form.name.data
-        # group.aboutGroup = form.aboutGroup.data
-        #
-        # db.session.add(g.user)
-        # db.session.commit()
-    #
-    #     if 'file' in request.files:
-    #         file = request.files['file']
-    #         if file.filename == '':
-    #             flash ("No file Selected")
-    #             return redirect(url_for('user', id=g.user.id))
-    #
-    #         filename = os.path.join(app.config['GROUPPATH'], secure_filename(file.filename))
-    #         file.save(os.path.join(basedir + '/app/', filename[3:]))
-    #         media = Media.query.filter_by(id = group.Media_id).first()
-    #         media.mediaPath = filename
-    #         db.session.add(media)
-    #         db.session.commit()
-    #     return redirect(url_for('group', id=group.id))
-    # elif request.method != "POST":
-    #     form.name.data = group.name
-    #     form.aboutGroup.data = group.aboutGroup
     return render_template('editGroup.html')
 
 @app.route('/api/group/<id>/edit', methods=['GET'])
@@ -385,8 +357,19 @@ def editGroup(id):
 def editGroupGet(id):
     group = Group.query.filter_by(id = id).first()
     if g.user.isInGroup(g.user, group) and g.user.isAdmin(group.id):
+        users = group.users()
         group = row2dict(group)
         group['mediaPath'] = Media.query.filter_by(id = group["Media_id"]).first().mediaPath
+        group['users'] = []
+        for user in users:
+            # user = User.query.filter_by(id = user["User_id"]).first()
+            user = User.query.filter_by(id = user.User_id).first()
+            isAdmin = user.isAdmin(group['id'])
+            user = row2dict(user)
+            print(user)
+            user['mediaPath'] = Media.query.filter_by(id = user['Media_id']).first().mediaPath
+            user['isAdmin'] = isAdmin
+            group['users'].append(user)
         return jsonify(group)
     else:
         return jsonify({'accessDenied': True})
@@ -396,7 +379,6 @@ def editGroupGet(id):
 def editGroupPost(id):
     response = request.get_json()
     group = Group.query.filter_by(id = id).first()
-
     form = EditGroupForm(response)
     if form.validate():
         group.name = form.name
@@ -408,7 +390,7 @@ def editGroupPost(id):
             avatar = response['avatar'].split(',')[1]
 
             filename = str(uuid.uuid4().hex) + '.png'
-            filename = os.path.join(app.config['USERPATH'], secure_filename(filename))
+            filename = os.path.join(app.config['GROUPPATH'], secure_filename(filename))
             with open(os.path.join(basedir + '/app/', filename[3:]), 'w') as myImage:
                 # missing_padding = len(form.avatar) % 4
                 # if missing_padding != 0:
@@ -418,8 +400,26 @@ def editGroupPost(id):
             media.mediaPath = filename
             db.session.add(media)
             db.session.commit()
+
+        for newAdminID in response['ids']:
+            group.makeAdmin(newAdminID)
+
         return jsonify({'updated': True})
     return jsonify({'errors': form.errors})
+
+@app.route('/api/group/-1/edit/<ids>', methods=['DELETE'])
+@login_required
+def editGroupDelete(ids):
+    # first ID will be group ID, the remaining will be the ids of the ppl to removed
+    ids = np.array(ids.split(",")).astype(int)
+    group = group = Group.query.filter_by(id = ids[0]).first()
+    if ids.size > 1:
+        for userID in ids[1:]:
+            user = User.query.filter_by(id = userID).first()
+            user.leaveGroup(user, group)
+        return jsonify({'removed': True})
+    return jsonify({'removed': False})
+
 # ##############################################################################
 # ERROR HANDLING
 # ##############################################################################

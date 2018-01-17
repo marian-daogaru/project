@@ -32,7 +32,7 @@
           </div>
           <div v-if="group">
             <div class="row">
-              <div class="col-lg-3 col-sm-6"><img class="image" :src="group.mediaPath" width="200" height="auto"/></div>
+              <div class="col-lg-3 col-sm-6"><img class="img-thumbnail img-responsive" :src="group.mediaPath" width="200" height="auto"/></div>
               <div class="col-log-2 col-sm-6">
                 <h1>${group.name}</h1>
                 <h3 v-if="group.aboutGroup !== 'None'">${group.aboutGroup}</h3>

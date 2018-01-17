@@ -10,7 +10,7 @@ block content
             strong ${user.nickname}
         .row 
           .col-lg-3.col-sm-6
-            img.image(:src="user.avatar.mediaPath" width="200" height="auto")
+            img.img-responsive.img-thumbnail(:src="user.avatar.mediaPath" width="200" height="auto")
           .col-lg-3.col-sm-6
             .row
               strong About: 
@@ -22,15 +22,15 @@ block content
           .col
             .groups
               h3 Groups
-            template(v-for="group in user.Group")
-              a(v-bind:href="/group/ + group.id" name='fasole')
-                .row
-                  .col-lg-3
-                    img.image(v-bind:src="group.Media.mediaPath" width="200" height="auto")                    
-                  .col-lg-3
-                    h4 ${group.name}
-                    .col 
-                      p(v-if="group.aboutGroup !== 'None'") ${group.aboutGroup}
+              template(v-for="group in user.Group")
+                a(v-bind:href="/group/ + group.id" name='fasole')
+                  .row
+                    .col-lg-3
+                      img.img-responsive.img-thumbnail(v-bind:src="group.Media.mediaPath" width="200" height="auto")                    
+                    .col-lg-3
+                      h4 ${group.name}
+                      .col 
+                        p(v-if="group.aboutGroup !== 'None'") ${group.aboutGroup}
                       
                 
                       

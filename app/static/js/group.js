@@ -254,6 +254,8 @@ var groupAPI = new Vue({
     delimiters: ['${','}'],
     data:{
       group: null,
+      checkedIDs: [],
+      kickIDs: [],
       errors: '',
       name: '',
       aboutGroup: '',
@@ -274,7 +276,8 @@ var groupAPI = new Vue({
             function(response) {
               this.group = response.data,
               this.name = this.group.name,
-              this.aboutGroup = this.group.aboutGroup
+              this.aboutGroup = this.group.aboutGroup,
+              this.kickIDs.push(this.group.id)
             },
             function(err) {
               console.error(err),
@@ -294,10 +297,11 @@ var groupAPI = new Vue({
         form = {
           name: this.name,
           aboutGroup: this.aboutGroup,
-          avatar: this.avatar
+          avatar: this.avatar,
+          ids: this.checkedIDs
         },
         this.$http.post(
-          '/api' + window.location.pathname, form
+          '/api/group/' + this.group.id + '/edit', form
         ).then(
           function(response) {
             this.errors = response.data.errors,
@@ -333,6 +337,29 @@ var groupAPI = new Vue({
         };
         reader.readAsDataURL(file);
       },
+
+      kickPeople: function() {
+        console.log('/api/group/-1/edit/' + this.kickIDs),
+        this.$http.delete(
+          '/api/group/-1/edit/' + this.kickIDs
+        ).then(
+          function(response) {
+            console.log(response.data),
+            console.log('hello')
+            if (response.data.removed){
+              this.loadGroup()
+            }
+          },
+          function(err) {
+            console.error(err),
+            console.log('error')
+          }
+        )
+      },
+
+      goBackGroup: function() {
+        window.location.href = '/group/' + this.group.id
+      }
     } // methods
 
   }) // main brackets

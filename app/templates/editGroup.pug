@@ -9,19 +9,42 @@ block content
         template(v-for="error in errors")
           .div(class="alert alert-danger") 
             strong ${error} 
-      div(v-if='group')      
-        div.form-group 
-          label(for='name') Name: 
-            input(v-model='name' type='text' class='form-control' name='name' required)
-        div.form-group 
-          label(for='aboutGroup') About group: 
-            textarea(v-model='aboutGroup' rows="5" cols="50" class='form-control' name='aboutGroup')
-        
-        div.form-group 
-          label(for='avatarImage') Change profile picture: 
-            input(type='file' name='file' @change="onFileChange")
-        button.btn.btn-primary(v-on:click='sendUpdate()') Submit changes
-      
+      div(v-if='group')
+        //- (height=75vh, overflow-y=scroll)
+        button.btn.btn-primary(v-on:click='goBackGroup()') Go back
+        .row.div
+          .col-lg-6.col-sm-12    
+            div.form-group 
+              label(for='name') Name: 
+                input(v-model='name' type='text' class='form-control' name='name' required)
+            div.form-group 
+              label(for='aboutGroup') About group: 
+                textarea(v-model='aboutGroup' rows="5" cols="50" class='form-control' name='aboutGroup')
+            
+            div.form-group 
+              label(for='avatarImage') Change profile picture: 
+                input(type='file' name='file' @change="onFileChange")
+            button.btn.btn-primary(v-on:click='sendUpdate()') Submit changes
+          .col-lg-6.col-sm-12
+            h4 Make admins
+            template(v-for="user in group.users")
+              .row(v-if='!user.isAdmin')
+                .col-lg-2
+                  img.img-rounded.img-responsive(v-bind:src="'../' + user.mediaPath" width="75" height="auto")
+                .col-lg-4
+                    input(type="checkbox" :id="user.id" :value="user.id" v-model="checkedIDs")
+                    label(for="user.id") ${user.nickname}, ${user.email}
+                      
+        .row.div  
+          
+          button.btn.btn-danger(v-on:click='kickPeople()') Remove people from group
+          template(v-for="user in group.users")
+            .row(v-if='!user.isAdmin')
+              .col-lg-2
+                img.img-rounded.img-responsive(v-bind:src="'../' + user.mediaPath" width="75" height="auto")
+              .col-lg-4
+                  input(type="checkbox" :id="user.id" :value="user.id" v-model="kickIDs")
+                  label(for="user.id") ${user.nickname}, ${user.email}
       
       
       

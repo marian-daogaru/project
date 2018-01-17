@@ -89,6 +89,14 @@ class Group(db.Model):
                              UsersInGroups.admin.like(1))).count()
         return adminCount <= 1
 
+    def makeAdmin(self, userID):
+        userInGroup = UsersInGroups.query.filter(
+                        and_(UsersInGroups.Group_id.like(self.id),
+                             UsersInGroups.User_id.like(userID))).first()
+        userInGroup.admin = 1
+        # db.session.add(userInGroup)
+        db.session.commit()
+
 class Restaurant(db.Model):
     __table__ = db.Model.metadata.tables['Restaurant']
 
