@@ -30,34 +30,4 @@ block content
             button.btn.btn-primary(v-on:click='addPeople()') Add people 
           .row 
             .btn.btn-danger(v-on:click='leaveGroupAlert()') Leave Group
-          
-    //- table 
-    //-   tr
-    //-     td 
-    //-       img.image(src='{{ avatarPath }}' width="200" height="auto")
-    //-     td 
-    //-       tr
-    //-         h1 #{'{{ group.name }}'}
-    //-       | #{' {% if group.aboutGroup %}'}
-    //-       tr #{' {{ group.aboutGroup }}'}
-    //-       | #{' {% endif %}'}
-    //-   tr
-    //-     td #{'{% if g.user.isAdmin(group.id) %}'}
-    //-       a(href="{{ url_for('editGroup', id=group.id) }}") Edit this group 
-    //-       button(class="btn btn-danger testDelete" onclick="deleteGroup({{group.id}}, {{g.user.id}})") Delete Group
-    //-       | #{'{% endif %}'}
-    //-   tr 
-    //-     td #{'{% if g.user.isInGroup(g.user, group) %}'}
-    //-       form(action='' method='POST' name='addPeople') #{'{{ form.hidden_tag() }}'}
-    //-         div.form-group 
-    //-           label(for='emails') Add new people to the group: 
-    //-         div.form-group 
-    //-           p [separate by ',' or ' ' otherwise you have to restart]
-    //-         div.form-group  #{'{{ form.emails(size=100) }}'}  
-    //-           | #{'{% for error in form.emails.errors %}'}
-    //-           span(style='color: red;') [#{' {{ error }}'}]
-    //-           | #{'{% endfor %}'} 
-    //-         button.btn.btn-primary(type='submit') Add
-    //-     td
-    //-       button(class="btn btn-danger testDelete" onclick="{{ g.user.leaveGroup(g.user, group)}}; {{ url_for('user', id=g.user.id)}}") Leave Group 
-    //-     | #{'{% endif %}'}
+      

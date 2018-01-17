@@ -337,9 +337,13 @@ def leaveGroup():
     if g.user.isInGroup(g.user, group):
         print("hello", group.lastAdmin())
         lastAdmin = group.lastAdmin()
-        if (lastAdmin and data['consent'] == 1) or not lastAdmin:
-            # g.user.leaveGroup(g.user, group)
-            # delete group if last admin
+        if (lastAdmin and data['consent'] == 1):
+            g.user.leaveGroup(g.user, group)
+            deleteGroup(group.id)
+            return jsonify({'left': True,
+                            'id': g.user.id})
+        elif not lastAdmin:
+            g.user.leaveGroup(g.user, group)
             return jsonify({'left': True,
                             'id': g.user.id})
         else:
