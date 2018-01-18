@@ -1,0 +1,51 @@
+extends base.pug 
+
+block content
+  .main.container
+    h1 Add restaurant 
+    div(id='addRestaurantAPI')
+      div(v-if="errors")
+        template(v-for="error in errors")
+          .div(class="alert alert-danger") 
+            strong ${error}  
+      div(v-if="confirmations")
+        template(v-for="conf in confirmations")
+          .div(class="alert alert-success") 
+            strong ${conf}  
+      div(v-if="group")
+        .col-lg-6
+          .row 
+            .col
+              label(for='search') Search existing
+              div(class="input-group")
+                input(v-model='restaurantName' v-on:keypress.enter="searchRestaurant()" type="text" class="form-control" placeholder="Search existing restaurant" name="search")
+                div(class="input-group-btn")
+                  .btn.btn-default(v-on:click="searchRestaurant()")
+                    i(class="glyphicon glyphicon-search")
+          .row 
+            .col
+              div( class="form-group")
+                label(for='url') Add new eating place 
+                input(v-model='restaurantURL' v-on:keypress.enter="addNewRestaurant()" type="text" class="form-control" placeholder="Add new restaurant" name="search")
+                .btn.btn-primary(v-on:click="addNewRestaurant()") Add new
+          .row 
+            .btn.btn-primary(v-on:click="goBackGroup()") Go back to your group
+        .col-lg-6(v-if='restaurants')
+          .h3 Search Results: 
+            .btn.btn-primary(v-if='restaurants.length !== 0' v-on:click="addCheckRestaurants()") Add checked      
+            template.row(v-for="restaurant in restaurants")
+              .row
+                input(type="checkbox" :id="restaurant.id" :value="restaurant.id" v-model="checkedRestaurants")
+                .col-lg-4
+                  img.img-rounded.img-responsive(v-bind:src="'../' + restaurant.mediaPath" height="500"  width="auto")
+                .col-lg-4
+                  h4 ${restaurant.name} 
+                    
+          
+            h4(v-if='restaurants.length === 0') No results. Check if restaurant already in group.
+         
+      
+      
+block jsscript 
+  script(type="text/javascript" src="{{ url_for('static', filename='js/restaurant.js') }}")
+    

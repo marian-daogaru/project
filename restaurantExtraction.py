@@ -1,11 +1,26 @@
+import os
 import urllib2
 import urllib
 import ssl
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
-link = 'https://www.caserola.ro/restaurant/zexezahana'
+from config import basedir, RESTAURANTPATH
+link = 'https://www.caserola.ro/restaurant/osteriazucca'
 
-mediaFolderPath = 'app/static/data/media/avatars/restaurants/'
+
+def extractRestaurant(url):
+    extractPlacesFuncDict = {
+            'foodpanda': extractFoodPanda,
+            'oliviera': extractOliviera,
+            'caserola': extractCaserola,
+            'hipmenu': extractHipMenu
+        }
+    for key, func in extractPlacesFuncDict.items():
+        if key in url.lower():
+            return func(url)
+    return extractParticular(url)
+
+
 
 def openWebsite(link):
     opener = urllib2.build_opener()
@@ -21,7 +36,8 @@ def openWebsiteCert(link):
 
 
 def saveImage(imageName, imageLink):
-    with open(imageName, 'wb') as myfile:
+    imagePath = os.path.join(basedir + '/app/', imageName[3:])
+    with open(imagePath, 'wb') as myfile:
         myfile.write(urllib2.urlopen(imageLink).read())
 
 
@@ -35,7 +51,7 @@ def extractFoodPanda(link):
     httpStart = webpage[bannerIndex:].index("https://") + bannerIndex
     httpStop = webpage[httpStart + 10:].index("https://") + httpStart + 9  # 10 - 1 due to | at the end
     avatarLink = webpage[httpStart : httpStop]
-    avatarName = mediaFolderPath + '{}.png'.format("".join(name.split()).lower())
+    avatarName = RESTAURANTPATH + '{}.png'.format("".join(name.split()).lower())
 
     saveImage(avatarName, avatarLink)
 
@@ -51,11 +67,11 @@ def extractOliviera(link):
     httpStart = firstBraketIndex + 42  # \n\t\t<meta property="og:image" content=" length
     httpStop = webpage[httpStart:].index('">') + httpStart
     avatarLink = webpage[httpStart : httpStop]
-    avatarName = mediaFolderPath + '{}.png'.format("".join(name.split()).lower())
+    avatarName = RESTAURANTPATH + '{}.png'.format("".join(name.split()).lower())
 
 
     # this is different because we are using certificate authentification
-    with open(avatarName, 'wb') as myfile:
+    with open(os.path.join(basedir + '/app/', avatarName[3:]), 'wb') as myfile:
         myfile.write(openWebsiteCert(avatarLink).read())
 
     return name, avatarName
@@ -71,7 +87,7 @@ def extractHipMenu(link):
     httpStart = webpage[logoIndex:].index("https://") + logoIndex
     httpStop = webpage[httpStart:].index('">') + httpStart
     avatarLink = webpage[httpStart : httpStop]
-    avatarName = mediaFolderPath + '{}.png'.format("".join(name.split()).lower())
+    avatarName = RESTAURANTPATH + '{}.png'.format("".join(name.split()).lower())
 
     saveImage(avatarName, avatarLink)
 
@@ -88,32 +104,36 @@ def extractCaserola(link):
     httpStart = webpage[logoIndex:].index("/images") + logoIndex
     httpStop = webpage[httpStart:].index('" alt=') + httpStart
     avatarLink = 'https://caserola.ro' + webpage[httpStart : httpStop]
-    avatarName = mediaFolderPath + '{}.png'.format("".join(name.split()).lower())
+    avatarName = RESTAURANTPATH + '{}.png'.format("".join(name.split()).lower())
 
-    with open(avatarName, 'wb') as myfile:
+    with open(os.path.join(basedir + '/app/', avatarName[3:]), 'wb') as myfile:
         myfile.write(openWebsite(avatarLink).read())
 
-    return name, avatarLink
+    return name, avatarName
 
 
 def captureImage(link, imageName):
+    imagePath = os.path.join(basedir + '/app/', imageName[3:])
     driver = webdriver.PhantomJS()
     driver.set_window_size(1024, 768)
     driver.get(link)
-    driver.save_screenshot(imageName)
+    driver.save_screenshot(imagePath)
     driver.close()
 
 def extractParticular(link):
+    """this is for any other website"""
     webpage = openWebsite(link).read()
     nameIndexStart = webpage.index('<title>') + 7
     nameIndexStop = webpage[nameIndexStart:].index('</title>') + nameIndexStart - 1
     name = webpage[nameIndexStart : nameIndexStop]
 
-    avatarName = mediaFolderPath + '{}.png'.format("".join(name.split()).lower())
+    avatarName = RESTAURANTPATH + '{}.png'.format("".join(name.split()).lower())
     captureImage(link, avatarName)
-    return name
+    return name, avatarName
 
 # with open('url.txt', 'w') as myfile:
 #     myfile.write(openWebsite(link).read())
 
-print(extractCaserola(link))
+print(extractRestaurant(link))
+
+# print(os.path.join(basedir + '/app/', RESTAURANTPATH[3:]))

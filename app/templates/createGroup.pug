@@ -17,3 +17,6 @@ block content
         label(for='aboutGroup') About this roup: 
           textarea(v-model='aboutGroup' rows="5" cols="50" class='form-control' name='aboutGroup' placeholder="something about the group. max 200 characters")
       button.btn.btn-primary(v-on:click='createGroup()') Create Group  
+
+block jsscript 
+  script(type="text/javascript" src="{{ url_for('static', filename='js/group.js') }}")

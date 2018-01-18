@@ -1,21 +1,22 @@
-from flask_wtf import FlaskForm
-from wtforms import StringField, BooleanField, TextAreaField, PasswordField
-from wtforms.validators import DataRequired, Length
 from .models import User
 import re
 
 
-def makeValid(string):
+def validateForInjections(inputDict):
     """this function will make a string, a nickname, name of group, about me
     valid by removing the special characters {} so we dont have injections. """
-    pass
+    newDict = {}
+    for key, value in inputDict.items():
+        newDict[key] =  re.sub('[\{\};]', '', value)
+    return newDict
 
 
 class LoginForm(object):
     def __init__(self, inputDict, *args, **kwargs):
-        self.email = inputDict['email']
-        self.password = inputDict['password']
-        self.rememberMe = inputDict['rememberMe']
+        newDict = validateForInjections(inputDict)
+        self.email = newDict['email']
+        self.password = newDict['password']
+        self.rememberMe = newDict['rememberMe']
         self.errors = []
 
     def validate(self):
@@ -40,10 +41,11 @@ class LoginForm(object):
 
 class SignUpForm():
     def __init__(self, inputDict, *args, **kwargs):
-        self.email = inputDict['email']
-        self.password = inputDict['password']
-        self.confpwd = inputDict['confpwd']
-        self.rememberMe = inputDict['rememberMe']
+        newDict = validateForInjections(inputDict)
+        self.email = newDict['email']
+        self.password = newDict['password']
+        self.confpwd = newDict['confpwd']
+        self.rememberMe = newDict['rememberMe']
         self.errors = []
 
     def validate(self):
@@ -77,11 +79,12 @@ class SignUpForm():
 
 class EditForm():
     def __init__(self, inputDict, *args, **kwargs):
-        self.nickname = inputDict['nickname']
-        self.aboutMe = inputDict['aboutMe']
-        self.password = inputDict['password']
-        self.confpwd =  inputDict['confpwd']
-        self.avatar = inputDict['avatar']
+        newDict = validateForInjections(inputDict)
+        self.nickname = newDict['nickname']
+        self.aboutMe = newDict['aboutMe']
+        self.password = newDict['password']
+        self.confpwd =  newDict['confpwd']
+        self.avatar = newDict['avatar']
         self.errors = []
 
     def validate(self):
@@ -116,13 +119,15 @@ class EditForm():
         # must do something about the aboutMe, to check it is not injecting stuff
         return True
 
+
 # ##############################################################################
 # GROUP Forms
 # ##############################################################################
 class GroupCreateForm():
     def __init__(self, inputDict, *args, **kwargs):
-        self.name = inputDict['name']
-        self.aboutGroup = inputDict['aboutGroup']
+        newDict = validateForInjections(inputDict)
+        self.name = newDict['name']
+        self.aboutGroup = newDict['aboutGroup']
         self.errors = []
     def validate(self):
         if len(self.name) == 0:
@@ -141,8 +146,9 @@ class GroupCreateForm():
 
 class EditGroupForm():
     def __init__(self, inputDict, *args, **kwargs):
-        self.name = inputDict['name']
-        self.aboutGroup = inputDict['aboutGroup']
+        newDict = validateForInjections(inputDict)
+        self.name = newDict['name']
+        self.aboutGroup = newDict['aboutGroup']
         self.errors = []
 
     def validate(self):
@@ -163,13 +169,12 @@ class EditGroupForm():
 
 class PeopleGroupForm():
     def __init__(self, inputDict, *args, **kwargs):
-        self.emails = str(inputDict['emails'])
+        newDict = validateForInjections(inputDict)
+        self.emails = str(newDict['emails'])
         self.errors = []
 
     def validate(self):
         comp = re.compile(r"^[-A-Za-z0-9_\s\.,@]*$")
-        print("!!!!", bool(comp.match(self.emails)))
-        print(self.validateCorrectEmails(), "!!!!")
         if not bool(comp.match(self.emails)):
             self.errors.append("The field contains characters that are not permitted. \n ")
             self.errors.append("The only permitted characters are Letters, Numbers, '@', Space, '_', '-', '.', ','.")
@@ -197,3 +202,17 @@ class PeopleGroupForm():
                 return False, [email]
 
         return True, emails
+
+
+class RestaurantAddForm():
+    def __init__(self, inputDict, *args, **kwargs):
+        newDict = validateForInjections(inputDict)
+        self.url = newDict['restaurantURL']
+        self.originalURL = inputDict['restaurantURL']
+        self.errors = []
+
+    def validate(self):
+        if self.url != self.originalURL:
+            self.errors.append('Invalid URL.')
+            return False
+        return True

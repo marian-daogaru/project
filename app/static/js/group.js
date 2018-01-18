@@ -12,6 +12,7 @@ var groupAPI = new Vue({
   mounted() {
     this.loadGroup()
   }, // mounted
+
   methods: {
     loadGroup: function() {
       this.$http.get(
@@ -169,7 +170,11 @@ var groupAPI = new Vue({
             }
           }
         )
-    } // deleteGroup
+    }, // deleteGroup
+
+    addRestaurantRedirect: function() {
+      window.location.href = '/group/' + this.group.id + '/addRestaurant'
+    }  // addRestaurantRedirect
   }  // methods
 })  //groupAPI
 

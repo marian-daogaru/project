@@ -11,20 +11,24 @@ block content
       div
         div.form-group 
           label(for='email') Email: 
-            input(v-model="email" type="email" class="form-control" name="email" placeholder="Enter email" requried)
+            input(v-on:keypress.enter="signUp()" v-model="email" type="email" class="form-control" name="email" placeholder="Enter email" requried)
         div.form-group 
           label(for='password') Password: 
-            input(v-model="password" type="password" class="form-control" name="password" placeholder="*****" required)
+            input(v-on:keypress.enter="signUp()" v-model="password" type="password" class="form-control" name="password" placeholder="*****" required)
         div.form-group 
           label(for='password') Confirm Password: 
-            input(v-model="confpwd" type="password" class="form-control" name="confpwd" placeholder="*****" required)      
+            input(v-on:keypress.enter="signUp()" v-model="confpwd" type="password" class="form-control" name="confpwd" placeholder="*****" required)      
         div.form-check 
           label(class="form-check-label" for="checkbox") Remember me: 
             input(v-model="rememberMe" type="checkbox" class="form-check-input" name="rememberMe")
         button.btn.btn-primary(v-on:click="signUp()") Sign me UP 
       
       
-          
+        
+
+block jsscript
+  script(type="text/javascript" src="{{ url_for('static', filename='js/login.js') }}")
+
         
     
   

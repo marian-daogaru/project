@@ -2,7 +2,7 @@ import os
 import uuid
 from app import app, db, lm
 from config import USERPATH, basedir
-from flask import render_template, session, request, g, jsonify
+from flask import render_template, session, request, g, jsonify, flash, redirect
 from flask_login import login_required
 from .models import Media, User
 from .forms import EditForm
@@ -74,7 +74,6 @@ def editApiPost():
 
         if len(form.avatar) > 0:
             form.avatar = form.avatar.split(',')[1]
-            print("hello", dir(form.avatar), len(form.avatar))
 
             filename = str(uuid.uuid4().hex) + '.png'
             filename = os.path.join(app.config['USERPATH'], secure_filename(filename))

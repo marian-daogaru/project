@@ -33,7 +33,8 @@ block content
                         p(v-if="group.aboutGroup !== 'None'") ${group.aboutGroup}
                       
                 
-                      
+block jsscript 
+  script(type="text/javascript" src="{{ url_for('static', filename='js/user.js') }}")
     
                       
     

@@ -11,10 +11,10 @@ block content
       div  
         div.form-group 
           label(for='email') Email: 
-            input(v-model="email" type="email" class="form-control" name="email" placeholder="Enter email" requried)
+            input(v-on:keypress.enter="login()" v-model="email" type="email" class="form-control" name="email" placeholder="Enter email" requried)
         div.form-group 
           label(for='password') Password: 
-            input(v-model="password" type="password" class="form-control" name="password" placeholder="*****" required)
+            input(v-on:keypress.enter="login()" v-model="password" type="password" class="form-control" name="password" placeholder="*****" required)
         div.form-check 
           label(class="form-check-label" for="checkbox") Remember me: 
             input(v-model="rememberMe" type="checkbox" class="form-check-input" name="rememberMe")
@@ -22,3 +22,6 @@ block content
         
       div Not Signed up? 
         a(href="{{ url_for('signup') }}") Do it now!
+        
+block jsscript
+  script(type="text/javascript" src="{{ url_for('static', filename='js/login.js') }}")

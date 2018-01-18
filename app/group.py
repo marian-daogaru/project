@@ -200,7 +200,7 @@ def editGroupPost(id):
 
             filename = str(uuid.uuid4().hex) + '.png'
             filename = os.path.join(app.config['GROUPPATH'], secure_filename(filename))
-            with open(os.path.join(basedir + '/app/', filename[3:]), 'w') as myImage:
+            with open(os.path.join(basedir, filename[3:]), 'w') as myImage:
                 # missing_padding = len(form.avatar) % 4
                 # if missing_padding != 0:
                 #     form.avatar += b'='* (4 - missing_padding)

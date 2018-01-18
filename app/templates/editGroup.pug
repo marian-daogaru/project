@@ -46,6 +46,8 @@ block content
                   input(type="checkbox" :id="user.id" :value="user.id" v-model="kickIDs")
                   label(for="user.id") ${user.nickname}, ${user.email}
       
+block jsscript 
+  script(type="text/javascript" src="{{ url_for('static', filename='js/group.js') }}")
       
       
       

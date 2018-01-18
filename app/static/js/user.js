@@ -10,6 +10,7 @@ var userAPI = new Vue({
   mounted() {
     this.loadID()
   },
+
   methods: {
     loadID: function() {
     this.$http.get(

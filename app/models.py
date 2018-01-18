@@ -2,6 +2,7 @@ from hashlib import md5
 from app import db, app
 from sqlalchemy import and_
 import re
+import numpy as np
 
 
 class User(db.Model):
@@ -97,8 +98,54 @@ class Group(db.Model):
         # db.session.add(userInGroup)
         db.session.commit()
 
+
+
 class Restaurant(db.Model):
     __table__ = db.Model.metadata.tables['Restaurant']
+
+    @staticmethod
+    def searchName(name):
+        # dir()
+        restaurantNames = np.array(db.session.query(Restaurant.name).distinct().all()).ravel()
+        matched = [restaurant for restaurant in restaurantNames if name.lower() in restaurant.lower()]
+        print(restaurantNames, matched)
+        if len(matched) > 0:
+            restaurants = [Restaurant.query.filter_by(name = match).first() for match in matched]
+            return restaurants
+        else:
+            return False
+
+    @staticmethod
+    def addToDatabase(name, url, mediaPath):
+        media = Media(mediaPath = mediaPath)
+        db.session.add(media)
+        db.session.commit()
+
+        restaurant = Restaurant(name = name,
+                                website = url,
+                                Media_id = media.id)
+        db.session.add(restaurant)
+        db.session.commit()
+        return restaurant
+
+
+    def inGroup(self, group):
+        return RestaurantsInGroups.query.filter_by(
+                    Restaurants_id = self.id).filter_by(
+                        Group_id = group.id).count() > 0
+
+    def addToGroup(self, group):
+        if not self.inGroup(group):
+            new = RestaurantsInGroups(Group_id = group.id,
+                                      Restaurants_id = self.id,
+                                      rating = -1)
+            db.session.add(new)
+            db.session.commit()
+
+
+class RestaurantsInGroups(db.Model):
+    __table__ = db.Model.metadata.tables['RestaurantsInGroups']
+
 
 class Media(db.Model):
     __table__ = db.Model.metadata.tables['Media']
