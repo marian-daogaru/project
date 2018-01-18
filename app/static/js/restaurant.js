@@ -100,3 +100,40 @@ var addRestaurantAPI = new Vue({
     } // goBackGroup
   }
 })
+
+
+var restaurantAPI = new Vue({
+  el: "#restaurantAPI",
+  delimiters: ['${','}'],
+  data:{
+    errors: '',
+    restaurant: null,
+  },
+
+  mounted() {
+    this.loadRestaurant()
+  },
+
+  methods: {
+    loadRestaurant: function(){
+      if (window.location.pathname.substring(0, 6) === '/resta'){
+        this.$http.get(
+          '/api' + window.location.pathname
+        ).then(
+          function(response) {
+            this.restaurant = response.data,
+            this.errors = response.data.errors
+          },
+          function(err) {
+            console.log(err),
+            console.log('ERROR')
+          }
+        )
+      }
+    },  // loadRestaurant
+
+    redirectWebsite: function(){
+      window.location = this.restaurant.website
+    }
+  }  //methods
+})  // restaurantAPI

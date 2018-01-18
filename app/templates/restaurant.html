@@ -1,0 +1,61 @@
+
+<html>
+  <head>
+    <title>Rodica 2.0</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css"/>
+  </head>
+  <body>
+    <h1>Test1</h1>
+    <div class="container">
+      <div id="baseAPI">Hello! <a href="{{ url_for('home') }}">Home</a>
+        <div v-if="User"><span v-if="User.id !== '-1'"><a :href="/user/+User.id">Your profile </a><a href="{{ url_for('logout') }}">Logout </a></span><span v-else="v-else"><a href="{{ url_for('login') }}">Login </a><a href="{{ url_for('signup') }}">Signup</a></span></div>
+      </div>
+    </div>{% with messages = get_flashed_messages() %} 
+{% if messages %}
+    <ul>
+{% for message in messages %}
+       <li>{{ message }}</li>
+{% endfor %}</ul>{% endif %}
+{% endwith %}
+    <div>
+      <div class="main container">
+        <div id="restaurantAPI">
+          <div v-if="errors">
+            <template v-for="error in errors">
+              <div class="div alert alert-danger"> <strong>${error} </strong></div>
+            </template>
+          </div>
+          <div v-if="restaurant">
+            <div class="row"> 
+              <div class="col-md-8"><img class="img-rounded img-responsive img-thumbnail" :src="restaurant.mediaPath" width="750" height="auto"/></div>
+            </div>
+            <div class="row"> 
+              <div class="col-md-8">
+                <div class="row"> 
+                  <h1>${restaurant.name}</h1>
+                </div>
+                <div class="row">
+                  <h3>${restaurant.aboutMe}  </h3>
+                </div>
+                <div class="row"> 
+                  <div class="btn btn-info" v-on:click="redirectWebsite()">Visit restaurant page</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.5"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/base.js') }}"></script>
+    <div> 
+      <script type="text/javascript" src="{{ url_for('static', filename='js/restaurant.js') }}"></script>
+    </div>
+  </body>
+</html>

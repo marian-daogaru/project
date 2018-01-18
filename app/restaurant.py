@@ -13,6 +13,10 @@ from restaurantExtraction import extractRestaurant
 row2dict = lambda r: {c.name: str(getattr(r, c.name)) for c in r.__table__.columns}
 
 
+# ##############################################################################
+# ADD RESTAURANT PART
+# ##############################################################################
+
 @app.route('/group/<id>/addRestaurant')
 @login_required
 def addRestaurant(id):
@@ -89,3 +93,25 @@ def addRestaurantPut(id, ids):
         return jsonify({'confirmations': ['Restaurants added succesfully!']})
     else:
         return jsonify({'nothing': ['Nothing Happened. BUG!']})
+
+
+
+# ##############################################################################
+# RESTAURANT PROFILE
+# ##############################################################################
+
+@app.route('/restaurant/<id>')
+@login_required
+def restaurant(id):
+    return render_template('restaurant.html')
+
+@app.route('/api/restaurant/<id>', methods=['GET'])
+@login_required
+def restaurantGet(id):
+    restaurant = Restaurant.query.filter_by(id = id).first()
+    if restaurant is None:
+        return jsonify({'errors': ['No such restaurant. This is a bug.']})
+    mediaPath = Media.query.filter_by(id = restaurant.Media_id).first().mediaPath
+    restaurant = row2dict(restaurant)
+    restaurant['mediaPath'] = mediaPath
+    return jsonify(restaurant)

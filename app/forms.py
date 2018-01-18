@@ -7,7 +7,10 @@ def validateForInjections(inputDict):
     valid by removing the special characters {} so we dont have injections. """
     newDict = {}
     for key, value in inputDict.items():
-        newDict[key] =  re.sub('[\{\};]', '', value)
+        if type(value) == str:
+            newDict[key] =  re.sub('[\{\};]', '', value)
+        else:
+            newDict[key] = value
     return newDict
 
 

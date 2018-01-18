@@ -1,0 +1,25 @@
+extends base.pug 
+
+block content
+  .main.container
+    div(id='restaurantAPI')
+      div(v-if="errors")
+        template(v-for="error in errors")
+          .div(class="alert alert-danger") 
+            strong ${error} 
+      div(v-if='restaurant')
+        .row 
+          .col-md-8
+            img.img-rounded.img-responsive.img-thumbnail(:src="restaurant.mediaPath" width="750" height="auto") 
+        .row 
+          .col-md-8
+            .row 
+              h1 ${restaurant.name}
+            .row
+              h3 ${restaurant.aboutMe}  
+            .row 
+              .btn.btn-info(v-on:click="redirectWebsite()") Visit restaurant page
+       
+block jsscript 
+  script(type="text/javascript" src="{{ url_for('static', filename='js/restaurant.js') }}")
+    

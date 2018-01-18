@@ -2,7 +2,7 @@ import os
 import uuid
 from app import app, db, lm
 from config import USERPATH, basedir
-from flask import render_template, session, request, g, jsonify, flash, redirect
+from flask import redirect, render_template, session, request, g, jsonify, flash, redirect
 from flask_login import login_required
 from .models import Media, User
 from .forms import EditForm
