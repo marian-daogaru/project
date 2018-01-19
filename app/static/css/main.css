@@ -4,4 +4,24 @@ body {
 
 .groupThumbnail {
   min-height: 400px;
+  position: relative;
+}
+
+.bottom {
+  position:absolute;
+  bottom:10px;
+  left: 20px;
+}
+
+.glyphicon-cutlery {
+  font-size: 2em;
+  color: red;
+}
+
+.ratingDefault {
+  color: black;
+}
+
+.ratingClicked {
+  color: yellow;
 }

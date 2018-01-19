@@ -20,7 +20,7 @@ html
                   span.icon-bar
                   span.icon-bar
                 a(class='navbar-brand' href="{{ url_for('home') }}")
-                  img(alt='brand' src='../static/data/media/avatars/brand.png' height="30px" width="auto")
+                  img(alt='brand' v-bind:src='brandLocation' height="30px" width="auto")
               div(class="collapse navbar-collapse" id="bs-example-navbar-collapse-1")
                 ul(class="nav navbar-nav")
                   li

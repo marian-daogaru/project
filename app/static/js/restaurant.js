@@ -84,13 +84,21 @@ var addRestaurantAPI = new Vue({
       this.confirmations = '',
        this.$http.put(
          '/api/group/' + this.group.id + '/addRestaurant/' + this.checkedRestaurants
-       ). then(
+       ).then(
          function(response) {
-           console.log(response.data)
+           console.log(response.data),
+           this.confirmations = response.data.confirmations,
+           this.checkedRestaurants = []
          },
          function(err) {
            console.log(err),
            console.log('error')
+         }
+       ).then(
+         function() {
+           if (this.confirmations){
+             this.searchRestaurant()
+           }
          }
        )
     },

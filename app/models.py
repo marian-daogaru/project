@@ -68,7 +68,8 @@ class User(db.Model):
         return UsersInGroups.query.filter(and_(UsersInGroups.User_id.like(self.id),
                                                 UsersInGroups.Group_id.like(groupID))).first().admin
 
-    # TODO the rest of the the functions
+    def rateRestaurant(self, restaurant, rating):
+        userRate = UserRatings.query
 
 
 class UsersInGroups(db.Model):
@@ -85,8 +86,10 @@ class Group(db.Model):
         return UsersInGroups.query.filter_by(Group_id = self.id).all()
 
     def restaurants(self):
-        return Restaurant.query.join(RestaurantsInGroups,
-                                RestaurantsInGroups.Group_id==self.id).all()
+        query = db.session.query(RestaurantsInGroups.Restaurants_id).\
+                    filter(RestaurantsInGroups.Group_id == self.id).subquery()
+
+        return db.session.query(Restaurant).join(query)
 
     def lastAdmin(self):
         adminCount = UsersInGroups.query.filter(
@@ -99,7 +102,6 @@ class Group(db.Model):
                         and_(UsersInGroups.Group_id.like(self.id),
                              UsersInGroups.User_id.like(userID))).first()
         userInGroup.admin = 1
-        # db.session.add(userInGroup)
         db.session.commit()
 
 
@@ -149,8 +151,35 @@ class Restaurant(db.Model):
     def mediaPath(self):
         return Media.query.filter_by(id = self.Media_id).first().mediaPath
 
+    def currentOverallRating(self, groupID):
+        return RestaurantsInGroups.query.filter(
+                    and_(RestaurantsInGroups.Group_id.like(groupID),
+                         RestaurantsInGroups.Restaurants_id.like(self.id))).first().rating
+
+    def currentUserRating(self, user):
+        if self.isCurrentUserRating(user):
+            return UserRatings.query.filter_by(
+                        User_id = user.id).filter_by(
+                            Restaurant_id = self.id).first().rating
+        else:
+            return 0
+
+    def isCurrentUserRating(self, user):
+        return UserRatings.query.filter_by(User_id = user.id).filter_by(
+                                    Restaurant_id = self.id).count() > 0
+
+
+
+
+
 class RestaurantsInGroups(db.Model):
     __table__ = db.Model.metadata.tables['RestaurantsInGroups']
+
+
+
+class UserRatings(db.Model):
+    __table__ = db.Model.metadata.tables['UserRatings']
+
 
 
 class Media(db.Model):

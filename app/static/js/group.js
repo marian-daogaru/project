@@ -7,6 +7,9 @@ var groupAPI = new Vue({
     errors: null,
     confirmation: null,
     response: null,
+    isActive: false,
+    ratingValue: 2,
+    response: ''
   },
 
   mounted() {
@@ -14,6 +17,32 @@ var groupAPI = new Vue({
   }, // mounted
 
   methods: {
+    giveRating: function (restaurant, buttonNo){
+      // this.isActive = true,
+      console.log(buttonNo),
+      console.log(this.group.restaurants),
+      console.log('/api/group/' + this.group.id + '/' + [this.group.userID, restaurant.id, buttonNo])
+      this.$http.put(
+        '/api/group/' + this.group.id + '/' + [this.group.userID, restaurant.id, buttonNo]
+      ).then(
+        function(response) {
+          this.response = response,
+          restaurant.userRating = buttonNo
+        },
+        function(err) {
+          console.error(err),
+          console.log("ERROR!!!")
+        }
+      ).then(
+        function() {
+          if (this.response.accessDenied){
+            window.location.href = '/accessDenied'
+          }
+
+        }
+      )
+    },  // giveRating
+
     loadGroup: function() {
       this.$http.get(
         '/api' + window.location.pathname

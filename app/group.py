@@ -75,6 +75,7 @@ def groupApiGet(id):
     inGroup = g.user.isInGroup(g.user, group)  # do this before we change group
     print("222", inGroup, users)
     group = row2dict(group)
+    group['userID'] = g.user.id
     group['mediaPath'] = Media.query.filter_by(id = group["Media_id"]).first().mediaPath
     if inGroup:
         group['isAdmin'] = g.user.isAdmin(group['id'])
@@ -87,8 +88,13 @@ def groupApiGet(id):
     for restaurant in restaurants:
         print(restaurant)
         mediaPath = restaurant.mediaPath()
+        userRating = restaurant.currentUserRating(g.user)
+        rating = restaurant.currentOverallRating(group['id'])
         restaurant = row2dict(restaurant)
         restaurant['mediaPath'] = mediaPath
+        restaurant['rating'] = rating
+        restaurant['userRating'] = userRating
+
         group['restaurants'].append(restaurant)
     return jsonify(group)
 
@@ -107,6 +113,24 @@ def groupApiPost(id):
 
         return jsonify({'errors': form.errors}), 201
     return ({'errors': ['Not a valid post form!']}), 400
+
+
+@app.route('/api/group/<id>/<ids>', methods=['PUT'])
+@login_required
+def groupApiPut(id, ids):
+    """
+        ids = [userID, restaurantID, rating]
+        userID is checked so we can verify if the user actually is in the group
+    """
+    group = Group.query.filter_by(id = id).first()
+    ids = ids.split(',')
+    print(id, ids)
+    if g.user.id == int(ids[0]):
+        if g.user.isInGroup(g.user, group):
+            return jsonify({})
+    #### ADD RATING TO DB!!!
+
+    return jsonify({'accessDenied': True})
 
 
 def AddPeopletoGroup(emails, group):

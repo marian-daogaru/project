@@ -7,7 +7,8 @@ var baseAPI = new Vue({
   el: "#baseAPI",
   delimiters: ['${', '}'],
   data: {
-    User: null
+    User: null,
+    brandLocation: '/static/data/media/avatars/brand.png'
   },
 
   mounted() {

@@ -33,14 +33,23 @@ block content
           .row
             template(v-for='restaurant in group.restaurants')
               .col-md-4.col-sm-4.col-xs-6
-                a(v-bind:href='/restaurant/ + restaurant.id')
                   div(class="thumbnail groupThumbnail")
-                    img.img-responsive.img-thumbnail(v-bind:src="restaurant.mediaPath" height="300" width="auto")                    
-                      div(class='caption')
-                        h4 ${restaurant.name}
-                        p(v-if="restaurant.aboutMe !== 'None'") ${restaurant.aboutMe}
+                    a(v-bind:href='/restaurant/ + restaurant.id')
+                      div
+                        img.img-responsive.img-thumbnail(v-bind:src="restaurant.mediaPath" height="300" width="auto")                    
+                        div(class='caption')
+                          h4 ${restaurant.name}
+                          p(v-if="restaurant.aboutMe !== 'None'") ${restaurant.aboutMe}
+                    div(class="bottom input-group")
+                      template(v-for="i in 5")
+                        .btn.btn-default(v-on:click="giveRating(restaurant, i)" )
+                          i(v-bind:class="{ ratingClicked: restaurant.userRating >= i }" class="glyphicon glyphicon-cutlery ratingDefault" :id='restaurant.id + "," + i' )
+                        //- .btn.btn-default(v-on:click="changeC(restaurant.id, 2)" )
+                        //-   i(v-bind:class="{ ratingClicked: ratingValue > 2 }" class="glyphicon glyphicon-cutlery ratingDefault" :id='restaurant.id + ",2"')
+                        //- .btn.btn-default(v-on:click="changeC(restaurant.id, 3)" )
+                        //-   i(v-bind:class="{ ratingClicked: ratingValue > 3 }" class="glyphicon glyphicon-cutlery ratingDefault" :id='restaurant.id + ",3"')
 
-        
+         
             
           
             

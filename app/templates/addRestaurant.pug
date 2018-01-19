@@ -35,13 +35,15 @@ block content
             .btn.btn-primary(v-if='restaurants.length !== 0' v-on:click="addCheckRestaurants()") Add checked      
             template.row(v-for="restaurant in restaurants")
               .row
-                input(type="checkbox" :id="restaurant.id" :value="restaurant.id" v-model="checkedRestaurants")
-                .col-lg-4
-                  img.img-rounded.img-responsive(v-bind:src="'../' + restaurant.mediaPath" height="500"  width="auto")
-                .col-lg-4
-                  h4 ${restaurant.name} 
+                label(:for="restaurant.id")
+                  .col-lg-4
+                    img.img-rounded.img-responsive(v-bind:src="'../' + restaurant.mediaPath" height="500"  width="auto")
+                  .col-lg-4
+                    h4 ${restaurant.name} 
+                  input(type="checkbox" :id="restaurant.id" :value="restaurant.id" v-model="checkedRestaurants")
+                      
                     
-          
+           
             h4(v-if='restaurants.length === 0') No results. Check if restaurant already in group.
          
       
