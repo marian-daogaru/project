@@ -71,6 +71,7 @@ def groupApiGet(id):
         return jsonify({'id': -1,
                         'errors': ['No such group.']})
     users = group.users()
+    restaurants = group.restaurants()
     inGroup = g.user.isInGroup(g.user, group)  # do this before we change group
     print("222", inGroup, users)
     group = row2dict(group)
@@ -82,6 +83,13 @@ def groupApiGet(id):
     for user in users:
         user = row2dict(user)
         group['users'].append(user)
+    group['restaurants'] = []
+    for restaurant in restaurants:
+        print(restaurant)
+        mediaPath = restaurant.mediaPath()
+        restaurant = row2dict(restaurant)
+        restaurant['mediaPath'] = mediaPath
+        group['restaurants'].append(restaurant)
     return jsonify(group)
 
 @app.route('/api/group/<id>', methods=['POST'])

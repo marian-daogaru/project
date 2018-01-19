@@ -84,6 +84,10 @@ class Group(db.Model):
     def users(self):
         return UsersInGroups.query.filter_by(Group_id = self.id).all()
 
+    def restaurants(self):
+        return Restaurant.query.join(RestaurantsInGroups,
+                                RestaurantsInGroups.Group_id==self.id).all()
+
     def lastAdmin(self):
         adminCount = UsersInGroups.query.filter(
                         and_(UsersInGroups.Group_id.like(self.id),
@@ -142,6 +146,8 @@ class Restaurant(db.Model):
             db.session.add(new)
             db.session.commit()
 
+    def mediaPath(self):
+        return Media.query.filter_by(id = self.Media_id).first().mediaPath
 
 class RestaurantsInGroups(db.Model):
     __table__ = db.Model.metadata.tables['RestaurantsInGroups']
