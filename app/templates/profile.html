@@ -5,54 +5,72 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"/>
   </head>
   <body>
-    <h1>Test1</h1>
     <div class="container">
-      <div id="baseAPI">Hello! <a href="{{ url_for('home') }}">Home</a>
-        <div v-if="User"><span v-if="User.id !== '-1'"><a :href="/user/+User.id">Your profile </a><a href="{{ url_for('logout') }}">Logout </a></span><span v-else="v-else"><a href="{{ url_for('login') }}">Login </a><a href="{{ url_for('signup') }}">Signup</a></span></div>
-      </div>
-    </div>{% with messages = get_flashed_messages() %} 
-{% if messages %}
-    <ul>
-{% for message in messages %}
-       <li>{{ message }}</li>
-{% endfor %}</ul>{% endif %}
-{% endwith %}
-    <div>
-      <div id="userAPI">
-        <div v-if="user">
-          <div class="container">
-            <h1>Hello ${userLocal.nickname}</h1>
-            <div class="div" v-if="user.id !== userLocal.id">
-              <h3>Your are current viewing the profile of <strong>${user.nickname}</strong></h3>
-            </div>
-            <div class="row"> 
-              <div class="col-lg-3 col-sm-6"><img class="img-responsive img-thumbnail" :src="user.avatar.mediaPath" width="200" height="auto"/></div>
-              <div class="col-lg-3 col-sm-6">
-                <div class="row"><strong>About: </strong>
-                  <div class="p">${user.aboutMe}</div>
-                </div>
-                <div class="row" v-if="user.id === userLocal.id">
-                  <div class="btn btn-primary" v-on:click="redirectEdit()">Edit your profile </div>
-                  <div class="btn btn-primary" v-on:click="redirectCreateGroup()">Create a new group </div>
-                </div>
+      <div id="baseAPI">
+        <div v-if="User">
+          <nav class="navbar navbar-default navbar-fixed-top container">
+            <div class="container-fluid">
+              <div class="navbar-header">
+                <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false"><span class="sr-only">Toggle Navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="{{ url_for('home') }}"><img alt="brand" src="../static/data/media/avatars/brand.png" height="30px" width="auto"/></a>
+              </div>
+              <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                  <li><a href="{{ url_for('home') }}">Home</a></li>
+                  <li v-if="User.id !== '-1'"><a :href="/user/+User.id">Your profile </a></li>
+                  <li v-else="v-else"><a href="{{ url_for('login') }}">Login </a></li>
+                  <li v-if="User.id !== '-1'"><a href="{{ url_for('logout') }}">Logout </a></li>
+                  <li v-else="v-else"><a href="{{ url_for('signup') }}">Signup </a></li>
+                </ul>
               </div>
             </div>
-            <div class="row">
-              <div class="col">
-                <div class="groups">
-                  <h3>Groups</h3>
-                  <template v-for="group in user.Group"><a v-bind:href="/group/ + group.id" name="fasole">
-                      <div class="row">
-                        <div class="col-lg-3"><img class="img-responsive img-thumbnail" v-bind:src="group.Media.mediaPath" width="200" height="auto"/></div>
-                        <div class="col-lg-3">
-                          <h4>${group.name}</h4>
-                          <div class="col"> 
-                            <p v-if="group.aboutGroup !== 'None'">${group.aboutGroup}</p>
-                          </div>
-                        </div>
-                      </div></a></template>
+          </nav>
+          <h1>Welcome!    </h1>
+        </div>{% with messages = get_flashed_messages() %} 
+{% if messages %}
+        <ul>
+{% for message in messages %}
+           <li>{{ message }}</li>
+{% endfor %}</ul>{% endif %}
+{% endwith %}
+      </div>
+      <div>
+        <div id="userAPI">
+          <div v-if="user">
+            <div class="container">
+              <h1>Hello ${userLocal.nickname}</h1>
+              <div class="div" v-if="user.id !== userLocal.id">
+                <h3>Your are current viewing the profile of <strong>${user.nickname}</strong></h3>
+              </div>
+              <div class="row"> 
+                <div class="col-lg-3 col-sm-6"><img class="img-responsive img-thumbnail" :src="user.avatar.mediaPath" width="200" height="auto"/></div>
+                <div class="col-lg-3 col-sm-6">
+                  <div class="row"><strong>About: </strong>
+                    <div class="p">${user.aboutMe}</div>
+                  </div>
+                  <div class="row" v-if="user.id === userLocal.id">
+                    <div class="btn btn-primary" v-on:click="redirectEdit()">Edit your profile </div>
+                    <div class="btn btn-primary" v-on:click="redirectCreateGroup()">Create a new group </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="groups">
+                    <h3>Groups</h3>
+                    <div class="row"></div>
+                    <template v-for="group in user.Group">
+                      <div class="col-sm-4 col-md-3 col-xs-6"><a v-bind:href="/group/ + group.id">
+                          <div class="thumbnail groupThumbnail"><img class="img-responsive img-thumbnail" v-bind:src="group.Media.mediaPath" width="200" height="auto"/>
+                            <div class="caption">
+                              <h4>${group.name}</h4>
+                              <p v-if="group.aboutGroup !== 'None'">${group.aboutGroup}</p>
+                            </div>
+                          </div></a></div>
+                    </template>
+                  </div>
                 </div>
               </div>
             </div>

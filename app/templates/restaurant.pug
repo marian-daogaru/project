@@ -16,7 +16,7 @@ block content
             .row 
               h1 ${restaurant.name}
             .row
-              h3 ${restaurant.aboutMe}  
+              h3(v-if="restaurant.aboutMe !== 'None'") ${restaurant.aboutMe}  
             .row 
               .btn.btn-info(v-on:click="redirectWebsite()") Visit restaurant page
        

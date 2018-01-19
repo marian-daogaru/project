@@ -27,8 +27,8 @@ var baseAPI = new Vue({
           console.log('error')
         },
       )
-    },
-  },
+    },  // loadUser
+  },  //methods
 })
 
 var general = new Vue({

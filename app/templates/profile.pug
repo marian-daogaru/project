@@ -22,14 +22,14 @@ block content
           .col
             .groups
               h3 Groups
+              .row
               template(v-for="group in user.Group")
-                a(v-bind:href="/group/ + group.id" name='fasole')
-                  .row
-                    .col-lg-3
+                .col-sm-4.col-md-3.col-xs-6
+                  a(v-bind:href="/group/ + group.id")
+                    div(class="thumbnail groupThumbnail")
                       img.img-responsive.img-thumbnail(v-bind:src="group.Media.mediaPath" width="200" height="auto")                    
-                    .col-lg-3
-                      h4 ${group.name}
-                      .col 
+                      div(class='caption')
+                        h4 ${group.name}
                         p(v-if="group.aboutGroup !== 'None'") ${group.aboutGroup}
                       
                 
