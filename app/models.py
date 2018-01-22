@@ -103,7 +103,6 @@ class User(db.Model):
 
 
 
-
 class UsersInGroups(db.Model):
     __table__ = db.Model.metadata.tables['UsersInGroups']
 
@@ -230,6 +229,13 @@ class Restaurant(db.Model):
             return np.average(ratings)
 
 
+    def addReview(self, userID, review):
+        userRest = UserRatings.query.filter(
+                    and_(UserRatings.User_id.like(userID),
+                        UserRatings.Restaurant_id.like(self.id))).first()
+        userRest.comment = review
+        db.session.add(userRest)
+        db.session.commit()
 
 
 class RestaurantsInGroups(db.Model):

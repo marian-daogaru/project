@@ -5,7 +5,7 @@ from config import USERPATH, basedir
 from flask import render_template, session, request, g, jsonify, flash, redirect
 from flask_login import login_required
 from .models import Media, User, Group, Restaurant
-from .forms import RestaurantAddForm
+from .forms import RestaurantAddForm, ReviewForm
 from werkzeug.utils import secure_filename
 
 from restaurantExtraction import extractRestaurant
@@ -144,3 +144,20 @@ def restaurantGet(id):
     restaurant = row2dict(restaurant)
     restaurant['mediaPath'] = mediaPath
     return jsonify(restaurant)
+
+# ##############################################################################
+# RESTAURANT REVIEW
+# ##############################################################################
+@app.route('/api/restaurant/<id>/user/<userID>/<review>', methods=['PUT'])
+@login_required
+def restaurantReviewPut(id, userID, review):
+    restaurant = Restaurant.query.filter_by(id = id).first()
+    if restaurant is not None:
+        if int(g.user.id) == int(userID):
+            form = ReviewForm(review)
+            if form.validate():
+                restaurant.addReview(userID, review)
+                return jsonify({'added': True})
+            return jsonify({'errors': form.errors})
+        return jsonify({'accessDenied': True})
+    return jsonify({'error': ['Restaurant not found']})

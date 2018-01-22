@@ -19,7 +19,12 @@ block content
               h3(v-if="restaurant.aboutMe !== 'None'") ${restaurant.aboutMe}  
             .row 
               .btn.btn-info(v-on:click="redirectWebsite()") Visit restaurant page
-       
+        .row
+          div.form-group 
+            label(for="review") Add a review
+              textarea(v-model='userReview' rows='5' cols='100' placeholder='What have you thought about this place? ...' class='form-control' name='review')
+          .btn.btn-info(v-on:click='submitReview()') Submit Review
+          
 block jsscript 
   script(type="text/javascript" src="{{ url_for('static', filename='js/restaurant.js') }}")
     

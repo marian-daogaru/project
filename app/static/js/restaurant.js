@@ -117,10 +117,14 @@ var restaurantAPI = new Vue({
   data:{
     errors: '',
     restaurant: null,
+    userReview: '',
+    user: '',
+    response: ''
   },
 
   mounted() {
-    this.loadRestaurant()
+    this.loadRestaurant(),
+    this.loadUser()
   },
 
   methods: {
@@ -140,10 +144,49 @@ var restaurantAPI = new Vue({
         )
       }
     },  // loadRestaurant
+    loadUser: function(){
+      this.$http.get(
+        '/api/home'
+      ).then(
+        function(response) {
+          this.user = response.data
+        },
+        function(err) {
+          console.log(err),
+          console.log('ERROR')
+        }
+      )
+    },  // loadUser
 
     redirectWebsite: function(){
       window.location = this.restaurant.website
-    }
+    },
+
+    submitReview: function(){
+      console.log(this.userReview),
+      console.log('/api/restaurant/' + this.restaurant.id + '/user/' + this.user.id + '/' + this.userReview)
+      if (this.userReview.length > 0) {
+        this.$http.put(
+          '/api/restaurant/' + this.restaurant.id + '/user/' + this.user.id + '/' + this.userReview
+        ).then(
+          function(response) {
+            this.response = response.data,
+            this.errors = response.data.errors
+            console.log(this.response)
+          },
+          function(err){
+            console.log(err),
+            console.log("ERROR")
+          }
+        ).then(
+          function() {
+            if (this.response.accessDenied){
+              window.location.href = '/accessDenied'
+            }
+          }
+        )
+      }
+    }  // submitReview
   }  //methods
 })  // restaurantAPI
 

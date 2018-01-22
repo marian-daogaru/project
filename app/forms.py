@@ -219,3 +219,25 @@ class RestaurantAddForm():
             self.errors.append('Invalid URL.')
             return False
         return True
+
+
+
+class ReviewForm():
+    def __init__(self, inputReview, *args, **kwargs):
+        inputDict = {'review': inputReview}
+        newDict = validateForInjections(inputDict)
+        self.review = newDict['review']
+        self.errors = []
+        self.inputReview = inputReview
+
+    def validate(self):
+        if len(self.review) == 0:
+            self.errors.append("Review is invalid!")
+            return False
+        if len(self.review) > 5000:
+            self.errors.append("Review is too long.")
+            return False
+        if self.review != self.inputReview:
+            self.errors.append("Review is invalid!")
+            return False
+        return True
