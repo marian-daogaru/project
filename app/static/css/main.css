@@ -15,6 +15,12 @@ body {
 
 .glyphicon-cutlery {
   font-size: 2em;
+}
+
+
+
+.glyphicon-remove {
+  font-size: 2em;
   color: red;
 }
 
@@ -24,4 +30,30 @@ body {
 
 .ratingClicked {
   color: yellow;
+}
+
+.ratingButton {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    outline: none;
+    border: 0;
+    background: transparent;
+    -webkit-box-shadow: 0 5px 15px rgba(0,0,0,0);
+    padding: 5px;
+}
+
+.leftRating{
+  float: left;
+  width: 40%;
+}
+
+.rightRating {
+  float: right;
+  width: 56%;
+}
+
+.ratingButtonGroup{
+  width: 100%;
+  left: 5px;
 }

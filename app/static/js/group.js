@@ -27,7 +27,8 @@ var groupAPI = new Vue({
       ).then(
         function(response) {
           this.response = response,
-          restaurant.userRating = buttonNo
+          restaurant.userRating = buttonNo,
+          console.log(this.response)
         },
         function(err) {
           console.error(err),
@@ -38,7 +39,6 @@ var groupAPI = new Vue({
           if (this.response.accessDenied){
             window.location.href = '/accessDenied'
           }
-
         }
       )
     },  // giveRating
@@ -278,6 +278,10 @@ var groupAPI = new Vue({
           window.location.href = '/group/' + thisVue.response.groupID
         })
       },
+
+      removeRestaurant: function(restaurant) {
+        console.log(restaurant);
+      }
     } // methods
   }) // main brackets
 

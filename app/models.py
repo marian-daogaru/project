@@ -68,8 +68,16 @@ class User(db.Model):
         return UsersInGroups.query.filter(and_(UsersInGroups.User_id.like(self.id),
                                                 UsersInGroups.Group_id.like(groupID))).first().admin
 
-    def rateRestaurant(self, restaurant, rating):
-        userRate = UserRatings.query
+    def rateRestaurant(self, restaurantID, rating):
+        userRate = UserRatings.query.filter(
+                        and_(UserRatings.User_id.like(self.id),
+                             UserRatings.Restaurant_id.like(restaurantID))).first()
+        if userRate is None:
+            userRate = UserRatings(User_id = self.id,
+                                   Restaurant_id = restaurantID)
+        userRate.rating = rating
+        db.session.add(userRate)
+        db.session.commit()
 
 
 class UsersInGroups(db.Model):

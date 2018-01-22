@@ -81,10 +81,15 @@
                               <p v-if="restaurant.aboutMe !== 'None'">${restaurant.aboutMe}</p>
                             </div>
                           </div></a>
-                        <div class="bottom input-group">
-                          <template v-for="i in 5">
-                            <div class="btn btn-default" v-on:click="giveRating(restaurant, i)"><i class="glyphicon glyphicon-cutlery ratingDefault" v-bind:class="{ ratingClicked: restaurant.userRating &gt;= i }" :id="restaurant.id + &quot;,&quot; + i"></i></div>
-                          </template>
+                        <div class="bottom input-group ratingButtonGroup">
+                          <div class="leftRating">
+                            <div class="btn btn-default ratingButton" v-on:click="removeRestaurant(restaurant)"><i class="glyphicon glyphicon-remove"></i></div>
+                          </div>
+                          <div class="rightRating">
+                            <template v-for="i in 5">
+                              <div class="btn btn-default ratingButton" v-on:click="giveRating(restaurant, i)"><i class="glyphicon glyphicon-cutlery ratingDefault" v-bind:class="{ ratingClicked: restaurant.userRating &gt;= i }" :id="restaurant.id + &quot;,&quot; + i"></i></div>
+                            </template>
+                          </div>
                         </div>
                       </div>
                     </div>

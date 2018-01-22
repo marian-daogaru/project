@@ -40,15 +40,16 @@ block content
                         div(class='caption')
                           h4 ${restaurant.name}
                           p(v-if="restaurant.aboutMe !== 'None'") ${restaurant.aboutMe}
-                    div(class="bottom input-group")
-                      template(v-for="i in 5")
-                        .btn.btn-default(v-on:click="giveRating(restaurant, i)" )
-                          i(v-bind:class="{ ratingClicked: restaurant.userRating >= i }" class="glyphicon glyphicon-cutlery ratingDefault" :id='restaurant.id + "," + i' )
-                        //- .btn.btn-default(v-on:click="changeC(restaurant.id, 2)" )
-                        //-   i(v-bind:class="{ ratingClicked: ratingValue > 2 }" class="glyphicon glyphicon-cutlery ratingDefault" :id='restaurant.id + ",2"')
-                        //- .btn.btn-default(v-on:click="changeC(restaurant.id, 3)" )
-                        //-   i(v-bind:class="{ ratingClicked: ratingValue > 3 }" class="glyphicon glyphicon-cutlery ratingDefault" :id='restaurant.id + ",3"')
-
+                    div(class="bottom input-group ratingButtonGroup")
+                      div(class="leftRating")
+                        .btn.btn-default(class="ratingButton" v-on:click="removeRestaurant(restaurant)")
+                          i(class="glyphicon glyphicon-remove")
+                      div(class="rightRating")
+                        template(v-for="i in 5")
+                          .btn.btn-default(class="ratingButton" v-on:click="giveRating(restaurant, i)" )
+                            i(v-bind:class="{ ratingClicked: restaurant.userRating >= i }" class="glyphicon glyphicon-cutlery ratingDefault" :id='restaurant.id + "," + i' )
+                        
+                        
          
             
           

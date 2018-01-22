@@ -5,7 +5,7 @@ from app import app, db, lm
 from config import GROUPPATH, basedir
 from flask import render_template, session, request, g, jsonify
 from flask_login import login_user, logout_user, current_user, login_required
-from .models import Group, Media, User, UsersInGroups
+from .models import Group, Media, User, UsersInGroups, RestaurantsInGroups
 from .forms import GroupCreateForm,  EditGroupForm, PeopleGroupForm
 from werkzeug.utils import secure_filename
 
@@ -115,6 +115,9 @@ def groupApiPost(id):
     return ({'errors': ['Not a valid post form!']}), 400
 
 
+# #############################################################################
+# Restaurant Feedback
+# #############################################################################
 @app.route('/api/group/<id>/<ids>', methods=['PUT'])
 @login_required
 def groupApiPut(id, ids):
@@ -127,8 +130,9 @@ def groupApiPut(id, ids):
     print(id, ids)
     if g.user.id == int(ids[0]):
         if g.user.isInGroup(g.user, group):
-            return jsonify({})
-    #### ADD RATING TO DB!!!
+            g.user.rateRestaurant(ids[1], ids[2])
+            return jsonify({"rated": True})
+        return jsonify({'accessDenied': True})
 
     return jsonify({'accessDenied': True})
 
@@ -177,7 +181,7 @@ def deleteGroup(id):
     Media_id = group.Media_id
     mediaID = group.Media_id  # because of how the FK work, group will be delete first, then media. so if we dont store it, Media_id will be gone...
     UsersInGroups.query.filter_by(Group_id = group.id).delete()  # remove all records of all the users in that group
-    # add the Restaurants in Groups when implemented
+    RestaurantsInGroups.query.filter_by(Group_id = group.id).delete()  # remove all the restaurant from this group
     Group.query.filter_by(id = group.id).delete()  # remove the group
     Media.query.filter_by(id = Media_id).delete()  # remove the media part
     db.session.commit()
