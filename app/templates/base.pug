@@ -33,7 +33,14 @@ html
                     a(href="{{ url_for('logout') }}") Logout 
                   li(v-else)
                     a(href="{{ url_for('signup') }}") Signup 
-          
+                ul(class="nav navbar-nav navbar-right")
+                  li(v-if="User.id !== '-1'")
+                    div(class="navbar-form navbar-left navbar-input-group")
+                      div(class="form-group")
+                        input(v-model='restaurantName' v-on:keypress.enter="searchRestaurantRedirect()" type="text" class="form-control" placeholder="Search existing restaurant" name="search")
+                      .btn.btn-default(v-on:click="searchRestaurantRedirect()")
+                        i(class="glyphicon glyphicon-search")
+                            
           h1 Welcome!    
           
         | #{'{% with messages = get_flashed_messages() %} '}

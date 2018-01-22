@@ -33,7 +33,9 @@ def addRestaurantGet(id):
 
     return jsonify({'accessDenied': True})
 
-
+# ##############################################################################
+# SEARCH
+# ##############################################################################
 @app.route('/api/group/<id>/addRestaurant/<string:name>', methods=['GET'])
 @login_required
 def addRestaurantGetRestaurantSearch(id, name):
@@ -50,11 +52,36 @@ def addRestaurantGetRestaurantSearch(id, name):
                                                 id = restaurant['Media_id']).first().mediaPath
                     restaurantsList.append(restaurant)
             print(restaurantsList)
-            return jsonify(restaurantsList)
+        return jsonify(restaurantsList)
+    return jsonify({'accessDenied': True})
+
+
+
+# ##############################################################################
+# GENERAL SEARCH
+# ##############################################################################
+@app.route('/restaurant/search/<name>')
+@login_required
+def searchRestaurant(name):
+    return render_template('searchRestaurant.html')
+
+@app.route('/api/restaurant/search/<name>', methods=['GET'])
+@login_required
+def searchRestaurantGet(name):
+    if len(name) > 0:
+        print(name)
+        restaurants = Restaurant.searchName(name)
+        restaurantsList = []
+        if restaurants:
+            for restaurant in restaurants:
+                restaurant = row2dict(restaurant)
+                restaurant['mediaPath'] = Media.query.filter_by(
+                                            id = restaurant['Media_id']).first().mediaPath
+                restaurantsList.append(restaurant)
+        print(restaurantsList)
         return jsonify(restaurantsList)
 
     return jsonify({'accessDenied': True})
-
 
 @app.route('/api/group/<id>/addRestaurant', methods=['POST'])
 @login_required

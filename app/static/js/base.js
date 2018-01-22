@@ -8,7 +8,8 @@ var baseAPI = new Vue({
   delimiters: ['${', '}'],
   data: {
     User: null,
-    brandLocation: '/static/data/media/avatars/brand.png'
+    brandLocation: '/static/data/media/avatars/brand.png',
+    restaurantName: ''
   },
 
   mounted() {
@@ -29,6 +30,13 @@ var baseAPI = new Vue({
         },
       )
     },  // loadUser
+
+    searchRestaurantRedirect: function() {
+      console.log(this.restaurantName.length)
+      if (this.restaurantName.length > 0) {
+        window.location.href = '/restaurant/search/' + this.restaurantName
+      }
+    }  //searchRestaurant
   },  //methods
 })
 

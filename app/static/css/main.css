@@ -13,17 +13,16 @@ body {
   left: 20px;
 }
 
-.glyphicon-cutlery {
+/* .glyphicon-cutlery {
   font-size: 2em;
-}
-
-
+} */
 
 .glyphicon-remove {
-  font-size: 2em;
   color: red;
 }
-
+.glyphicon-search {
+  font-size: 1.45em;
+}
 .ratingDefault {
   color: black;
 }
@@ -41,6 +40,8 @@ body {
     background: transparent;
     -webkit-box-shadow: 0 5px 15px rgba(0,0,0,0);
     padding: 5px;
+
+    font-size: 2em;
 }
 
 .leftRating{
@@ -56,4 +57,9 @@ body {
 .ratingButtonGroup{
   width: 100%;
   left: 5px;
+}
+
+.navbar-form .input-group-btn,
+.navbar-form .input-group-addon {
+width: auto;
 }

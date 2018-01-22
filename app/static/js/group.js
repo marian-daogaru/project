@@ -25,6 +25,7 @@ var groupAPI = new Vue({
         function(response) {
           this.response = response.data,
           restaurant.userRating = buttonNo,
+          restaurant.rating = this.response.rating,
           console.log(this.response)
         },
         function(err) {
@@ -327,7 +328,10 @@ var editGroupAPI = new Vue({
 
   methods: {
     loadGroup: function() {
-      if (window.location.pathname.substring(0, 6) === '/group'){
+      console.log("hello"),
+      path =   window.location.pathname
+      if (window.location.pathname.substring(0, 6) === '/group' &&
+          window.location.pathname.slice(-5) === '/edit'){
         this.$http.get(
           '/api' + window.location.pathname
         ).then(
@@ -343,9 +347,9 @@ var editGroupAPI = new Vue({
           }
         ).then(  // first then
             function() {
-              if (this.group.accessDenied) {
-                window.location.href = '/accessDenied'
-              }
+              // if (this.group.accessDenied) {
+              //   window.location.href = '/accessDenied'
+              // }
             }
           )
       }  // if

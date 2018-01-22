@@ -5,7 +5,7 @@ from app import app, db, lm
 from config import GROUPPATH, basedir
 from flask import render_template, session, request, g, jsonify
 from flask_login import login_user, logout_user, current_user, login_required
-from .models import Group, Media, User, UsersInGroups, RestaurantsInGroups
+from .models import Group, Media, User, UsersInGroups, RestaurantsInGroups, Restaurant
 from .forms import GroupCreateForm,  EditGroupForm, PeopleGroupForm
 from werkzeug.utils import secure_filename
 
@@ -65,6 +65,7 @@ def group(id):
 @app.route('/api/group/<id>', methods=['GET'])
 @login_required
 def groupApiGet(id):
+    print("sup)")
     group = Group.query.filter_by(id = eval(id)).first()
     if group is None:
         flash("Group {} not found.".format(group.name))
@@ -130,8 +131,10 @@ def groupApiPut(id, ids):
     if g.user.id == int(ids[0]):
         if g.user.isInGroup(g.user, group):
             g.user.rateRestaurant(ids[1], ids[2])
-            group.restaurantRating(ids[1])
-            return jsonify({"rated": True})
+            restaurant = Restaurant.query.filter_by(id = int(ids[1])).first()
+            rating = restaurant.groupRating(group.id)
+            return jsonify({"rated": True,
+                            'rating': rating})
         return jsonify({'accessDenied': True})
     return jsonify({'accessDenied': True})
 

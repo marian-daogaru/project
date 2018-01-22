@@ -186,8 +186,11 @@ class Restaurant(db.Model):
                             UsersInGroups.Group_id == groupID).filter(
                                 UserRatings.Restaurant_id == self.id).all()
         ratings = np.array(ratings).ravel().astype(int)
+        # print(ratings, 'hello ###', np.average(ratings))
         if 0 in ratings:
             return 0
+        elif ratings.shape[0] == 0:
+            return -1
         else:
             return np.average(ratings)
 

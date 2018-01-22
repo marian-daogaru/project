@@ -19,7 +19,7 @@ block content
               label(for='search') Search existing
               div(class="input-group")
                 input(v-model='restaurantName' v-on:keypress.enter="searchRestaurant()" type="text" class="form-control" placeholder="Search existing restaurant" name="search")
-                div(class="input-group-btn")
+                div(class="input-group-btn") 
                   .btn.btn-default(v-on:click="searchRestaurant()")
                     i(class="glyphicon glyphicon-search")
           .row 
