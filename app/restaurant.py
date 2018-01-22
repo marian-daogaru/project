@@ -74,9 +74,11 @@ def searchRestaurantGet(name):
         restaurantsList = []
         if restaurants:
             for restaurant in restaurants:
+                rating = restaurant.currentOverallRating()
                 restaurant = row2dict(restaurant)
                 restaurant['mediaPath'] = Media.query.filter_by(
                                             id = restaurant['Media_id']).first().mediaPath
+                restaurant['rating'] = rating
                 restaurantsList.append(restaurant)
         print(restaurantsList)
         return jsonify(restaurantsList)

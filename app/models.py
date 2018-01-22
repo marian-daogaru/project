@@ -78,6 +78,30 @@ class User(db.Model):
         userRate.rating = rating
         db.session.add(userRate)
         db.session.commit()
+        restaurant = Restaurant.query.filter_by(id = restaurantID).first()
+        for groupID in self.ratedRestaurantGroups(restaurantID):
+            print(groupID)
+            rating = restaurant.calculateGroupRating(groupID)
+            GroupRestaurantPair = RestaurantsInGroups.query.filter(
+                                    and_(RestaurantsInGroups.Restaurants_id.like(restaurantID),
+                                         RestaurantsInGroups.Group_id.like(groupID))).first()
+            print(GroupRestaurantPair, restaurantID, type(groupID), rating)
+            GroupRestaurantPair.rating = rating
+            db.session.add(GroupRestaurantPair)
+            db.session.commit()
+
+    def ratedRestaurantGroups(self, restaurantID):
+        ratedGroups = db.session.query(
+                        Group.id).join(
+                            UsersInGroups).filter(
+                                UsersInGroups.User_id == self.id).join(
+                                RestaurantsInGroups).filter(
+                                    RestaurantsInGroups.Restaurants_id == restaurantID).all()
+
+        return np.array(ratedGroups).ravel().astype(int)
+
+
+
 
 
 class UsersInGroups(db.Model):
@@ -162,10 +186,14 @@ class Restaurant(db.Model):
     def mediaPath(self):
         return Media.query.filter_by(id = self.Media_id).first().mediaPath
 
-    def currentOverallRating(self, groupID):
-        return RestaurantsInGroups.query.filter(
-                    and_(RestaurantsInGroups.Group_id.like(groupID),
-                         RestaurantsInGroups.Restaurants_id.like(self.id))).first().rating
+    def currentOverallRating(self):
+        ratings = db.session.query(UserRatings.rating).filter(
+                    UserRatings.Restaurant_id == self.id).all()
+        ratings = np.array(ratings).ravel().astype(int)
+        if ratings.shape[0] == 0 or (ratings != 0).sum() == 0:
+            return -1
+        else:
+            return np.average(ratings[ratings != 0])
 
     def currentUserRating(self, user):
         if self.isCurrentUserRating(user):
@@ -180,6 +208,13 @@ class Restaurant(db.Model):
                                     Restaurant_id = self.id).count() > 0
 
     def groupRating(self, groupID):
+        #to get the group rating from the stored version
+        return RestaurantsInGroups.query.filter(
+                and_(RestaurantsInGroups.Restaurants_id.like(self.id),
+                     RestaurantsInGroups.Group_id.like(groupID))).first().rating
+
+
+    def calculateGroupRating(self, groupID):
         ratings = db.session.query(UserRatings.rating).join(
                     User).join(
                         UsersInGroups).filter(
