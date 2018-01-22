@@ -114,6 +114,9 @@ class Group(db.Model):
 
 
 
+
+
+
 class Restaurant(db.Model):
     __table__ = db.Model.metadata.tables['Restaurant']
 
@@ -176,6 +179,17 @@ class Restaurant(db.Model):
         return UserRatings.query.filter_by(User_id = user.id).filter_by(
                                     Restaurant_id = self.id).count() > 0
 
+    def groupRating(self, groupID):
+        ratings = db.session.query(UserRatings.rating).join(
+                    User).join(
+                        UsersInGroups).filter(
+                            UsersInGroups.Group_id == groupID).filter(
+                                UserRatings.Restaurant_id == self.id).all()
+        ratings = np.array(ratings).ravel().astype(int)
+        if 0 in ratings:
+            return 0
+        else:
+            return np.average(ratings)
 
 
 

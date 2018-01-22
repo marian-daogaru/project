@@ -89,7 +89,7 @@ def groupApiGet(id):
         print(restaurant)
         mediaPath = restaurant.mediaPath()
         userRating = restaurant.currentUserRating(g.user)
-        rating = restaurant.currentOverallRating(group['id'])
+        rating = restaurant.groupRating(group['id'])
         restaurant = row2dict(restaurant)
         restaurant['mediaPath'] = mediaPath
         restaurant['rating'] = rating
@@ -127,16 +127,35 @@ def groupApiPut(id, ids):
     """
     group = Group.query.filter_by(id = id).first()
     ids = ids.split(',')
-    print(id, ids)
     if g.user.id == int(ids[0]):
         if g.user.isInGroup(g.user, group):
             g.user.rateRestaurant(ids[1], ids[2])
+            group.restaurantRating(ids[1])
             return jsonify({"rated": True})
         return jsonify({'accessDenied': True})
-
     return jsonify({'accessDenied': True})
 
 
+@app.route('/api/group/<id>/<ids>', methods=['DELETE'])
+@login_required
+def groupApiDelete(id, ids):
+    """
+        ids = [userID, restaurantID]
+        userID is checked so we can verify if the user actually is in the group
+    """
+    group = Group.query.filter_by(id = id).first()
+    ids = ids.split(',')
+    if g.user.id == int(ids[0]):
+        if g.user.isInGroup(g.user, group):
+            g.user.rateRestaurant(ids[1], 0)
+            return jsonify({"confirmation": "You rated the restaurant negatively, therefore it was removed from this group."})
+        return jsonify({'accessDenied': True})
+    return jsonify({'accessDenied': True})
+
+
+# #############################################################################
+# User Managemenet
+# #############################################################################
 def AddPeopletoGroup(emails, group):
     # emails must be a list
     for email in emails:

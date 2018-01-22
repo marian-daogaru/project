@@ -19,14 +19,11 @@ var groupAPI = new Vue({
   methods: {
     giveRating: function (restaurant, buttonNo){
       // this.isActive = true,
-      console.log(buttonNo),
-      console.log(this.group.restaurants),
-      console.log('/api/group/' + this.group.id + '/' + [this.group.userID, restaurant.id, buttonNo])
       this.$http.put(
         '/api/group/' + this.group.id + '/' + [this.group.userID, restaurant.id, buttonNo]
       ).then(
         function(response) {
-          this.response = response,
+          this.response = response.data,
           restaurant.userRating = buttonNo,
           console.log(this.response)
         },
@@ -203,201 +200,224 @@ var groupAPI = new Vue({
 
     addRestaurantRedirect: function() {
       window.location.href = '/group/' + this.group.id + '/addRestaurant'
-    }  // addRestaurantRedirect
+    },  // addRestaurantRedirect
+
+    removeRestaurant: function(restaurant) {
+      console.log(restaurant);
+      this.$http.delete(
+        '/api/group/' + this.group.id + '/' + [this.group.userID, restaurant.id]
+      ).then(
+        function(response) {
+          this.response = response.data,
+          this.confirmation = response.data.confirmation,
+          restaurant.rating = 0,
+          console.log(this.response)
+        },
+        function(err) {
+          console.error(err),
+          console.log("ERROR!!!")
+        }
+      ).then(
+        function() {
+          if (this.response.accessDenied){
+            window.location.href = '/accessDenied'
+          }
+        }
+      )
+    }
   }  // methods
 })  //groupAPI
 
-  var createGroupApi = new Vue({
-    el: "#createGroupAPI",
-    delimiters: ['${','}'],
-    data:{
-      user: null,
-      groupName: '',
-      aboutGroup: '',
-      errors: null,
-      response: '',
-    }, // data
 
-    mounted() {
-      this.loadUser()
-    },  //mounted
 
-    methods:
-    {
-      loadUser: function() {
-        this.$http.get(
-          '/api/createGroup'
-        ).then(
-          function(response) {
-            this.user = response.data
-          },
-          function(err) {
-            console.error(err),
-            console.log('error')
-          }
-        )
-      }, //loadUser
+//------------------------------------------------------------------------------
+var createGroupApi = new Vue({
+  el: "#createGroupAPI",
+  delimiters: ['${','}'],
+  data:{
+    user: null,
+    groupName: '',
+    aboutGroup: '',
+    errors: null,
+    response: '',
+  }, // data
 
-      createGroup: function() {
-        form = {
-          name: this.groupName,
-          aboutGroup: this.aboutGroup
+  mounted() {
+    this.loadUser()
+  },  //mounted
+
+  methods:
+  {
+    loadUser: function() {
+      this.$http.get(
+        '/api/createGroup'
+      ).then(
+        function(response) {
+          this.user = response.data
+        },
+        function(err) {
+          console.error(err),
+          console.log('error')
         }
-        this.$http.post(
-          '/api/createGroup', form
+      )
+    }, //loadUser
+
+    createGroup: function() {
+      form = {
+        name: this.groupName,
+        aboutGroup: this.aboutGroup
+      }
+      this.$http.post(
+        '/api/createGroup', form
+      ).then(
+        function(response) {
+          this.errors = response.data.errors,
+          this.response = response.data
+        },
+        function(err) {
+          console.error(err),
+          console.log('error')
+        }
+      ).then(  // first then
+        function(){
+          if (this.response.created) {
+            this.createdSuccessfully()
+          }
+        }
+      )
+    },  // createGroup
+
+    createdSuccessfully: function() {
+      var thisVue = this;  // otherwise in swal this is replaced by local inst
+      swal({
+        title: "Group Created succesfully",
+        text: "You created the group successfully!",
+        type: "success",
+        closeOnConfirm: true,
+        confirmButtonClass: 'btn-success',
+        confirmButtonText: 'Go to new the group.'
+      },
+      function() {
+        console.log('/group/' + thisVue.response.groupID),
+        window.location.href = '/group/' + thisVue.response.groupID
+      })
+    }
+  } // methods
+}) // main brackets
+
+
+
+var editGroupAPI = new Vue({
+  el: "#editGroupAPI",
+  delimiters: ['${','}'],
+  data:{
+    group: null,
+    checkedIDs: [],
+    kickIDs: [],
+    errors: '',
+    name: '',
+    aboutGroup: '',
+    avatar: '',
+    update: ''
+  }, // data
+
+  mounted() {
+    this.loadGroup()
+  },  // mounted
+
+  methods: {
+    loadGroup: function() {
+      if (window.location.pathname.substring(0, 6) === '/group'){
+        this.$http.get(
+          '/api' + window.location.pathname
         ).then(
           function(response) {
-            this.errors = response.data.errors,
-            this.response = response.data
+            this.group = response.data,
+            this.name = this.group.name,
+            this.aboutGroup = this.group.aboutGroup,
+            this.kickIDs.push(this.group.id)
           },
           function(err) {
             console.error(err),
             console.log('error')
           }
         ).then(  // first then
-          function(){
-            if (this.response.created) {
-              this.createdSuccessfully()
-            }
-          }
-        )
-      },  // createGroup
-
-      createdSuccessfully: function() {
-        var thisVue = this;  // otherwise in swal this is replaced by local inst
-        swal({
-          title: "Group Created succesfully",
-          text: "You created the group successfully!",
-          type: "success",
-          closeOnConfirm: true,
-          confirmButtonClass: 'btn-success',
-          confirmButtonText: 'Go to new the group.'
-        },
-        function() {
-          console.log('/group/' + thisVue.response.groupID),
-          window.location.href = '/group/' + thisVue.response.groupID
-        })
-      },
-
-      removeRestaurant: function(restaurant) {
-        console.log(restaurant);
-      }
-    } // methods
-  }) // main brackets
-
-
-
-  var editGroupAPI = new Vue({
-    el: "#editGroupAPI",
-    delimiters: ['${','}'],
-    data:{
-      group: null,
-      checkedIDs: [],
-      kickIDs: [],
-      errors: '',
-      name: '',
-      aboutGroup: '',
-      avatar: '',
-      update: ''
-    }, // data
-
-    mounted() {
-      this.loadGroup()
-    },  // mounted
-
-    methods: {
-      loadGroup: function() {
-        if (window.location.pathname.substring(0, 6) === '/group'){
-          this.$http.get(
-            '/api' + window.location.pathname
-          ).then(
-            function(response) {
-              this.group = response.data,
-              this.name = this.group.name,
-              this.aboutGroup = this.group.aboutGroup,
-              this.kickIDs.push(this.group.id)
-            },
-            function(err) {
-              console.error(err),
-              console.log('error')
-            }
-          ).then(  // first then
-              function() {
-                if (this.group.accessDenied) {
-                  window.location.href = '/accessDenied'
-                }
+            function() {
+              if (this.group.accessDenied) {
+                window.location.href = '/accessDenied'
               }
-            )
-        }  // if
-      }, //loadGroup
+            }
+          )
+      }  // if
+    }, //loadGroup
 
-      sendUpdate: function(){
-        form = {
-          name: this.name,
-          aboutGroup: this.aboutGroup,
-          avatar: this.avatar,
-          ids: this.checkedIDs
+    sendUpdate: function(){
+      form = {
+        name: this.name,
+        aboutGroup: this.aboutGroup,
+        avatar: this.avatar,
+        ids: this.checkedIDs
+      },
+      this.$http.post(
+        '/api/group/' + this.group.id + '/edit', form
+      ).then(
+        function(response) {
+          this.errors = response.data.errors,
+          this.updated = response.data.updated
         },
-        this.$http.post(
-          '/api/group/' + this.group.id + '/edit', form
-        ).then(
-          function(response) {
-            this.errors = response.data.errors,
-            this.updated = response.data.updated
-          },
-          function(err) {
-            console.error(err),
-            console.log('error')
+        function(err) {
+          console.error(err),
+          console.log('error')
+        }
+      ).then(
+        function() {
+          if (this.updated) {
+            window.location.href = '/group/' + this.group.id
           }
-        ).then(
-          function() {
-            if (this.updated) {
-              window.location.href = '/group/' + this.group.id
-            }
+        }
+      )
+    },  // sendUpdate
+
+    onFileChange(e) {
+      var files = e.target.files || e.dataTransfer.files;
+      if (!files.length)
+        return;
+      this.createImage(files[0]);
+    },
+
+    createImage(file) {
+      var image = new Image();
+      var reader = new FileReader();
+      var vm = this;
+
+      reader.onload = (e) => {
+        this.avatar = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    },
+
+    kickPeople: function() {
+      console.log('/api/group/-1/edit/' + this.kickIDs),
+      this.$http.delete(
+        '/api/group/-1/edit/' + this.kickIDs
+      ).then(
+        function(response) {
+          console.log(response.data),
+          console.log('hello')
+          if (response.data.removed){
+            this.loadGroup()
           }
-        )
-      },  // sendUpdate
+        },
+        function(err) {
+          console.error(err),
+          console.log('error')
+        }
+      )
+    },
 
-      onFileChange(e) {
-        var files = e.target.files || e.dataTransfer.files;
-        if (!files.length)
-          return;
-        this.createImage(files[0]);
-      },
+    goBackGroup: function() {
+      window.location.href = '/group/' + this.group.id
+    }
+  } // methods
 
-      createImage(file) {
-        var image = new Image();
-        var reader = new FileReader();
-        var vm = this;
-
-        reader.onload = (e) => {
-          this.avatar = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      },
-
-      kickPeople: function() {
-        console.log('/api/group/-1/edit/' + this.kickIDs),
-        this.$http.delete(
-          '/api/group/-1/edit/' + this.kickIDs
-        ).then(
-          function(response) {
-            console.log(response.data),
-            console.log('hello')
-            if (response.data.removed){
-              this.loadGroup()
-            }
-          },
-          function(err) {
-            console.error(err),
-            console.log('error')
-          }
-        )
-      },
-
-      goBackGroup: function() {
-        window.location.href = '/group/' + this.group.id
-      }
-    } // methods
-
-  }) // main brackets
+}) // main brackets
