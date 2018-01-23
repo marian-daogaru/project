@@ -6,8 +6,8 @@ import MySQLdb
 from flask_sqlalchemy import SQLAlchemy
 from flask_jsglue import JSGlue
 import wtforms_json
-
-
+from flask_apscheduler import APScheduler
+import logging
 
 app = Flask(__name__)
 CORS(app)
@@ -28,8 +28,10 @@ lm.login_message = 'Please log in to access this page.'
 db = SQLAlchemy(app)
 db.Model.metadata.reflect(db.engine)
 
+scheduler = APScheduler()
+scheduler.init_app(app)
 
-
+logging.basicConfig()
 
 # print(dir(db))
 

@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 import os
 import uuid
+import time
+from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 WTF_CSRF_ENABLED = True
@@ -21,3 +24,23 @@ RESTAURANTPATH = '../static/data/media/avatars/restaurants/'
 
 # administrator list
 ADMINS = ['marian@phyramid.com']
+def pr(x, y):
+    print("task cron test {} {} {}".format(1, 2, time.time()))
+    time.sleep(2)
+JOBS = [{
+    'id' : 'job1', #str(uuid.uuid4().hex),
+    'func': 'app.emailManager:pr',
+    # 'args': (1, 2),
+    'trigger': 'cron',
+    # 'second': '*/10',
+    'minute': '*',
+    'replace_existing': True,
+    'max_instances': 1,
+}]
+SCHEDULER_JOBSTORES = {
+        'default': SQLAlchemyJobStore(url=SQLALCHEMY_DATABASE_URI)
+        }
+SCHEDULER_EXECUTORS = {
+        'default': {'type': 'threadpool', 'max_workers': 20}
+    }
+SCHEDULER_API_ENABLED = True
