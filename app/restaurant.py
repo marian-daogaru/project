@@ -141,13 +141,28 @@ def restaurantGet(id):
     if restaurant is None:
         return jsonify({'errors': ['No such restaurant. This is a bug.']})
     mediaPath = Media.query.filter_by(id = restaurant.Media_id).first().mediaPath
+    rating = restaurant.currentOverallRating()
     restaurant = row2dict(restaurant)
     restaurant['mediaPath'] = mediaPath
+    restaurant['rating'] = rating 
     return jsonify(restaurant)
+
+
 
 # ##############################################################################
 # RESTAURANT REVIEW
 # ##############################################################################
+@app.route('/api/restaurant/<id>/reviews', methods=['GET'])
+@login_required
+def restaurantReviewGet(id):
+    restaurant = Restaurant.query.filter_by(id = id).first()
+    if restaurant is None:
+        return jsonify({'notFound': True})
+    reviews = restaurant.getReviews()
+    return jsonify(reviews)
+
+
+
 @app.route('/api/restaurant/<id>/user/<userID>/<review>', methods=['PUT'])
 @login_required
 def restaurantReviewPut(id, userID, review):

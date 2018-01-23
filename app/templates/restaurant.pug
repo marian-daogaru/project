@@ -8,23 +8,37 @@ block content
           .div(class="alert alert-danger") 
             strong ${error} 
       div(v-if='restaurant')
-        .row 
-          .col-md-8
-            img.img-rounded.img-responsive.img-thumbnail(:src="restaurant.mediaPath" width="750" height="auto") 
-        .row 
-          .col-md-8
-            .row 
-              h1 ${restaurant.name}
-            .row
-              h3(v-if="restaurant.aboutMe !== 'None'") ${restaurant.aboutMe}  
-            .row 
-              .btn.btn-info(v-on:click="redirectWebsite()") Visit restaurant page
-        .row
-          div.form-group 
-            label(for="review") Add a review
-              textarea(v-model='userReview' rows='5' cols='100' placeholder='What have you thought about this place? ...' class='form-control' name='review')
-          .btn.btn-info(v-on:click='submitReview()') Submit Review
-          
+        .col-md-8.col-sm-8.col-xs-8
+          .row 
+              img.img-rounded.img-responsive.img-thumbnail(:src="restaurant.mediaPath" width="750" height="auto") 
+          .row 
+              .row 
+                h1(v-if="restaurant.rating !== -1") ${restaurant.name} (${restaurant.rating}#[i(class="glyphicon glyphicon-cutlery")])
+                h1(v-else) ${restaurant.name}
+              .row
+                h3(v-if="restaurant.aboutMe !== 'None'") ${restaurant.aboutMe}  
+              .row 
+                .btn.btn-info(v-on:click="redirectWebsite()") Visit restaurant page
+          .row
+            div.form-group 
+              label(for="review") Add a review
+                textarea(v-model='userReview' rows='5' cols='100' placeholder='What have you thought about this place? ...' class='form-control' name='review')
+            .btn.btn-info(v-on:click='submitReview()') Submit Review
+            
+          .row(v-if='reviews.length !== 0')
+            template(v-for='review in reviews')
+              div(class='thumbnail' id='reviewThumbnail')
+                .col-md-3.col-sm-3.col-xs-3
+                  img.img-responsive.img-thumbnail(v-bind:src="'../' + review.mediaPath" id='reviewUserImage')                    
+                  h4 ${review.rating} #[i(class="glyphicon glyphicon-cutlery")]
+                .col-md-9.col-sm-9.col-xs-9  
+                  .row 
+                    h3 #[strong ${review.nickname}]
+                  .row 
+                    p ${review.review}
+          .row(v-else)
+            h4 No current reviews. 
+            
 block jsscript 
   script(type="text/javascript" src="{{ url_for('static', filename='js/restaurant.js') }}")
     

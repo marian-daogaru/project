@@ -4,6 +4,8 @@ from sqlalchemy import and_
 import re
 import numpy as np
 
+row2dict = lambda r: {c.name: str(getattr(r, c.name)) for c in r.__table__.columns}
+
 
 class User(db.Model):
     __table__ = db.Model.metadata.tables['User']
@@ -236,6 +238,28 @@ class Restaurant(db.Model):
         userRest.comment = review
         db.session.add(userRest)
         db.session.commit()
+
+
+    def getReviews(self):
+        reviews = UserRatings.query.\
+                    filter(and_(UserRatings.Restaurant_id.like(self.id),
+                                UserRatings.comment.isnot(None))).\
+                                    order_by(UserRatings.User_id).all()
+        users = db.session.query(User).\
+                    join(UserRatings).\
+                        filter(and_(UserRatings.Restaurant_id.like(self.id),
+                                    UserRatings.comment.isnot(None))).\
+                                        order_by(User.id).all()
+
+        reviewsList = []
+        for user, review in zip(users, reviews):
+            print(review.comment)
+            mediaPath = Media.query.filter_by(id = user.Media_id).first().mediaPath
+            reviewsList.append({'nickname': user.nickname,
+                                'mediaPath': mediaPath,
+                                'rating': review.rating,
+                                'review': review.comment})
+        return reviewsList
 
 
 class RestaurantsInGroups(db.Model):

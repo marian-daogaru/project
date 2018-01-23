@@ -1,6 +1,8 @@
 body {
   padding-top: 70px;
+    word-wrap: break-word;
 }
+
 
 .groupThumbnail {
   min-height: 400px;
@@ -40,7 +42,6 @@ body {
     background: transparent;
     -webkit-box-shadow: 0 5px 15px rgba(0,0,0,0);
     padding: 5px;
-
     font-size: 2em;
 }
 
@@ -62,4 +63,23 @@ body {
 .navbar-form .input-group-btn,
 .navbar-form .input-group-addon {
 width: auto;
+}
+
+
+.ratingCutlery {
+  font-size: 2em;
+}
+
+#reviewUserImage {
+  height: 125px;
+  width: auto;
+}
+
+#reviewThumbnail {
+  min-height: 200px;
+  width: 100%;
+  position: relative;
+}
+
+.p {
 }

@@ -110,7 +110,9 @@ var addRestaurantAPI = new Vue({
   }
 })
 
-
+// -----------------------------------------------------------------------------
+// RESTAURANT API
+// -----------------------------------------------------------------------------
 var restaurantAPI = new Vue({
   el: "#restaurantAPI",
   delimiters: ['${','}'],
@@ -119,12 +121,13 @@ var restaurantAPI = new Vue({
     restaurant: null,
     userReview: '',
     user: '',
-    response: ''
+    response: '',
+    reviews: ''
   },
 
   mounted() {
-    this.loadRestaurant(),
-    this.loadUser()
+    this.loadUser(),
+    this.loadRestaurant()
   },
 
   methods: {
@@ -141,9 +144,14 @@ var restaurantAPI = new Vue({
             console.log(err),
             console.log('ERROR')
           }
-        )
+        ).then(
+            function() {
+              this.loadReviews()
+            }
+          )
       }
     },  // loadRestaurant
+
     loadUser: function(){
       this.$http.get(
         '/api/home'
@@ -158,8 +166,29 @@ var restaurantAPI = new Vue({
       )
     },  // loadUser
 
+    loadReviews: function() {
+      this.$http.get(
+        '/api/restaurant/' + this.restaurant.id + '/reviews'
+      ).then(
+        function(response) {
+          this.reviews = response.data,
+          console.log(this.reviews)
+        },
+        function(err) {
+          console.log(err),
+          console.log("ERROR")
+        }
+      ).then(
+        function() {
+          if (this.reviews.notFound){
+            window.location.href  = '/404'
+          }
+        }
+      )
+    },  // loadReview
+
     redirectWebsite: function(){
-      window.location = this.restaurant.website
+      window.open(this.restaurant.website, '_blank')
     },
 
     submitReview: function(){
@@ -190,7 +219,9 @@ var restaurantAPI = new Vue({
   }  //methods
 })  // restaurantAPI
 
-
+// -----------------------------------------------------------------------------
+// SEARCH RESTAURANT
+// -----------------------------------------------------------------------------
 var searchRestaurantAPI = new Vue({
   el: "#searchRestaurantAPI",
   delimiters: ['${','}'],

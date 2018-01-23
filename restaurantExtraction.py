@@ -134,6 +134,6 @@ def extractParticular(link):
 # with open('url.txt', 'w') as myfile:
 #     myfile.write(openWebsite(link).read())
 
-print(extractRestaurant(link))
+# print(extractRestaurant(link))
 
 # print(os.path.join(basedir + '/app/', RESTAURANTPATH[3:]))
