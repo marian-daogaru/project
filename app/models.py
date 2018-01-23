@@ -139,9 +139,6 @@ class Group(db.Model):
 
 
 
-
-
-
 class Restaurant(db.Model):
     __table__ = db.Model.metadata.tables['Restaurant']
 
@@ -214,7 +211,6 @@ class Restaurant(db.Model):
                 and_(RestaurantsInGroups.Restaurants_id.like(self.id),
                      RestaurantsInGroups.Group_id.like(groupID))).first().rating
 
-
     def calculateGroupRating(self, groupID):
         ratings = db.session.query(UserRatings.rating).join(
                     User).join(
@@ -230,7 +226,6 @@ class Restaurant(db.Model):
         else:
             return np.average(ratings)
 
-
     def addReview(self, userID, review):
         userRest = UserRatings.query.filter(
                     and_(UserRatings.User_id.like(userID),
@@ -238,7 +233,6 @@ class Restaurant(db.Model):
         userRest.comment = review
         db.session.add(userRest)
         db.session.commit()
-
 
     def getReviews(self):
         reviews = UserRatings.query.\
@@ -261,6 +255,13 @@ class Restaurant(db.Model):
                                 'review': review.comment})
         return reviewsList
 
+    def generatedTrafic(self, groupID):
+        restInGroup = RestaurantsInGroups.query.filter(and_(
+                        RestaurantsInGroups.Group_id == groupID,
+                        RestaurantsInGroups.Restaurants_id == self.id)).first()
+        restInGroup.dailyTraffic += 1
+        db.session.add(restInGroup)
+        db.session.commit()
 
 class RestaurantsInGroups(db.Model):
     __table__ = db.Model.metadata.tables['RestaurantsInGroups']

@@ -34,7 +34,7 @@ block content
             template(v-for='restaurant in group.restaurants')
               .col-md-4.col-sm-4.col-xs-6(v-if='restaurant.rating !== 0')
                   div(class="thumbnail groupThumbnail")
-                    a(v-bind:href='/restaurant/ + restaurant.id')
+                    a(v-bind:href='/group/ + group.id + /restaurant/ + restaurant.id')
                       div
                         img.img-responsive.img-thumbnail(v-bind:src="restaurant.mediaPath" height="300" width="auto")                    
                         div(class='caption')

@@ -17,13 +17,7 @@ GROUPPATH = '../static/data/media/avatars/groups/'
 USERPATH = '../static/data/media/avatars/users/'
 RESTAURANTPATH = '../static/data/media/avatars/restaurants/'
 
-# mail server settings
-MAIL_SERVER = 'smtp.googlemail.com'
-MAIL_PORT = 465
-MAIL_USE_TLS = False
-MAIL_USE_SSL = True
-MAIL_USERNAME = 'mdaogaru.test'
-MAIL_PASSWORD = 'MarianDaogar9'
+
 
 # administrator list
 ADMINS = ['marian@phyramid.com']

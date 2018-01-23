@@ -122,7 +122,8 @@ var restaurantAPI = new Vue({
     userReview: '',
     user: '',
     response: '',
-    reviews: ''
+    reviews: '',
+    extension: '../'
   },
 
   mounted() {
@@ -132,24 +133,25 @@ var restaurantAPI = new Vue({
 
   methods: {
     loadRestaurant: function(){
-      if (window.location.pathname.substring(0, 6) === '/resta'){
-        this.$http.get(
-          '/api' + window.location.pathname
-        ).then(
-          function(response) {
-            this.restaurant = response.data,
-            this.errors = response.data.errors
-          },
-          function(err) {
-            console.log(err),
-            console.log('ERROR')
+      this.$http.get(
+        '/api' + window.location.pathname
+      ).then(
+        function(response) {
+          this.restaurant = response.data,
+          this.errors = response.data.errors
+          if (this.restaurant.groupID) {
+            this.extension = '../../../'
           }
-        ).then(
-            function() {
-              this.loadReviews()
-            }
-          )
-      }
+        },
+        function(err) {
+          console.log(err),
+          console.log('ERROR')
+        }
+      ).then(
+          function() {
+            this.loadReviews()
+          }
+        )
     },  // loadRestaurant
 
     loadUser: function(){
@@ -178,17 +180,25 @@ var restaurantAPI = new Vue({
           console.log(err),
           console.log("ERROR")
         }
-      ).then(
-        function() {
-          if (this.reviews.notFound){
-            window.location.href  = '/404'
-          }
-        }
       )
     },  // loadReview
 
     redirectWebsite: function(){
       window.open(this.restaurant.website, '_blank')
+      if (this.restaurant.groupID) {
+        this.$http.put(
+          '/api/group/' + this.restaurant.groupID + '/restaurant/' + this.restaurant.id
+        ).then(
+          function(response) {
+            this.response = response.data,
+            this.errors = response.data.errors
+          },
+          function(err) {
+            console.log(err),
+            console.log("ERROR")
+          }
+        )
+      }
     },
 
     submitReview: function(){
@@ -238,7 +248,6 @@ var searchRestaurantAPI = new Vue({
 
   methods: {
     loadSearch: function() {
-      console.log('/restaurant/search/'.length)
       if (window.location.pathname.substring(0, 19) === '/restaurant/search/'){
         this.$http.get(
           '/api' + window.location.pathname

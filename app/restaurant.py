@@ -85,6 +85,10 @@ def searchRestaurantGet(name):
 
     return jsonify({'accessDenied': True})
 
+
+# ##############################################################################
+# ADD RESTAURANT
+# ##############################################################################
 @app.route('/api/group/<id>/addRestaurant', methods=['POST'])
 @login_required
 def addRestaurantPost(id):
@@ -128,7 +132,6 @@ def addRestaurantPut(id, ids):
 # ##############################################################################
 # RESTAURANT PROFILE
 # ##############################################################################
-
 @app.route('/restaurant/<id>')
 @login_required
 def restaurant(id):
@@ -144,9 +147,48 @@ def restaurantGet(id):
     rating = restaurant.currentOverallRating()
     restaurant = row2dict(restaurant)
     restaurant['mediaPath'] = mediaPath
-    restaurant['rating'] = rating 
+    restaurant['rating'] = rating
     return jsonify(restaurant)
 
+
+# ##############################################################################
+# RESTAURANT PROFILE FOR DATA SCRAPING
+# ##############################################################################
+
+@app.route('/group/<groupID>/restaurant/<restID>')
+@login_required
+def restaurantInGroup(groupID, restID):
+    return render_template('restaurant.html')
+
+@app.route('/api/group/<groupID>/restaurant/<restID>', methods=['GET'])
+@login_required
+def restaurantinGroupGet(groupID, restID):
+    restaurant = Restaurant.query.filter_by(id = restID).first()
+    group = Group.query.filter_by(id = groupID).first()
+    if restaurant is None or group is None:
+        return jsonify({'errors': ['No such restaurant. This is a bug.']})
+    if not restaurant.inGroup(group):
+        return jsonify({'errors': ['Restaurant not in that group.']})
+    mediaPath = Media.query.filter_by(id = restaurant.Media_id).first().mediaPath
+    rating = restaurant.currentOverallRating()
+    restaurant = row2dict(restaurant)
+    restaurant['mediaPath'] = mediaPath
+    restaurant['rating'] = rating
+    restaurant['groupID'] = groupID
+    return jsonify(restaurant)
+
+@app.route('/api/group/<groupID>/restaurant/<restID>', methods=['PUT'])
+@login_required
+def restaurantinGroupPut(groupID, restID):
+    restaurant = Restaurant.query.filter_by(id = restID).first()
+    group = Group.query.filter_by(id = groupID).first()
+    if restaurant is None or group is None:
+        return jsonify({'errors': ['No such restaurant. This is a bug.']})
+    if not restaurant.inGroup(group):
+        return jsonify({'errors': ['Restaurant not in that group.']})
+
+    restaurant.generatedTrafic(groupID)
+    return jsonify({})
 
 
 # ##############################################################################
