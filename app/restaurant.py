@@ -4,7 +4,7 @@ from app import app, db, lm
 from config import USERPATH, basedir
 from flask import render_template, session, request, g, jsonify, flash, redirect
 from flask_login import login_required
-from .models import Media, User, Group, Restaurant
+from .models import Media, User, Group, Restaurant, RestaurantsInGroups
 from .forms import RestaurantAddForm, ReviewForm
 from werkzeug.utils import secure_filename
 
@@ -123,6 +123,8 @@ def addRestaurantPut(id, ids):
             if restaurant is None:
                 return jsonify({'errors': ['No such restaurant. This is a bug.']})
             restaurant.addToGroup(group)
+            restaurant.assignNewGroupRating(group)
+            print(restaurant.calculateGroupRating(group.id), "RATINGS")
         return jsonify({'confirmations': ['Restaurants added succesfully!']})
     else:
         return jsonify({'nothing': ['Nothing Happened. BUG!']})

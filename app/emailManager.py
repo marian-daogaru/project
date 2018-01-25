@@ -50,7 +50,6 @@ class EmailManager(object):
         mediaDict = {}
         for group in groups:
             rest = self.Suggestor.getSuggestion(group)
-            print(rest)
             if rest is not None:
                 template, cidUUID = self.buildGroupRestaurantRecommendationTemplate(group, rest)
                 mediaDict[cidUUID] = Media.query.filter_by(id = rest.Media_id).first().mediaPath[3:]
@@ -79,6 +78,8 @@ class EmailManager(object):
             msgImage.add_header('Content-ID', '<{}>'.format(cidUUID))
             msg.attach(msgImage)
 
+        # this should be put onto a multy threading instance so it will not
+        # just hog when thousands of users are present... 
         # server.sendmail(msg['From'], msg['To'], msg.as_string())
 
         print("!!!", user.email, time.time(), time.strftime("%c"))
@@ -94,11 +95,3 @@ class EmailManager(object):
         server.quit()
 
         self.Suggestor.resetTraffic()
-
-
-# t1 = read_template('app/templates/groupRestaurantTemplate.html')
-#
-
-#
-# t2 = read_template('app/templates/recommendation.html')
-# T = t2.substitute(NAME='Marian', GROUP_TEMPLATE = t + t)

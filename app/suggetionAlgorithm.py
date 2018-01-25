@@ -8,8 +8,6 @@ from app import app, db
 from models import Group, Restaurant, Media, User, UsersInGroups, RestaurantsInGroups
 
 
-
-
 class SuggestionGenerator(object):
     def __init__(self):
         self.resetDailySuggestion()
@@ -38,8 +36,6 @@ class SuggestionGenerator(object):
                      np.random.uniform(0.9, 1.1, size) * data[:, 2] / maximumValues[1] + \
                      np.random.uniform(0.9, 1.1, size) * data[:, 3] / maximumValues[2]
 
-
-            print(values.argmax(), group)
             restaurant = RestaurantsInGroups.query.\
                             filter(and_(
                                 RestaurantsInGroups.Restaurants_id == data[values.argmax(), 0],
@@ -48,7 +44,6 @@ class SuggestionGenerator(object):
             restaurant.lastSuggested = 0
             db.session.add(restaurant)
             db.session.commit()
-            print(restaurant.lastSuggested, 222)
 
     def generateSuggestion(self):
         groups = db.session.query(Group).join(RestaurantsInGroups).distinct().all()
@@ -76,36 +71,10 @@ class SuggestionGenerator(object):
         return data
 
     def increaseLastSuggested(self):
-        # MUST BE CALLED ONCE PER DAY! && IT SHOULDNT BE HERE
-        rests = RestaurantsInGroups.query.filter_by(Group_id=26).all()
-        l = []
-        for rest in rests:
-            l.append(rest.lastSuggested)
-
-        rests = RestaurantsInGroups.query.all()
-        # for rest in rests:
-        #     rest.lastSuggested += 1
-        #     db.session.add(rest)
-        # db.session.commit()
-        # ll = (db.session.query(RestaurantsInGroups.lastSuggested).all())
-        # ll = np.array(ll).ravel() + 1
-        # s = ', '.join(ll.astype(str))
-        # s = '(' + s + ')'
-        # print(list(ll))
-        # for w in ll:
         db.session.query(RestaurantsInGroups).update(
             {RestaurantsInGroups.lastSuggested: RestaurantsInGroups.lastSuggested + 1},
                synchronize_session=False)
         db.session.commit()
-        # RestaurantsInGroups.lastSuggested = RestaurantsInGroups.lastSuggested + 1
-
-        rests = RestaurantsInGroups.query.filter_by(Group_id=26).all()
-        for rest in rests:
-            l.append(rest.lastSuggested)
-
-
-        print(l, "####")
-
 
     def resetDailyTraffic(self):
         RestaurantsInGroups.query.update(

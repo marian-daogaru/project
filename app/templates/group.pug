@@ -13,23 +13,36 @@ block content
           strong ${confirmation}  
       div(v-if="group")
         .row
-          .col-lg-3.col-sm-6
-            img.img-thumbnail.img-responsive(:src="group.mediaPath" width="750" height="auto")
-          .col-lg-2.col-sm-6
-            h1 ${group.name}
-            h3(v-if="group.aboutGroup !== 'None'") ${group.aboutGroup}
-        .div(v-if='group.inGroup')
-          .row
-            .btn.btn-danger(v-if='group.inGroup' v-on:click='leaveGroupAlert()') Leave Group
-            .btn.btn-primary(v-if='group.inGroup' v-on:click='addRestaurantRedirect()') Add another restaurant
-            .btn.btn-primary(v-if="group.isAdmin" v-on:click='editRedirect()') Edit Group
-            .btn.btn-danger(v-if="group.isAdmin" v-on:click='deleteGroupAlert()') Delete Group
-          .row
-            div.form-group 
-              label(for='emails') Add new People to the group:
-                p If you want to add multiple people, please separate the emails by comma(,) or whitespace( ). 
-                textarea(v-model='emails' rows="5" cols="30" class='form-control' name='aboutMe')
-                button.btn.btn-primary(v-on:click='addPeople()') Add people 
+          .col-lg-9.col-md-9.col-sm-9
+            .row
+              .col-lg-3.col-sm-6
+                img.img-thumbnail.img-responsive(:src="group.mediaPath" width="750" height="auto")
+              .col-lg-2.col-sm-6
+                h1 ${group.name}
+                h3(v-if="group.aboutGroup !== 'None'") ${group.aboutGroup}
+            .div(v-if='group.inGroup')
+              .row
+                .btn.btn-danger(v-if='group.inGroup' v-on:click='leaveGroupAlert()') Leave Group
+                .btn.btn-primary(v-if='group.inGroup' v-on:click='addRestaurantRedirect()') Add another restaurant
+                .btn.btn-primary(v-if="group.isAdmin" v-on:click='editRedirect()') Edit Group
+                .btn.btn-danger(v-if="group.isAdmin" v-on:click='deleteGroupAlert()') Delete Group
+              .row
+                div.form-group 
+                  label(for='emails') Add new People to the group:
+                    p If you want to add multiple people, please separate the emails by comma(,) or whitespace( ). 
+                    textarea(v-model='emails' rows="5" cols="30" class='form-control' name='aboutMe')
+                    button.btn.btn-primary(v-on:click='addPeople()') Add people 
+          .col-lg-3.col-md-3.col-sm-3
+            .row(v-if='group.suggestedRestaurant')
+              h3 Today's suggestion is: 
+              div(class="thumbnail groupThumbnail")
+                a(v-bind:href='/group/ + group.id + /restaurant/ + group.suggestedRestaurant.id')
+                  div
+                    img.img-responsive.img-thumbnail(v-bind:src="group.suggestedRestaurant.mediaPath" height="400" width="auto")                    
+                    div(class='caption')
+                      h4 ${group.suggestedRestaurant.name}
+                      h5(v-if="group.suggestedRestaurant.rating !== -1") ${group.suggestedRestaurant.rating} #[i(class="glyphicon glyphicon-cutlery")]
+                      h5(v-else) Not yet rated
           .row
             template(v-for='restaurant in group.restaurants')
               .col-md-4.col-sm-4.col-xs-6(v-if='restaurant.rating !== 0')

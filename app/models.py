@@ -81,27 +81,20 @@ class User(db.Model):
         db.session.add(userRate)
         db.session.commit()
         restaurant = Restaurant.query.filter_by(id = restaurantID).first()
-        for groupID in self.ratedRestaurantGroups(restaurantID):
-            print(groupID)
-            rating = restaurant.calculateGroupRating(groupID)
-            GroupRestaurantPair = RestaurantsInGroups.query.filter(
-                                    and_(RestaurantsInGroups.Restaurants_id.like(restaurantID),
-                                         RestaurantsInGroups.Group_id.like(groupID))).first()
-            print(GroupRestaurantPair, restaurantID, type(groupID), rating)
-            GroupRestaurantPair.rating = rating
-            db.session.add(GroupRestaurantPair)
-            db.session.commit()
+        for group in self.ratedRestaurantGroups(restaurantID):
+            print(group.id)
+            restaurant.assignNewGroupRating(group)
 
     def ratedRestaurantGroups(self, restaurantID):
         ratedGroups = db.session.query(
-                        Group.id).join(
+                        Group).join(
                             UsersInGroups).filter(
                                 UsersInGroups.User_id == self.id).join(
                                 RestaurantsInGroups).filter(
                                     RestaurantsInGroups.Restaurants_id == restaurantID).all()
-
-        return np.array(ratedGroups).ravel().astype(int)
-
+        print(ratedGroups)
+        # return np.array(ratedGroups).ravel().astype(int)
+        return ratedGroups
 
 
 
@@ -136,6 +129,14 @@ class Group(db.Model):
                              UsersInGroups.User_id.like(userID))).first()
         userInGroup.admin = 1
         db.session.commit()
+
+    def suggestedRestaurant(self):
+        restaurant = RestaurantsInGroups.query.filter(
+                        and_(RestaurantsInGroups.Group_id == self.id,
+                             RestaurantsInGroups.dailySuggestion == 1)).first()
+        if restaurant is not None:
+            return Restaurant.query.filter_by(id = restaurant.Restaurants_id).first()
+        
 
 
 
@@ -261,6 +262,14 @@ class Restaurant(db.Model):
                         RestaurantsInGroups.Restaurants_id == self.id)).first()
         restInGroup.dailyTraffic += 1
         db.session.add(restInGroup)
+        db.session.commit()
+
+    def assignNewGroupRating(self, group):
+        GroupRestaurantPair = RestaurantsInGroups.query.filter(
+                                and_(RestaurantsInGroups.Restaurants_id.like(self.id),
+                                     RestaurantsInGroups.Group_id.like(group.id))).first()
+        GroupRestaurantPair.rating = self.calculateGroupRating(group.id)
+        db.session.add(GroupRestaurantPair)
         db.session.commit()
 
 class RestaurantsInGroups(db.Model):

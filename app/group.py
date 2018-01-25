@@ -73,6 +73,7 @@ def groupApiGet(id):
                         'errors': ['No such group.']})
     users = group.users()
     restaurants = group.restaurants()
+    suggested = group.suggestedRestaurant()
     inGroup = g.user.isInGroup(g.user, group)  # do this before we change group
     print("222", inGroup, users)
     group = row2dict(group)
@@ -95,8 +96,16 @@ def groupApiGet(id):
         restaurant['mediaPath'] = mediaPath
         restaurant['rating'] = rating
         restaurant['userRating'] = userRating
-
         group['restaurants'].append(restaurant)
+    # todays recommendation
+    if suggested is not None:
+        rating = suggested.groupRating(group['id'])
+        suggested = row2dict(suggested)
+        suggested['mediaPath'] = Media.query.filter_by(id = suggested["Media_id"]).first().mediaPath
+        suggested['rating'] = rating
+        group['suggestedRestaurant'] = suggested
+    else:
+        group['suggestedRestaurant'] = False
     return jsonify(group)
 
 @app.route('/api/group/<id>', methods=['POST'])

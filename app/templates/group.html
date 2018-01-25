@@ -59,26 +59,43 @@
             </div>
             <div v-if="group">
               <div class="row">
-                <div class="col-lg-3 col-sm-6"><img class="img-thumbnail img-responsive" :src="group.mediaPath" width="750" height="auto"/></div>
-                <div class="col-lg-2 col-sm-6">
-                  <h1>${group.name}</h1>
-                  <h3 v-if="group.aboutGroup !== 'None'">${group.aboutGroup}</h3>
+                <div class="col-lg-9 col-md-9 col-sm-9">
+                  <div class="row">
+                    <div class="col-lg-3 col-sm-6"><img class="img-thumbnail img-responsive" :src="group.mediaPath" width="750" height="auto"/></div>
+                    <div class="col-lg-2 col-sm-6">
+                      <h1>${group.name}</h1>
+                      <h3 v-if="group.aboutGroup !== 'None'">${group.aboutGroup}</h3>
+                    </div>
+                  </div>
+                  <div class="div" v-if="group.inGroup">
+                    <div class="row">
+                      <div class="btn btn-danger" v-if="group.inGroup" v-on:click="leaveGroupAlert()">Leave Group</div>
+                      <div class="btn btn-primary" v-if="group.inGroup" v-on:click="addRestaurantRedirect()">Add another restaurant</div>
+                      <div class="btn btn-primary" v-if="group.isAdmin" v-on:click="editRedirect()">Edit Group</div>
+                      <div class="btn btn-danger" v-if="group.isAdmin" v-on:click="deleteGroupAlert()">Delete Group</div>
+                    </div>
+                    <div class="row">
+                      <div class="form-group"> 
+                        <label for="emails">Add new People to the group:
+                          <p>If you want to add multiple people, please separate the emails by comma(,) or whitespace( ). </p>
+                          <textarea class="form-control" v-model="emails" rows="5" cols="30" name="aboutMe"></textarea>
+                          <button class="btn btn-primary" v-on:click="addPeople()">Add people </button>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div class="div" v-if="group.inGroup">
-                <div class="row">
-                  <div class="btn btn-danger" v-if="group.inGroup" v-on:click="leaveGroupAlert()">Leave Group</div>
-                  <div class="btn btn-primary" v-if="group.inGroup" v-on:click="addRestaurantRedirect()">Add another restaurant</div>
-                  <div class="btn btn-primary" v-if="group.isAdmin" v-on:click="editRedirect()">Edit Group</div>
-                  <div class="btn btn-danger" v-if="group.isAdmin" v-on:click="deleteGroupAlert()">Delete Group</div>
-                </div>
-                <div class="row">
-                  <div class="form-group"> 
-                    <label for="emails">Add new People to the group:
-                      <p>If you want to add multiple people, please separate the emails by comma(,) or whitespace( ). </p>
-                      <textarea class="form-control" v-model="emails" rows="5" cols="30" name="aboutMe"></textarea>
-                      <button class="btn btn-primary" v-on:click="addPeople()">Add people </button>
-                    </label>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                  <div class="row" v-if="group.suggestedRestaurant">
+                    <h3>Today's suggestion is: </h3>
+                    <div class="thumbnail groupThumbnail"><a v-bind:href="/group/ + group.id + /restaurant/ + group.suggestedRestaurant.id">
+                        <div><img class="img-responsive img-thumbnail" v-bind:src="group.suggestedRestaurant.mediaPath" height="400" width="auto"/>
+                          <div class="caption">
+                            <h4>${group.suggestedRestaurant.name}</h4>
+                            <h5 v-if="group.suggestedRestaurant.rating !== -1">${group.suggestedRestaurant.rating} <i class="glyphicon glyphicon-cutlery"></i></h5>
+                            <h5 v-else="v-else">Not yet rated</h5>
+                          </div>
+                        </div></a></div>
                   </div>
                 </div>
                 <div class="row">
