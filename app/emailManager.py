@@ -1,33 +1,28 @@
-from app import app, db
-import os, time, uuid
+import os, time, uuid, datetime
 from string import Template
 from email.mime.multipart import MIMEMultipart
 from email.MIMEImage import MIMEImage
 from email.mime.text import MIMEText
 import email.message
 import smtplib
+
+from app import app, db
 import config
 from privateData import *
 from models import Group, Restaurant, Media, User, UsersInGroups, RestaurantsInGroups
+from .suggetionAlgorithm import SuggestionGenerator
+
 
 def pr():
-    print(2, time.time())
     EM = EmailManager()
-    print(3)
-    group = Group.query.filter_by(id = 26).first()
-    print(4)
-    restaurant = Restaurant.query.filter_by(id = 3).first()
-    user = User.query.filter_by(id = 1).first()
-    print(5)
-    # print(EM.buildGroupRestaurantRecommendationTemplate(group, restaurant))
-    print(EM.sendAll())
-    print(6)
+    EM.sendAll()
 
 
 
 class EmailManager(object):
     def __init__(self):
         self.loadTemplates()
+        self.Suggestor = SuggestionGenerator()
 
 
     def readTemplate(self, filename):
@@ -48,27 +43,18 @@ class EmailManager(object):
                 RESTAURANT_NAME=restaurant.name)
         return template, cidUUID
 
-    def generateSuggestion(self, group):
-        # random now
-        import numpy as np
-        rests = db.session.query(Restaurant).\
-                    join(RestaurantsInGroups).filter_by(Group_id = group.id).all()
-
-        if len(rests) > 0:
-            return rests[np.random.randint(0, len(rests))]
-
     def buildUserTemplate(self, user):
         groups = db.session.query(Group).\
                     join(UsersInGroups).filter_by(User_id = user.id).all()
         fullTemplate = ''
         mediaDict = {}
         for group in groups:
-            rest = self.generateSuggestion(group)
+            rest = self.Suggestor.getSuggestion(group)
+            print(rest)
             if rest is not None:
                 template, cidUUID = self.buildGroupRestaurantRecommendationTemplate(group, rest)
                 mediaDict[cidUUID] = Media.query.filter_by(id = rest.Media_id).first().mediaPath[3:]
                 fullTemplate += template
-
 
         fullTemplate = self.templateBody.substitute(
                             NAME=user.nickname,
@@ -93,12 +79,9 @@ class EmailManager(object):
             msgImage.add_header('Content-ID', '<{}>'.format(cidUUID))
             msg.attach(msgImage)
 
-        # msg.attach(body)
-        # msg.add_header('Content-Type', 'text/html')
+        # server.sendmail(msg['From'], msg['To'], msg.as_string())
 
-        server.sendmail(msg['From'], msg['To'], msg.as_string())
-
-        print("!!!", user.email)
+        print("!!!", user.email, time.time(), time.strftime("%c"))
 
     def sendAll(self):
         server = smtplib.SMTP('smtp.gmail.com: 587')
@@ -109,6 +92,8 @@ class EmailManager(object):
         for user in users:
             self.sendEmailUser(user, server)
         server.quit()
+
+        self.Suggestor.resetTraffic()
 
 
 # t1 = read_template('app/templates/groupRestaurantTemplate.html')

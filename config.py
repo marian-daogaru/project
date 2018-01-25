@@ -32,8 +32,9 @@ JOBS = [{
     'func': 'app.emailManager:pr',
     # 'args': (1, 2),
     'trigger': 'cron',
-    # 'second': '*/10',
-    'minute': '*',
+    'second': '*/5',
+    # 'minute': '*/5',
+    # 'hour': '*',
     'replace_existing': True,
     'max_instances': 1,
 }]
