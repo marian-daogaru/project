@@ -222,6 +222,14 @@ var restaurantAPI = new Vue({
             if (this.response.accessDenied){
               window.location.href = '/accessDenied'
             }
+            for (review in this.reviews){
+              console.log(this.reviews[review].userID),
+              console.log(parseInt(this.user.id)),
+              console.log(parseInt(this.user.id) === parseInt(this.reviews[review].userID))
+              if (parseInt(this.user.id) === parseInt(this.reviews[review].userID)){
+                this.reviews[review].review = this.userReview
+              }
+            }
           }
         )
       }

@@ -67,6 +67,7 @@ def editApiPost():
     if form.validate():
         g.user.nickname = form.nickname
         g.user.aboutMe = form.aboutMe
+        print(g.user.aboutMe, 'aboutmeeeee')
         if len(form.password) > 0:  # it was already checked in validate
             g.user.password = form.password
         db.session.add(g.user)

@@ -7,11 +7,17 @@ def validateForInjections(inputDict):
     valid by removing the special characters {} so we dont have injections. """
     newDict = {}
     for key, value in inputDict.items():
-        if type(value) == str:
+        print(type(value))
+        if type(value) == unicode:
             newDict[key] =  re.sub('[\{\};]', '', value)
         else:
             newDict[key] = value
     return newDict
+
+def validateEmail(email):
+    pattern = re.compile(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)")
+    print('MATHCMEEE', pattern.match(email))
+    return pattern.match(email)
 
 
 class LoginForm(object):
@@ -30,6 +36,9 @@ class LoginForm(object):
             self.errors.append("Missing field.")
             return False
         user = User.query.filter_by(email = self.email).first()
+        if not bool(validateEmail(self.email)):
+            self.errors.append('Invalid username / password.')
+            return False
         if user is None:
             self.errors.append("Invalid username / password.")
             print("galben")
@@ -57,6 +66,9 @@ class SignUpForm():
         if len(self.email) ==  0 or len(self.password) == 0 or len(self.confpwd) == 0:
             print("rosu")
             self.errors.append("Missing field.")
+            return False
+        if not bool(validateEmail(self.email)):
+            self.errors.append('Invalid username / password.')
             return False
         if User.query.filter_by(email = self.email).first():
             print("galben")
@@ -153,7 +165,6 @@ class EditGroupForm():
         self.name = newDict['name']
         self.aboutGroup = newDict['aboutGroup']
         self.errors = []
-
     def validate(self):
         if len(self.name) == 0:
             # this is already checked by browser
@@ -219,7 +230,6 @@ class RestaurantAddForm():
             self.errors.append('Invalid URL.')
             return False
         return True
-
 
 
 class ReviewForm():

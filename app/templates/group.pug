@@ -57,7 +57,7 @@ block content
                           p(v-if="restaurant.aboutMe !== 'None'") ${restaurant.aboutMe}
             
                     div(class="bottom input-group ratingButtonGroup")
-                      div(class="leftRating")
+                      div(v-if='group.isAdmin' class="leftRating")
                         .btn.btn-default(class="ratingButton" v-on:click="removeRestaurant(restaurant)")
                           i(class="glyphicon glyphicon-remove")
                       div(class="rightRating")

@@ -111,7 +111,7 @@
                             </div>
                           </div></a>
                         <div class="bottom input-group ratingButtonGroup">
-                          <div class="leftRating">
+                          <div class="leftRating" v-if="group.isAdmin">
                             <div class="btn btn-default ratingButton" v-on:click="removeRestaurant(restaurant)"><i class="glyphicon glyphicon-remove"></i></div>
                           </div>
                           <div class="rightRating">

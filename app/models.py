@@ -136,7 +136,7 @@ class Group(db.Model):
                              RestaurantsInGroups.dailySuggestion == 1)).first()
         if restaurant is not None:
             return Restaurant.query.filter_by(id = restaurant.Restaurants_id).first()
-        
+
 
 
 
@@ -245,7 +245,6 @@ class Restaurant(db.Model):
                         filter(and_(UserRatings.Restaurant_id.like(self.id),
                                     UserRatings.comment.isnot(None))).\
                                         order_by(User.id).all()
-
         reviewsList = []
         for user, review in zip(users, reviews):
             print(review.comment)
@@ -253,7 +252,8 @@ class Restaurant(db.Model):
             reviewsList.append({'nickname': user.nickname,
                                 'mediaPath': mediaPath,
                                 'rating': review.rating,
-                                'review': review.comment})
+                                'review': review.comment,
+                                'userID': user.id})
         return reviewsList
 
     def generatedTrafic(self, groupID):
@@ -284,3 +284,18 @@ class UserRatings(db.Model):
 
 class Media(db.Model):
     __table__ = db.Model.metadata.tables['Media']
+
+class LoginAttempts(db.Model):
+    __table__ = db.Model.metadata.tables['LoginAttempts']
+
+class ResetPassword(db.Model):
+    __table__ = db.Model.metadata.tables['ResetPassword']
+
+class PendingUsers(db.Model):
+    __table__ = db.Model.metadata.tables['PendingUsers']
+
+class PendingUsersInGroups(db.Model):
+    __table__ = db.Model.metadata.tables['PendingUsersInGroups']
+
+class PendingRestaurantsInGroups(db.Model):
+    __table__ = db.Model.metadata.tables['PendingRestaurantsInGroups']

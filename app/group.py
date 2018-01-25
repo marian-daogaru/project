@@ -150,15 +150,16 @@ def groupApiPut(id, ids):
 
 @app.route('/api/group/<id>/<ids>', methods=['DELETE'])
 @login_required
-def groupApiDelete(id, ids):
+def groupApiDeleteRestaurant(id, ids):
     """
         ids = [userID, restaurantID]
         userID is checked so we can verify if the user actually is in the group
     """
+    print(ids)
     group = Group.query.filter_by(id = id).first()
     ids = ids.split(',')
     if g.user.id == int(ids[0]):
-        if g.user.isInGroup(g.user, group):
+        if g.user.isAdmin(group.id):
             g.user.rateRestaurant(ids[1], 0)
             return jsonify({"confirmation": "You rated the restaurant negatively, therefore it was removed from this group."})
         return jsonify({'accessDenied': True})
@@ -267,7 +268,7 @@ def editGroupPost(id):
 
             filename = str(uuid.uuid4().hex) + '.png'
             filename = os.path.join(app.config['GROUPPATH'], secure_filename(filename))
-            with open(os.path.join(basedir, filename[3:]), 'w') as myImage:
+            with open(os.path.join(basedir + '/app/', filename[3:]), 'w') as myImage:
                 # missing_padding = len(form.avatar) % 4
                 # if missing_padding != 0:
                 #     form.avatar += b'='* (4 - missing_padding)
