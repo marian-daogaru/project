@@ -32,10 +32,6 @@ def signUpApiGet():
 def signUpApiPost():
     form = SignUpForm(request.get_json())
     if form.validate():
-        # avatar = Media(mediaPath = USERPATH + '_defautlUserAvatarSmileyFace.png')
-        # db.session.add(avatar)
-        # db.session.commit()
-
         nickname = form.email.split('@')[0]
         nickname = User.make_valid_nickname(nickname)
         user = PendingUsers(email = form.email,
@@ -120,7 +116,6 @@ def resetGet(token):
 
 @app.route('/api/reset/<token>', methods=["POST"])
 def resetPost(token):
-
     form = ResetPasswordForm(request.get_json())
     if form.validate():
         user = User.query.filter_by(email = form.email).first()
@@ -156,3 +151,31 @@ def resetRequest(email):
 # ##############################################################################
 # CONFIRM
 # ##############################################################################
+@app.route('/confirm/<token>')
+def confirm(token):
+    return render_template('confirm.html')
+
+
+@app.route('/api/confirm/<token>', methods=['GET'])
+def confirmGet(token):
+    if g.user is not None and g.user.is_authenticated:
+        return jsonify({'logged': True,
+                        'errors': ['You are already logged in.']})
+    try:
+        passwordResetSerializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+        email = passwordResetSerializer.loads(token, salt='password-reset-salt', max_age=3600)
+    except:
+        email = passwordResetSerializer.loads(token, salt='password-reset-salt')
+        PendingUsers.query.filter_by(email = email).delete()
+        db.session.commit()
+        return jsonify({'expired': True})
+
+    user = PendingUsers.query.filter_by(email = email).first()
+    print(user)
+    if user is None:
+        return jsonify({'alreadyConfirmed': True})
+    user.migrate(USERPATH)
+    print(user)
+    PendingUsers.query.filter_by(email = email).delete()
+    db.session.commit()
+    return jsonify({'confirmation': True})

@@ -30,7 +30,8 @@ class User(db.Model):
     @property
     def is_anonymous(self):
         return False
-
+        db.session.add(avatar)
+        db.session.comm
     def get_id(self):
         try:
             return unicode(self.id)  # python 2
@@ -343,6 +344,19 @@ class PendingUsers(db.Model):
 
     def sendConfirmation(self):
         EM.SignUpEM().sendConfirmationEmail(self)
+
+    def migrate(self, USERPATH):
+        avatar = Media(mediaPath = USERPATH + '_defautlUserAvatarSmileyFace.png')
+        db.session.add(avatar)
+        db.session.commit()
+
+        user = User(Media_id = avatar.id,
+                    email = self.email,
+                    password = self.password,
+                    nickname = self.nickname)
+        db.session.add(user)
+        db.session.commit()
+
 
 class PendingUsersInGroups(db.Model):
     __table__ = db.Model.metadata.tables['PendingUsersInGroups']

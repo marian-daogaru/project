@@ -64,12 +64,9 @@ block content
                         template(v-for="i in 5")
                           .btn.btn-default(class="ratingButton" v-on:click="giveRating(restaurant, i)" )
                             i(v-bind:class="{ ratingClicked: restaurant.userRating >= i }" class="glyphicon glyphicon-cutlery ratingDefault" :id='restaurant.id + "," + i' )
-                        
-                          
-         
-            
-          
-            
+
+
+
 block jsscript 
   script(type="text/javascript" src="{{ url_for('static', filename='js/group.js') }}")
   
