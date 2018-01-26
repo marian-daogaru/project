@@ -5,7 +5,7 @@ from app import app, db, lm
 from config import GROUPPATH, basedir
 from flask import render_template, session, request, g, jsonify
 from flask_login import login_user, logout_user, current_user, login_required
-from .models import Group, Media, User, UsersInGroups, RestaurantsInGroups, Restaurant
+from .models import Group, Media, User, UsersInGroups, RestaurantsInGroups, Restaurant, PendingUsersInGroups
 from .forms import GroupCreateForm,  EditGroupForm, PeopleGroupForm
 from werkzeug.utils import secure_filename
 
@@ -119,7 +119,7 @@ def groupApiPost(id):
 
             if form.validate():
                 group = Group.query.filter_by(id = eval(id)).first()
-                return AddPeopletoGroup(form.emails, group)
+                return AddPeoplePending(form.emails, group)
 
         return jsonify({'errors': form.errors}), 201
     return ({'errors': ['Not a valid post form!']}), 400
@@ -181,6 +181,18 @@ def AddPeopletoGroup(emails, group):
             user.joinGroup(user, group)
     return jsonify({'added': 'All people were added succesfully to this group.'}), 201
 
+def AddPeoplePending(emails, group):
+    # emails must be a list
+    for email in emails:
+        user = User.query.filter_by(email = email).first()
+        print(user)
+        if user is None:
+            print('here')
+            return jsonify({'errors': ["The email {} is not registered!".format(email)]}), 201
+        else:
+            PendingUsersInGroups.addPendingUser(user, group)
+    return jsonify({'added': 'All people were added succesfully to this group. Awaiting admin approval.'}), 201
+
 
 @app.route('/api/group/leave', methods=['POST'])
 @login_required
@@ -205,7 +217,9 @@ def leaveGroup():
 
     return jsonify({'left': False})
 
-
+# ##############################################################################
+# DELETE GROUP
+# ##############################################################################
 @app.route('/api/group/<id>/delete', methods=['DELETE'])
 @login_required
 def deleteGroup(id):

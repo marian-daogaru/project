@@ -163,7 +163,7 @@ def confirmGet(token):
                         'errors': ['You are already logged in.']})
     try:
         passwordResetSerializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
-        email = passwordResetSerializer.loads(token, salt='password-reset-salt', max_age=3600)
+        email = passwordResetSerializer.loads(token, salt='password-reset-salt', max_age=7200)
     except:
         email = passwordResetSerializer.loads(token, salt='password-reset-salt')
         PendingUsers.query.filter_by(email = email).delete()

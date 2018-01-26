@@ -106,7 +106,7 @@ def addRestaurantPost(id):
                                                   form.url,
                                                   restaurantMediaPath)
         group = Group.query.filter_by(id = id).first()
-        restaurant.addToGroup(group)
+        restaurant.addToPending(group)
         return jsonify({'confirmations': ['Restaurant added succesfully!']})
     return jsonify({'errors': form.errors})
 
@@ -122,8 +122,9 @@ def addRestaurantPut(id, ids):
             restaurant = Restaurant.query.filter_by(id = restaurantID).first()
             if restaurant is None:
                 return jsonify({'errors': ['No such restaurant. This is a bug.']})
-            restaurant.addToGroup(group)
-            restaurant.assignNewGroupRating(group)
+            restaurant.addToPending(group)
+            # THIS NEED TO BE MIGRATED
+            # restaurant.assignNewGroupRating(group)
             print(restaurant.calculateGroupRating(group.id), "RATINGS")
         return jsonify({'confirmations': ['Restaurants added succesfully!']})
     else:

@@ -295,6 +295,14 @@ class Restaurant(db.Model):
         db.session.add(GroupRestaurantPair)
         db.session.commit()
 
+    def addToPending(self, group):
+        if not self.inGroup(group):
+            pendingRest = PendingRestaurantsInGroups(Restaurant_id = self.id,
+                                                Group_id = group.id)
+            db.session.add(pendingRest)
+            db.session.commit()
+
+
 class RestaurantsInGroups(db.Model):
     __table__ = db.Model.metadata.tables['RestaurantsInGroups']
 
@@ -360,6 +368,14 @@ class PendingUsers(db.Model):
 
 class PendingUsersInGroups(db.Model):
     __table__ = db.Model.metadata.tables['PendingUsersInGroups']
+
+    @staticmethod
+    def addPendingUser(user, group):
+        if not user.isInGroup(user, group):
+            pendingUser = PendingUsersInGroups(User_id = user.id,
+                                                Group_id = group.id)
+            db.session.add(pendingUser)
+            db.session.commit()
 
 class PendingRestaurantsInGroups(db.Model):
     __table__ = db.Model.metadata.tables['PendingRestaurantsInGroups']
