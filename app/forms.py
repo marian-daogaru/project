@@ -44,7 +44,7 @@ class LoginForm(object):
             return False
         if user.isLocked():
             self.errors.append("""This account has been locked.
-                                  A reset password has been sent. Please reset your password.""")
+                                  A reset password email has been sent. Please reset your password.""")
             return False
 
         if user.password != self.password:
@@ -99,6 +99,35 @@ class SignUpForm():
             self.errors.append('Invalid Passwword.')
             return False
         return True
+
+
+class ResetPasswordForm():
+    def __init__(self, inputDict, *args, **kwargs):
+        newDict = validateForInjections(inputDict)
+        self.email = newDict['email']
+        self.password = newDict['password']
+        self.confpwd = newDict['confpwd']
+        self.errors = []
+
+    def validate(self):
+        if not User.query.filter_by(email = self.email).first():
+            print("galben")
+            self.errors.append('Invalid Email. Please contact the dev team.')
+            return False
+        if len(self.password) > 20 or len(self.password) < 2:
+            print("beige")
+            self.errors.append("Password not the right dimension. It must be between 8 and 20 chracters long.")
+            return False
+        if self.password != self.confpwd:
+            print("portocaliu")
+            self.errors.append('Password not matching')
+            return False
+        if User.isValidPassword(self.password):
+            print("maro")
+            self.errors.append('Invalid Passwword.')
+            return False
+        return True
+
 
 class EditForm():
     def __init__(self, inputDict, *args, **kwargs):

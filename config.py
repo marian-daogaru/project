@@ -29,7 +29,7 @@ def pr(x, y):
     time.sleep(2)
 JOBS = [{
     'id' : 'job1', #str(uuid.uuid4().hex),
-    'func': 'app.emailManager:pr',
+    'func': 'app.emailScheduler:pr',
     # 'args': (1, 2),
     'trigger': 'cron',
     'second': '*/15',

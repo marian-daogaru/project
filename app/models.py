@@ -3,6 +3,7 @@ from app import db, app
 from sqlalchemy import and_
 import re
 import numpy as np
+import emailManager as EM
 
 row2dict = lambda r: {c.name: str(getattr(r, c.name)) for c in r.__table__.columns}
 
@@ -98,9 +99,16 @@ class User(db.Model):
 
     def isLocked(self):
         resetPWD = ResetPassword.query.filter_by(User_id = self.id).first()
+        # EM.PasswordResetEM().sendResetEmail(self)
         if resetPWD is None:
             return False
         return True
+
+    def unlock(self):
+        ResetPassword.query.filter_by(User_id = self.id).delete()
+        LoginAttempts.query.filter_by(User_id = self.id).delete()
+        db.session.commit()
+
 
 
 
@@ -321,6 +329,8 @@ class ResetPassword(db.Model):
                                     oldPassword = user.password)
             db.session.add(resetPWD)
             db.session.commit()
+
+            EM.PasswordResetEM().sendResetEmail(user)
 
 class PendingUsers(db.Model):
     __table__ = db.Model.metadata.tables['PendingUsers']
