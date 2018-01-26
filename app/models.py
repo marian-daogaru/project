@@ -96,6 +96,14 @@ class User(db.Model):
         # return np.array(ratedGroups).ravel().astype(int)
         return ratedGroups
 
+    def isLocked(self):
+        resetPWD = ResetPassword.query.filter_by(User_id = self.id).first()
+        if resetPWD is None:
+            return False
+        return True
+
+
+
 
 
 class UsersInGroups(db.Model):
@@ -288,8 +296,31 @@ class Media(db.Model):
 class LoginAttempts(db.Model):
     __table__ = db.Model.metadata.tables['LoginAttempts']
 
+    @staticmethod
+    def loginAttempt(user):
+        print("HELLO")
+        logAtmpt = LoginAttempts.query.filter_by(User_id = user.id).first()
+        if logAtmpt is None:
+            logAtmpt = LoginAttempts(User_id = user.id,
+                                    attempts = 1)
+
+        else:
+            logAtmpt.attempts += 1
+        db.session.add(logAtmpt)
+        db.session.commit()
+        return logAtmpt.attempts
+
 class ResetPassword(db.Model):
     __table__ = db.Model.metadata.tables['ResetPassword']
+
+    @staticmethod
+    def lockUser(user):
+        resetPWD = ResetPassword.query.filter_by(User_id = user.id).first()
+        if resetPWD is None:
+            resetPWD = ResetPassword(User_id = user.id,
+                                    oldPassword = user.password)
+            db.session.add(resetPWD)
+            db.session.commit()
 
 class PendingUsers(db.Model):
     __table__ = db.Model.metadata.tables['PendingUsers']
@@ -299,3 +330,6 @@ class PendingUsersInGroups(db.Model):
 
 class PendingRestaurantsInGroups(db.Model):
     __table__ = db.Model.metadata.tables['PendingRestaurantsInGroups']
+
+class RestaurantDetails(db.Model):
+    __table__ = db.Model.metadata.tables['RestaurantDetails']

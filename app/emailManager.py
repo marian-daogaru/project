@@ -14,16 +14,14 @@ from .suggetionAlgorithm import SuggestionGenerator
 
 
 def pr():
-    EM = EmailManager()
+    EM = RecommendationEmailManager()
     EM.sendAll()
 
 
-
-class EmailManager(object):
+class RecommendationEmailManager(object):
     def __init__(self):
         self.loadTemplates()
         self.Suggestor = SuggestionGenerator()
-
 
     def readTemplate(self, filename):
         path = os.path.join(os.getcwd(), filename)
@@ -79,7 +77,7 @@ class EmailManager(object):
             msg.attach(msgImage)
 
         # this should be put onto a multy threading instance so it will not
-        # just hog when thousands of users are present... 
+        # just hog when thousands of users are present...
         # server.sendmail(msg['From'], msg['To'], msg.as_string())
 
         print("!!!", user.email, time.time(), time.strftime("%c"))
@@ -95,3 +93,13 @@ class EmailManager(object):
         server.quit()
 
         self.Suggestor.resetTraffic()
+
+
+
+
+class PasswordResetEM(object):
+    def __init__(self):
+        pass
+
+    def sendEmail(self):
+        pass

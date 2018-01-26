@@ -4,7 +4,7 @@ from app import app, db, lm
 from config import USERPATH, basedir
 from flask import render_template, session, request, g, jsonify, redirect, url_for
 from flask_login import login_user, logout_user, login_required
-from .models import Media, User
+from .models import Media, User, LoginAttempts
 from .forms import SignUpForm, LoginForm
 from werkzeug.utils import secure_filename
 

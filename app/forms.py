@@ -1,4 +1,4 @@
-from .models import User
+from .models import User, LoginAttempts, ResetPassword
 import re
 
 
@@ -16,7 +16,6 @@ def validateForInjections(inputDict):
 
 def validateEmail(email):
     pattern = re.compile(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)")
-    print('MATHCMEEE', pattern.match(email))
     return pattern.match(email)
 
 
@@ -43,12 +42,21 @@ class LoginForm(object):
             self.errors.append("Invalid username / password.")
             print("galben")
             return False
+        if user.isLocked():
+            self.errors.append("""This account has been locked.
+                                  A reset password has been sent. Please reset your password.""")
+            return False
+
         if user.password != self.password:
             self.errors.append("Invalid username / password.")
+            if LoginAttempts.loginAttempt(user) >= 3:
+                ResetPassword.lockUser(user)
+                self.errors.append("The login details were introduced wrong too many times. This account has been locked. A reset account email has been sent.")
             print("portocaliu")
             return False
         print('albastru')
         return True
+
 
 
 class SignUpForm():
