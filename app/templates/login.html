@@ -73,7 +73,14 @@
               </div>
               <button class="btn btn-primary" v-on:click="login()">Login </button>
             </div>
-            <div>Not Signed up? <a href="{{ url_for('signup') }}">Do it now!</a></div>
+            <div> 
+              <div> 
+                <div class="btn btn-primary icon-btn" v-on:click="redirectSignUp()"> <i class="btn-glyphicon glyphicon glyphicon-plus img-circle text-success"> </i><span>Sign up!</span></div>
+              </div>
+              <div> 
+                <div class="btn btn-primary icon-btn" v-on:click="resetPassword()"> <i class="btn-glyphicon glyphicon glyphicon-lock img-circle text-success"> </i><span>Reset Password! </span></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

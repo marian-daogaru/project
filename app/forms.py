@@ -1,4 +1,4 @@
-from .models import User, LoginAttempts, ResetPassword
+from .models import User, LoginAttempts, ResetPassword, PendingUsers
 import re
 
 
@@ -17,6 +17,19 @@ def validateForInjections(inputDict):
 def validateEmail(email):
     pattern = re.compile(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)")
     return pattern.match(email)
+
+
+
+class ResetRequestForm(object):
+    def __init__(self, email, *args, **kwargs):
+        self.email = email
+        self.errors = []
+
+    def validate(self):
+        if not bool(validateEmail(self.email)):
+            self.errors.append('Invalid username / password.')
+            return False
+        return True
 
 
 class LoginForm(object):
@@ -82,6 +95,10 @@ class SignUpForm():
             print("galben")
             self.errors.append('Email already registered')
             return False
+        if PendingUsers.query.filter_by(email = self.email).first():
+            print("galben")
+            self.errors.append('Email already registered, but not confirmed. Please confirm!')
+            return False
         if len(self.email) > 30:
             print("beige 22")
             self.errors.append("Email too long.")
@@ -113,6 +130,9 @@ class ResetPasswordForm():
         if not User.query.filter_by(email = self.email).first():
             print("galben")
             self.errors.append('Invalid Email. Please contact the dev team.')
+            return False
+        if not bool(validateEmail(self.email)):
+            self.errors.append('Invalid username / password.')
             return False
         if len(self.password) > 20 or len(self.password) < 2:
             print("beige")

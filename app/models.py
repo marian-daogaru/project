@@ -109,6 +109,12 @@ class User(db.Model):
         LoginAttempts.query.filter_by(User_id = self.id).delete()
         db.session.commit()
 
+    def lock(self):
+        logAtmpt = LoginAttempts(User_id = self.id,
+                                attempts = 5)
+        db.session.add(logAtmpt)
+        db.session.commit()
+        ResetPassword.lockUser(self)
 
 
 
@@ -334,6 +340,9 @@ class ResetPassword(db.Model):
 
 class PendingUsers(db.Model):
     __table__ = db.Model.metadata.tables['PendingUsers']
+
+    def sendConfirmation(self):
+        EM.SignUpEM().sendConfirmationEmail(self)
 
 class PendingUsersInGroups(db.Model):
     __table__ = db.Model.metadata.tables['PendingUsersInGroups']

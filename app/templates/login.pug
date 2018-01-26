@@ -20,8 +20,15 @@ block content
             input(v-model="rememberMe" type="checkbox" class="form-check-input" name="rememberMe")
         button.btn.btn-primary(v-on:click="login()") Login 
         
-      div Not Signed up? 
-        a(href="{{ url_for('signup') }}") Do it now!
+      div 
+        div  
+          .btn.btn-primary(class='icon-btn' v-on:click="redirectSignUp()") 
+            i(class='btn-glyphicon glyphicon glyphicon-plus img-circle text-success') 
+            span Sign up!
+        div 
+          .btn.btn-primary(class='icon-btn' v-on:click="resetPassword()") 
+            i(class='btn-glyphicon glyphicon glyphicon-lock img-circle text-success') 
+            span Reset Password! 
         
 block jsscript
   script(type="text/javascript" src="{{ url_for('static', filename='js/login.js') }}")

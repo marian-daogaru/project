@@ -4,8 +4,8 @@ from app import app, db, lm
 from config import USERPATH, basedir
 from flask import render_template, session, request, g, jsonify, redirect, url_for
 from flask_login import login_user, logout_user, login_required
-from .models import Media, User, LoginAttempts
-from .forms import SignUpForm, LoginForm, ResetPasswordForm
+from .models import Media, User, LoginAttempts, PendingUsers
+from .forms import SignUpForm, LoginForm, ResetPasswordForm, ResetRequestForm
 from werkzeug.utils import secure_filename
 from itsdangerous import URLSafeTimedSerializer
 
@@ -32,20 +32,20 @@ def signUpApiGet():
 def signUpApiPost():
     form = SignUpForm(request.get_json())
     if form.validate():
-        avatar = Media(mediaPath = USERPATH + '_defautlUserAvatarSmileyFace.png')
-        db.session.add(avatar)
-        db.session.commit()
+        # avatar = Media(mediaPath = USERPATH + '_defautlUserAvatarSmileyFace.png')
+        # db.session.add(avatar)
+        # db.session.commit()
 
         nickname = form.email.split('@')[0]
         nickname = User.make_valid_nickname(nickname)
-        user = User(email = form.email,
+        user = PendingUsers(email = form.email,
                     password = form.password,
-                    nickname = nickname,
-                    Media_id = avatar.id)
+                    nickname = nickname)
         db.session.add(user)
         db.session.commit()
+        user.sendConfirmation()
 
-        login_user(user, remember=form.rememberMe)
+        # login_user(user, remember=form.rememberMe)
         print(user.id, "@@@@@")
         return jsonify({'id': user.id})
     return jsonify({'id': -1, 'errors': form.errors}), 201
@@ -104,15 +104,17 @@ def resetGet(token):
                         'errors': ['You are already logged in.']})
     try:
         passwordResetSerializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
-        email = passwordResetSerializer.loads(token, salt='password-reset-salt', max_age=7200)
+        email = passwordResetSerializer.loads(token, salt='password-reset-salt', max_age=3600)
     except:
+        email = passwordResetSerializer.loads(token, salt='password-reset-salt')
+        user = User.query.filter_by(email = email).first()
+        user.unlock()
         return jsonify({'expired': True})
-
-    print(email, "!!!")
 
     user = User.query.filter_by(email = email).first()
     if not user.isLocked():
         return jsonify({'expired': True})
+        user.unlock()
     return jsonify({'email': email})
 
 
@@ -129,3 +131,28 @@ def resetPost(token):
         return jsonify({'unlocked': True})
 
     return jsonify({'errors': form.errors})
+
+
+@app.route('/api/reset/nobodyisgoingtogethere/<email>', methods=['PUT'])
+def resetRequest(email):
+    if g.user is not None and g.user.is_authenticated:
+        print('logged')
+        return jsonify({'passed': False})
+
+    form = ResetRequestForm(email)
+    if form.validate():
+        user = User.query.filter_by(email = email).first()
+        if user is None:
+            print('does not exist')
+            return jsonify({'passed': False})
+        user.lock()
+        print('hello!')
+        return jsonify({'passed': True})
+    print('not valid')
+    return jsonify({'passed': False})
+
+
+
+# ##############################################################################
+# CONFIRM
+# ##############################################################################

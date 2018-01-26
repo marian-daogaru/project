@@ -7,6 +7,7 @@ var loginAPI = new Vue({
     password: '',
     rememberMe: false,
     errors: null,
+    response: '',
   },
 
   mounted() {
@@ -49,6 +50,51 @@ var loginAPI = new Vue({
           window.location.href = '/user/' + this.user.id
         }
       })
+    },  // login
+
+    redirectSignUp: function(){
+      window.location.href = '/signup'
+    },
+
+    resetPassword: function() {
+      var thisVue = this;  // otherwise in swal this is replaced by local inst
+      swal({
+        title: "Are you sure!",
+        text: "Please provide the email address for the account.",
+        type: "input",
+        showCancelButton: true,
+        closeOnConfirm: false,
+        inputPlaceholder: "email@domani.com",
+        confirmButtonText: 'Send reset link',
+      },
+      function (inputValue) {
+        if (inputValue === false) return false;
+        if (inputValue === "") {
+          swal.showInputError("You need to write something!");
+          return false
+        }
+        thisVue.sendReset(inputValue)
+        if (thisVue.sendReset(inputValue)) {
+          alert('hello')
+          swal.showInputError("Invalid Email!");
+          return false
+        }
+        swal("Confirm!", "A password reset email was sent to " + inputValue, "success");
+      })
+    },
+
+    sendReset: function(email) {
+      this.$http.put(
+        '/api/reset/nobodyisgoingtogethere/' + email
+      ).then(
+        function(response) {
+          this.response = response.data
+        },
+        function(err) {
+          console.log(err),
+          console.log("ERROR")
+        }
+      )
     }
   }
 })
@@ -86,7 +132,7 @@ var signupAPI = new Vue({
         console.log("asdas")
       }).then(function() {
         if (this.user.id !== -1){
-          window.location.href = '/user/' + this.user.id
+          window.location.href = '/home'
         }
       })
     } //singUp function
@@ -171,6 +217,8 @@ var passwordReset = new Vue({
       function() {
         window.location.href = '/login'
       })
-    },
+    }
+
+
   } // methods
 })  // passwordReset
