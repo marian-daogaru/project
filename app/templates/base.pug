@@ -39,9 +39,7 @@ html
                       div(class="form-group")
                         input(v-model='restaurantName' v-on:keypress.enter="searchRestaurantRedirect()" type="text" class="form-control" placeholder="Search existing restaurant" name="search")
                       .btn.btn-default(v-on:click="searchRestaurantRedirect()")
-                        i(class="glyphicon glyphicon-search")
-                            
-          h1 Welcome!    
+                        i(class="glyphicon glyphicon-search")   
           
         | #{'{% with messages = get_flashed_messages() %} '}
         | #{'{% if messages %}'}

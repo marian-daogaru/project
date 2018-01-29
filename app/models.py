@@ -405,7 +405,7 @@ class UserRatings(db.Model):
     def latestAdded(number):
         # number is how many of them we want
         latestQuery = UserRatings.query.filter(UserRatings.comment.isnot(None)).\
-                    order_by(UserRatings.date.asc()).limit(number)
+                    order_by(UserRatings.date.desc()).limit(number)
         mediaPath = db.session.query(Media.mediaPath).\
                         join(User).\
                             join(latestQuery.subquery()).all()

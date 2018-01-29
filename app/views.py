@@ -56,5 +56,6 @@ def homeApiGet():
         rating = row2dict(rating)
         rating['mediaPath'] = mediaPath
         rating['nickname'] = nickname
+        rating['restaurant'] = row2dict(Restaurant.query.filter_by(id = rating['Restaurant_id']).first())
         data['latestReviews'].append(rating)
     return jsonify(data)
