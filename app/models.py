@@ -181,10 +181,9 @@ class Group(db.Model):
         for rest in restaurants:
             rest.addToGroup(self)
             rest.assignNewGroupRating(self)
-        p = PendingRestaurantsInGroups.query.\
+        PendingRestaurantsInGroups.query.\
             filter(and_(PendingRestaurantsInGroups.Group_id == self.id,
                         PendingRestaurantsInGroups.Restaurant_id.in_(ids))).delete(synchronize_session='fetch')
-        # print(dir(p))
         db.session.commit()
         print('done')
 
@@ -193,9 +192,35 @@ class Group(db.Model):
                     join(PendingUsersInGroups).\
                         filter_by(Group_id = self.id).all()
 
-        print(pending)
         return pending
 
+    def pendingUsersMedia(self):
+        pending = db.session.query(Media.mediaPath).\
+                    join(User).\
+                        join(PendingUsersInGroups).\
+                            filter_by(Group_id = self.id).all()
+        return pending
+
+    def addPendingUsers(self, ids):
+        ids = np.array(ids.split(',')).astype(int)
+        users = db.session.query(User).\
+                join(PendingUsersInGroups).\
+                    filter(and_(PendingUsersInGroups.Group_id == self.id,
+                                PendingUsersInGroups.User_id.in_(ids))).all()
+        # add the users to the group
+        for user in users:
+            user.joinGroup(user, self)
+        # now as we have new users in the group, the ratings must be recalculated
+        restaurants = self.restaurants()
+        for restaurant in restaurants:
+            restaurant.assignNewGroupRating(self)
+
+        # delete the pending database entries.
+        PendingUsersInGroups.query.\
+            filter(and_(PendingUsersInGroups.Group_id == self.id,
+                        PendingUsersInGroups.User_id.in_(ids))).delete(synchronize_session='fetch')
+        db.session.commit()
+        print('done')
 
 
 class Restaurant(db.Model):

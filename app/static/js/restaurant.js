@@ -301,7 +301,7 @@ var searchRestaurantAPI = new Vue({
 // -----------------------------------------------------------------------------
 // PENDING RESTAURANT
 // -----------------------------------------------------------------------------
-var spendingRestaurantAPI = new Vue({
+var pendingRestaurantAPI = new Vue({
   el: "#pendingRestaurantAPI",
   delimiters: ['${','}'],
   data:{
@@ -310,6 +310,7 @@ var spendingRestaurantAPI = new Vue({
     groupID: -1,
     confirmations: null,
     errors: null,
+    response: ''
   },
 
   mounted() {

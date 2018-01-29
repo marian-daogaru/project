@@ -4,7 +4,7 @@ from app import app, db, lm
 from config import USERPATH, basedir
 from flask import redirect, render_template, session, request, g, jsonify, flash, redirect
 from flask_login import login_required
-from .models import Media, User
+from .models import Media, User, Group
 from .forms import EditForm
 from werkzeug.utils import secure_filename
 
@@ -94,3 +94,42 @@ def editApiPost():
     print(form.errors)
     return jsonify({'id': -1,
                     'errors': form.errors}), 201
+
+# ##############################################################################
+# PENDING USERS
+# ##############################################################################
+@app.route('/group/<id>/edit/pendingUsers')
+@login_required
+def editPendingUsers(id):
+    return render_template('pendingUsers.html')
+
+@app.route('/api/group/<id>/edit/pendingUsers', methods=['GET'])
+@login_required
+def editPendingUsersGet(id):
+    group = Group.query.filter_by(id = id).first()
+    if g.user.isInGroup(g.user, group) and g.user.isAdmin(group.id):
+        pendingUsers = group.pendingUsers()
+        pendingMedia = group.pendingUsersMedia()
+        print(pendingUsers, pendingMedia, "@@@")
+        users = []
+        for user, mediaPath in zip(pendingUsers, pendingMedia):
+            user = row2dict(user)
+            user['mediaPath'] = mediaPath
+            user.pop('password')
+            users.append(user)
+        print(users)
+        return jsonify({'users': users,
+                        'groupID': group.id})
+    return jsonify({'accessDenied': True})
+
+@app.route('/api/group/<id>/edit/pendingUsers/<ids>', methods=['PUT'])
+@login_required
+def editPendingUsersPut(id, ids):
+    group = Group.query.filter_by(id = id).first()
+    print(ids, len(ids), "@@@")
+    if len(ids) == 0:
+        return jsonify({'errors': ['No users!']})
+    if g.user.isInGroup(g.user, group) and g.user.isAdmin(group.id):
+        group.addPendingUsers(ids)
+        return jsonify({'confirmations': ['Users added succesfully.']})
+    return jsonify({'accessDenied': True})

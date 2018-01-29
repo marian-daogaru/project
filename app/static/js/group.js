@@ -424,8 +424,9 @@ var editGroupAPI = new Vue({
     },
 
     redirectPendingUsers: function() {
-      console.log('PUsers')
-    },  // redirectPendingUsers
+      console.log('PUsers'),
+      window.location.href = '/group/' + this.group.id + '/edit/pendingUsers'
+    },
 
     redirectPendingRestaurants: function() {
       console.log('PRests')
