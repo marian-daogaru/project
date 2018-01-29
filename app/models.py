@@ -118,6 +118,9 @@ class User(db.Model):
         db.session.commit()
         ResetPassword.lockUser(self)
 
+    def sendResetEmail(self):
+        EM.PasswordResetEM().sendResetEmail(self)
+
 
 
 

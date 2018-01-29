@@ -29,6 +29,6 @@ block content
           .btn.btn-primary(class='icon-btn' v-on:click="resetPassword()") 
             i(class='btn-glyphicon glyphicon glyphicon-lock img-circle text-success') 
             span Reset Password! 
-        
+      div #{'{{ recaptcha }}'} 
 block jsscript
   script(type="text/javascript" src="{{ url_for('static', filename='js/login.js') }}")

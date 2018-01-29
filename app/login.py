@@ -1,6 +1,6 @@
 import os
 import uuid
-from app import app, db, lm
+from app import app, db, lm, recaptcha
 from config import USERPATH, basedir
 from flask import render_template, session, request, g, jsonify, redirect, url_for
 from flask_login import login_user, logout_user, login_required
@@ -67,6 +67,7 @@ def loginApiPost():
 
 @app.route('/api/login', methods=['GET'])
 def loginApiGet():
+    print(recaptcha.get_code(), 333)
     if g.user is not None and g.user.is_authenticated:
         # user = row2dict(g.user)
         return jsonify({'id': g.user.id}), 201
@@ -140,7 +141,7 @@ def resetRequest(email):
         if user is None:
             print('does not exist')
             return jsonify({'passed': False})
-        user.lock()
+        user.sendResetEmail()
         print('hello!')
         return jsonify({'passed': True})
     print('not valid')

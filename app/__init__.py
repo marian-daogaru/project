@@ -8,6 +8,7 @@ from flask_jsglue import JSGlue
 import wtforms_json
 from flask_apscheduler import APScheduler
 import logging
+from flask_recaptcha import ReCaptcha
 
 app = Flask(__name__)
 CORS(app)
@@ -32,7 +33,8 @@ scheduler = APScheduler()
 scheduler.init_app(app)
 
 logging.basicConfig()
-
+recaptcha = ReCaptcha()
+recaptcha.init_app(app)
 # print(dir(db))
 
 from app import views  # this will be always at the end

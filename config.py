@@ -3,7 +3,7 @@ import os
 import uuid
 import time
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
-
+import privateData
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 WTF_CSRF_ENABLED = True
@@ -45,3 +45,13 @@ SCHEDULER_EXECUTORS = {
         'default': {'type': 'threadpool', 'max_workers': 20}
     }
 SCHEDULER_API_ENABLED = True
+
+
+# ReCaptcha
+RECAPTCHA_ENABLED = True
+RECAPTCHA_SITE_KEY = privateData.RECAPTCHA_SITE_KEY
+RECAPTCHA_SECRET_KEY = privateData.RECAPTCHA_SECRET_KEY
+RECAPTCHA_THEME = "dark"
+RECAPTCHA_TYPE = "image"
+RECAPTCHA_SIZE = "compact"
+RECAPTCHA_RTABINDEX = 10
