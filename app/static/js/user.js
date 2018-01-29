@@ -14,7 +14,7 @@ var userAPI = new Vue({
   methods: {
     loadID: function() {
     this.$http.get(
-      '/api/home'
+      '/api/home/id'
     ).then(
       function(res) {
         this.userLocal = res.data,

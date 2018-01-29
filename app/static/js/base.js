@@ -19,7 +19,7 @@ var baseAPI = new Vue({
   methods: {
     loadUser: function() {
       this.$http.get(
-        '/api/home'
+        '/api/home/id'
       ).then(
         function(res) {
           this.User = res.data
@@ -51,9 +51,3 @@ var general = new Vue({
     }
   }
 })
-
-// async created() {
-//       this.user = await axios.get('/api/home', {
-//           responseType: 'json'
-//       });
-//     }

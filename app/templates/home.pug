@@ -3,4 +3,12 @@ extends base.pug
 block content
   .container
     .div
-      h1 HELLOOOOOOO
+      h1 Welcome to this site. Here are some new stuff that happened. 
+      
+    .div(id='home')
+      
+      
+
+
+block jsscript 
+  script(type="text/javascript" src="{{ url_for('static', filename='js/home.js') }}")

@@ -156,7 +156,7 @@ var restaurantAPI = new Vue({
 
     loadUser: function(){
       this.$http.get(
-        '/api/home'
+        '/api/home/id'
       ).then(
         function(response) {
           this.user = response.data

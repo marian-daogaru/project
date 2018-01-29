@@ -3,6 +3,7 @@ from app import db, app
 from sqlalchemy import and_
 import re
 import numpy as np
+import datetime
 import emailManager as EM
 
 row2dict = lambda r: {c.name: str(getattr(r, c.name)) for c in r.__table__.columns}
@@ -229,7 +230,7 @@ class Group(db.Model):
                         PendingUsersInGroups.User_id.in_(ids))).delete(synchronize_session='fetch')
         db.session.commit()
         print('done')
-        
+
     def emailAdminsUpdate(self):
         adminEmails = db.session.query(User.email).\
                     join(UsersInGroups).\
@@ -332,6 +333,7 @@ class Restaurant(db.Model):
                     and_(UserRatings.User_id.like(userID),
                         UserRatings.Restaurant_id.like(self.id))).first()
         userRest.comment = review
+        userRest.date = datetime.datetime.now()
         db.session.add(userRest)
         db.session.commit()
 
@@ -380,6 +382,16 @@ class Restaurant(db.Model):
             db.session.add(pendingRest)
             db.session.commit()
 
+    @staticmethod
+    def latestAdded(number):
+        # number is how many of them we want
+        latestQuery = Restaurant.query.order_by(Restaurant.joinDate.desc()).\
+                    limit(number)
+        mediaPath = db.session.query(Media.mediaPath).\
+                        join(latestQuery.subquery()).all()
+
+        print(latestQuery.all())
+        return latestQuery.all(), np.array(mediaPath).ravel()
 
 
 class RestaurantsInGroups(db.Model):
@@ -389,7 +401,20 @@ class RestaurantsInGroups(db.Model):
 
 class UserRatings(db.Model):
     __table__ = db.Model.metadata.tables['UserRatings']
-
+    @staticmethod
+    def latestAdded(number):
+        # number is how many of them we want
+        latestQuery = UserRatings.query.filter(UserRatings.comment.isnot(None)).\
+                    order_by(UserRatings.date.asc()).limit(number)
+        mediaPath = db.session.query(Media.mediaPath).\
+                        join(User).\
+                            join(latestQuery.subquery()).all()
+        usersNickname = db.session.query(User.nickname).\
+                            join(latestQuery.subquery()).all()
+        print(latestQuery.all(), mediaPath)
+        return (latestQuery.all(),
+                np.array(mediaPath).ravel(),
+                np.array(usersNickname).ravel())
 
 
 class Media(db.Model):
@@ -405,7 +430,6 @@ class LoginAttempts(db.Model):
         if logAtmpt is None:
             logAtmpt = LoginAttempts(User_id = user.id,
                                     attempts = 1)
-
         else:
             logAtmpt.attempts += 1
         db.session.add(logAtmpt)
