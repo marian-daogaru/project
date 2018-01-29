@@ -24,7 +24,7 @@ block content
               .row
                 .btn.btn-danger(v-if='group.inGroup' v-on:click='leaveGroupAlert()') Leave Group
                 .btn.btn-primary(v-if='group.inGroup' v-on:click='addRestaurantRedirect()') Add another restaurant
-                .btn.btn-primary(v-if="group.isAdmin" v-on:click='editRedirect()') Edit Group
+                .btn.btn-primary(v-if="group.isAdmin" v-on:click='editRedirect()') Edit Group #[span(v-if="group.pending > 0" class='badge') ${group.pending}]
                 .btn.btn-danger(v-if="group.isAdmin" v-on:click='deleteGroupAlert()') Delete Group
               .row
                 div.form-group 

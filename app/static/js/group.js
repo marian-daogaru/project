@@ -421,7 +421,16 @@ var editGroupAPI = new Vue({
 
     goBackGroup: function() {
       window.location.href = '/group/' + this.group.id
-    }
+    },
+
+    redirectPendingUsers: function() {
+      console.log('PUsers')
+    },  // redirectPendingUsers
+
+    redirectPendingRestaurants: function() {
+      console.log('PRests')
+      window.location.href = '/group/' + this.group.id + '/edit/pendingRestaurants'
+    }  // redirectPendingRestaurants
   } // methods
 
 }) // main brackets

@@ -71,7 +71,7 @@
                     <div class="row">
                       <div class="btn btn-danger" v-if="group.inGroup" v-on:click="leaveGroupAlert()">Leave Group</div>
                       <div class="btn btn-primary" v-if="group.inGroup" v-on:click="addRestaurantRedirect()">Add another restaurant</div>
-                      <div class="btn btn-primary" v-if="group.isAdmin" v-on:click="editRedirect()">Edit Group</div>
+                      <div class="btn btn-primary" v-if="group.isAdmin" v-on:click="editRedirect()">Edit Group <span class="badge" v-if="group.pending &gt; 0">${group.pending}</span></div>
                       <div class="btn btn-danger" v-if="group.isAdmin" v-on:click="deleteGroupAlert()">Delete Group</div>
                     </div>
                     <div class="row">

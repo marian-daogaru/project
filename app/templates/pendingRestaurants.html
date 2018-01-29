@@ -48,65 +48,41 @@
       </div>
       <div>
         <div class="main container">
-          <h1>Edit this group:</h1>
-          <div id="editGroupAPI">
+          <h1>Edit pending restaurants</h1>
+          <div id="pendingRestaurantAPI">
             <div v-if="errors">
               <template v-for="error in errors">
-                <div class="div alert alert-danger"> <strong>${error} </strong></div>
+                <div class="div alert alert-danger"> <strong>${error}  </strong></div>
               </template>
             </div>
-            <div v-if="group">
-              <div class="row">
-                <div class="btn btn-primary" v-on:click="goBackGroup()">Go back</div>
-              </div>
+            <div v-if="confirmations">
+              <template v-for="conf in confirmations">
+                <div class="div alert alert-success"> <strong>${conf}    </strong></div>
+              </template>
+            </div>
+            <div class="row"> 
+              <div class="btn btn-primary" v-on:click="redirectGroup()">Go back to group</div>
+            </div>
+            <div v-if="restaurants.length &gt; 0">
               <div class="row"> 
-                <div class="btn btn-primary" v-on:click="redirectPendingUsers()">Pending Users <span class="badge" v-if="group.pendingUsers &gt; 0">${group.pendingUsers}</span></div>
-                <div class="btn btn-primary" v-on:click="redirectPendingRestaurants()">Pending Restaurants <span class="badge" v-if="group.pendingRestaurants &gt; 0">${group.pendingRestaurants}</span></div>
-              </div>
-              <div class="row">
-                <div class="col-lg-6 col-sm-12">   
-                  <div class="form-group"> 
-                    <label for="name">Name: 
-                      <input class="form-control" v-model="name" type="text" name="name" required="required"/>
-                    </label>
-                  </div>
-                  <div class="form-group"> 
-                    <label for="aboutGroup">About group: 
-                      <textarea class="form-control" v-model="aboutGroup" rows="5" cols="50" name="aboutGroup"></textarea>
-                    </label>
-                  </div>
-                  <div class="form-group"> 
-                    <label for="avatarImage">Change profile picture: 
-                      <input type="file" name="file" @change="onFileChange"/>
-                    </label>
-                  </div>
-                  <button class="btn btn-primary" v-on:click="sendUpdate()">Submit changes</button>
-                </div>
-                <div class="col-lg-6 col-sm-12">
-                  <h4>Make admins</h4>
-                  <template v-for="user in group.users">
-                    <div class="row" v-if="!user.isAdmin">
-                      <div class="col-lg-2"><img class="img-rounded img-responsive" v-bind:src="'../' + user.mediaPath" width="75" height="auto"/></div>
-                      <div class="col-lg-4">
-                        <input type="checkbox" :id="user.id" :value="user.id" v-model="checkedIDs"/>
-                        <label for="user.id">${user.nickname}, ${user.email}</label>
-                      </div>
+                <div>
+                  <div class="btn btn-primary" v-on:click="addChecked()">Add checked </div>
+                  <template class="row" v-for="restaurant in restaurants">
+                    <div class="row">
+                      <label :for="restaurant.id">
+                        <div class="col-lg-4"><img class="img-rounded img-responsive" v-bind:src="'../../../' + restaurant.mediaPath" height="500" width="auto"/></div>
+                        <div class="col-lg-4">
+                          <h4>${restaurant.name} </h4>
+                        </div>
+                        <input type="checkbox" :id="restaurant.id" :value="restaurant.id" v-model="checkedRestaurants"/>
+                      </label>
                     </div>
                   </template>
                 </div>
               </div>
-              <div class="row"> 
-                <button class="btn btn-danger" v-on:click="kickPeople()">Remove people from group</button>
-                <template v-for="user in group.users">
-                  <div class="row" v-if="!user.isAdmin">
-                    <div class="col-lg-2"><img class="img-rounded img-responsive" v-bind:src="'../' + user.mediaPath" width="75" height="auto"/></div>
-                    <div class="col-lg-4">
-                      <input type="checkbox" :id="user.id" :value="user.id" v-model="kickIDs"/>
-                      <label for="user.id">${user.nickname}, ${user.email}</label>
-                    </div>
-                  </div>
-                </template>
-              </div>
+            </div>
+            <div v-else="v-else">
+              <h3>No pending restaurants to this group. </h3>
             </div>
           </div>
         </div>
@@ -119,7 +95,7 @@
     <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.5"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/base.js') }}"></script>
     <div> 
-      <script type="text/javascript" src="{{ url_for('static', filename='js/group.js') }}"></script>
+      <script type="text/javascript" src="{{ url_for('static', filename='js/restaurant.js') }}"></script>
     </div>
   </body>
 </html>

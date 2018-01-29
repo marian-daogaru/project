@@ -123,8 +123,6 @@ def addRestaurantPut(id, ids):
             if restaurant is None:
                 return jsonify({'errors': ['No such restaurant. This is a bug.']})
             restaurant.addToPending(group)
-            # THIS NEED TO BE MIGRATED
-            # restaurant.assignNewGroupRating(group)
             print(restaurant.calculateGroupRating(group.id), "RATINGS")
         return jsonify({'confirmations': ['Restaurants added succesfully!']})
     else:
@@ -221,3 +219,43 @@ def restaurantReviewPut(id, userID, review):
             return jsonify({'errors': form.errors})
         return jsonify({'accessDenied': True})
     return jsonify({'error': ['Restaurant not found']})
+
+
+# ##############################################################################
+# PENDING RESTAURANT
+# ##############################################################################
+@app.route('/group/<id>/edit/pendingRestaurants')
+@login_required
+def editPendingRestaurants(id):
+    return render_template('pendingRestaurants.html')
+
+@app.route('/api/group/<id>/edit/pendingRestaurants', methods=['GET'])
+@login_required
+def editPendingRestaurantsGet(id):
+    group = Group.query.filter_by(id = id).first()
+    if g.user.isInGroup(g.user, group) and g.user.isAdmin(group.id):
+        pendingRests = group.pendingRestaurants()
+        pendingMedia = group.pendingRestaurantsMedia()
+        print(pendingRests, pendingMedia)
+        restaurants = []
+        for restaurant, mediaPath in zip(pendingRests, pendingMedia):
+            print(mediaPath)
+            restaurant = row2dict(restaurant)
+            restaurant['mediaPath'] = mediaPath
+            restaurants.append(restaurant)
+        print(restaurants)
+        return jsonify({'restaurants': restaurants,
+                        'groupID': group.id})
+    return jsonify({'accessDenied': True})
+
+@app.route('/api/group/<id>/edit/pendingRestaurants/<ids>', methods=['PUT'])
+@login_required
+def editPendingRestaurantsPut(id, ids):
+    group = Group.query.filter_by(id = id).first()
+    print(ids, len(ids), "@@@")
+    if len(ids) == 0:
+        return jsonify({'errors': ['No restaurants!']})
+    if g.user.isInGroup(g.user, group) and g.user.isAdmin(group.id):
+        group.addPendingRestaurants(ids)
+        return jsonify({'confirmations': ['Restaurants added succesfully.']})
+    return jsonify({'accessDenied': True})

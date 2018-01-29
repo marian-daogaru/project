@@ -1,0 +1,34 @@
+extends base.pug 
+
+block content
+  .main.container
+      h1 Edit pending restaurants
+      div(id='pendingRestaurantAPI')
+        div(v-if="errors")
+          template(v-for="error in errors")
+            .div(class="alert alert-danger") 
+              strong ${error}  
+        div(v-if="confirmations")
+          template(v-for="conf in confirmations")
+            .div(class="alert alert-success") 
+              strong ${conf}    
+        .row 
+          .btn.btn-primary(v-on:click="redirectGroup()") Go back to group
+        div(v-if='restaurants.length > 0')
+          .row 
+            div
+              .btn.btn-primary(v-on:click='addChecked()') Add checked 
+              template.row(v-for="restaurant in restaurants")
+                .row
+                  label(:for="restaurant.id")
+                    .col-lg-4
+                      img.img-rounded.img-responsive(v-bind:src="'../../../' + restaurant.mediaPath" height="500"  width="auto")
+                    .col-lg-4
+                      h4 ${restaurant.name} 
+                    input(type="checkbox" :id="restaurant.id" :value="restaurant.id" v-model="checkedRestaurants")
+                  
+        div(v-else)
+          h3 No pending restaurants to this group. 
+    
+block jsscript 
+  script(type="text/javascript" src="{{ url_for('static', filename='js/restaurant.js') }}")

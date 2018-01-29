@@ -11,8 +11,12 @@ block content
             strong ${error} 
       div(v-if='group')
         //- (height=75vh, overflow-y=scroll)
-        button.btn.btn-primary(v-on:click='goBackGroup()') Go back
-        .row.div
+        .row
+          .btn.btn-primary(v-on:click='goBackGroup()') Go back
+        .row 
+          .btn.btn-primary(v-on:click='redirectPendingUsers()') Pending Users #[span(v-if='group.pendingUsers > 0' class='badge') ${group.pendingUsers}]
+          .btn.btn-primary(v-on:click='redirectPendingRestaurants()') Pending Restaurants #[span(v-if='group.pendingRestaurants > 0' class='badge') ${group.pendingRestaurants}]
+        .row
           .col-lg-6.col-sm-12    
             div.form-group 
               label(for='name') Name: 
@@ -35,8 +39,7 @@ block content
                     input(type="checkbox" :id="user.id" :value="user.id" v-model="checkedIDs")
                     label(for="user.id") ${user.nickname}, ${user.email}
                       
-        .row.div  
-          
+        .row 
           button.btn.btn-danger(v-on:click='kickPeople()') Remove people from group
           template(v-for="user in group.users")
             .row(v-if='!user.isAdmin')

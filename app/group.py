@@ -65,30 +65,34 @@ def group(id):
 @app.route('/api/group/<id>', methods=['GET'])
 @login_required
 def groupApiGet(id):
-    print("sup)")
+    # get group
     group = Group.query.filter_by(id = eval(id)).first()
     if group is None:
         flash("Group {} not found.".format(group.name))
         return jsonify({'id': -1,
                         'errors': ['No such group.']})
+    # data that is easier to get now, or cannot be obtained after this is a dict
     users = group.users()
+    pending = len(group.pendingRestaurants()) + len(group.pendingUsers())
     restaurants = group.restaurants()
     suggested = group.suggestedRestaurant()
     inGroup = g.user.isInGroup(g.user, group)  # do this before we change group
-    print("222", inGroup, users)
+    # make group a dict to be jsonified
     group = row2dict(group)
     group['userID'] = g.user.id
     group['mediaPath'] = Media.query.filter_by(id = group["Media_id"]).first().mediaPath
     if inGroup:
         group['isAdmin'] = g.user.isAdmin(group['id'])
     group['inGroup'] = inGroup
+    group['pending'] = pending
+    # get all users in the group
     group['users'] = []
     for user in users:
         user = row2dict(user)
         group['users'].append(user)
+    # get all restaurants in the group
     group['restaurants'] = []
     for restaurant in restaurants:
-        print(restaurant)
         mediaPath = restaurant.mediaPath()
         userRating = restaurant.currentUserRating(g.user)
         rating = restaurant.groupRating(group['id'])
@@ -106,6 +110,7 @@ def groupApiGet(id):
         group['suggestedRestaurant'] = suggested
     else:
         group['suggestedRestaurant'] = False
+
     return jsonify(group)
 
 @app.route('/api/group/<id>', methods=['POST'])
@@ -249,7 +254,11 @@ def editGroupGet(id):
     group = Group.query.filter_by(id = id).first()
     if g.user.isInGroup(g.user, group) and g.user.isAdmin(group.id):
         users = group.users()
+        pendingUsers = len(group.pendingUsers())
+        pendingRestaurants = len(group.pendingRestaurants())
         group = row2dict(group)
+        group['pendingUsers'] = pendingUsers
+        group['pendingRestaurants'] = pendingRestaurants
         group['mediaPath'] = Media.query.filter_by(id = group["Media_id"]).first().mediaPath
         group['users'] = []
         for user in users:

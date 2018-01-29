@@ -119,8 +119,6 @@ class User(db.Model):
 
 
 
-
-
 class UsersInGroups(db.Model):
     __table__ = db.Model.metadata.tables['UsersInGroups']
 
@@ -160,6 +158,43 @@ class Group(db.Model):
         if restaurant is not None:
             return Restaurant.query.filter_by(id = restaurant.Restaurants_id).first()
 
+    def pendingRestaurants(self):
+        pending = db.session.query(Restaurant).\
+                    join(PendingRestaurantsInGroups).\
+                        filter_by(Group_id = self.id).all()
+        print(pending)
+        return pending
+
+    def pendingRestaurantsMedia(self):
+        pending = db.session.query(Media.mediaPath).\
+                    join(Restaurant).\
+                        join(PendingRestaurantsInGroups).\
+                            filter_by(Group_id = self.id).all()
+        return pending
+
+    def addPendingRestaurants(self, ids):
+        ids = np.array(ids.split(',')).astype(int)
+        restaurants = db.session.query(Restaurant).\
+                join(PendingRestaurantsInGroups).\
+                    filter(and_(PendingRestaurantsInGroups.Group_id == self.id,
+                                PendingRestaurantsInGroups.Restaurant_id.in_(ids))).all()
+        for rest in restaurants:
+            rest.addToGroup(self)
+            rest.assignNewGroupRating(self)
+        p = PendingRestaurantsInGroups.query.\
+            filter(and_(PendingRestaurantsInGroups.Group_id == self.id,
+                        PendingRestaurantsInGroups.Restaurant_id.in_(ids))).delete(synchronize_session='fetch')
+        # print(dir(p))
+        db.session.commit()
+        print('done')
+
+    def pendingUsers(self):
+        pending = db.session.query(User).\
+                    join(PendingUsersInGroups).\
+                        filter_by(Group_id = self.id).all()
+
+        print(pending)
+        return pending
 
 
 
@@ -183,7 +218,6 @@ class Restaurant(db.Model):
         media = Media(mediaPath = mediaPath)
         db.session.add(media)
         db.session.commit()
-
         restaurant = Restaurant(name = name,
                                 website = url,
                                 Media_id = media.id)
@@ -297,10 +331,12 @@ class Restaurant(db.Model):
 
     def addToPending(self, group):
         if not self.inGroup(group):
+            print("in the good bit")
             pendingRest = PendingRestaurantsInGroups(Restaurant_id = self.id,
                                                 Group_id = group.id)
             db.session.add(pendingRest)
             db.session.commit()
+
 
 
 class RestaurantsInGroups(db.Model):
@@ -333,6 +369,8 @@ class LoginAttempts(db.Model):
         db.session.commit()
         return logAtmpt.attempts
 
+
+
 class ResetPassword(db.Model):
     __table__ = db.Model.metadata.tables['ResetPassword']
 
@@ -346,6 +384,8 @@ class ResetPassword(db.Model):
             db.session.commit()
 
             EM.PasswordResetEM().sendResetEmail(user)
+
+
 
 class PendingUsers(db.Model):
     __table__ = db.Model.metadata.tables['PendingUsers']
@@ -366,6 +406,7 @@ class PendingUsers(db.Model):
         db.session.commit()
 
 
+
 class PendingUsersInGroups(db.Model):
     __table__ = db.Model.metadata.tables['PendingUsersInGroups']
 
@@ -376,6 +417,8 @@ class PendingUsersInGroups(db.Model):
                                                 Group_id = group.id)
             db.session.add(pendingUser)
             db.session.commit()
+
+
 
 class PendingRestaurantsInGroups(db.Model):
     __table__ = db.Model.metadata.tables['PendingRestaurantsInGroups']
