@@ -18,6 +18,7 @@ block content
           .row 
             div
               .btn.btn-primary(v-on:click='addChecked()') Add checked 
+              .btn.btn-danger(v-on:click='removeChecked()') Remove checked
               template.row(v-for="user in users")
                 .row
                   label(:for="user.id")

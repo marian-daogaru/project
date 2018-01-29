@@ -199,12 +199,14 @@ def AddPeopletoPending(emails, group):
     # emails must be a list
     for email in emails:
         user = User.query.filter_by(email = email).first()
-        print(user)
+        print(user, "!!!")
         if user is None:
             print('here')
             return jsonify({'errors': ["The email {} is not registered!".format(email)]}), 201
         else:
+            # print(user, '###')
             PendingUsersInGroups.addPendingUser(user, group)
+    group.emailAdminsUpdate()
     return jsonify({'added': 'All people were added succesfully to this group. Awaiting admin approval.'}), 201
 
 

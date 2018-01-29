@@ -7,7 +7,7 @@ var addRestaurantAPI = new Vue({
       restaurantURL: '',
       errors: '',
       confirmations: '',
-      restaurants: null,
+      restaurants: '',
       checkedRestaurants: [],
     },
 
@@ -359,12 +359,45 @@ var pendingRestaurantAPI = new Vue({
             if (this.confirmations) {
               this.loadPending()
             }
+            if (this.response.accessDenied) {
+              window.location.href = '/accessDenied'
+            }
           }
         )
       } else {
         this.errors = ['Please select at least one restaurant to be added.']
       }
     },  // addChecked
+
+    removeChecked: function() {
+      if (this.checkedRestaurants.length > 0) {
+        this.$http.delete(
+          '/api/group/' + this.groupID + '/edit/pendingRestaurants/' + this.checkedRestaurants
+        ).then(
+          function(response) {
+            this.response = response.data,
+            this.confirmations = response.data.confirmations,
+            this.errors = response.data.errors
+          },
+          function(err) {
+            console.log(err),
+            console.log("ERROR")
+          }
+        ).then(
+          function() {
+            if (this.confirmations) {
+              this.loadPending()
+            }
+            if (this.response.accessDenied) {
+              window.location.href = '/accessDenied'
+            }
+          }
+        )
+      } else {
+        this.errors = ['Please select at least one restaurant to be added.']
+      }
+    },  // addChecked
+
 
     redirectGroup: function() {
       window.location.href = '/group/' + this.groupID

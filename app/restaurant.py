@@ -1,5 +1,6 @@
 import os
 import uuid
+import numpy as np
 from app import app, db, lm
 from config import USERPATH, basedir
 from flask import render_template, session, request, g, jsonify, flash, redirect
@@ -112,6 +113,7 @@ def addRestaurantPost(id):
         else:
             print("Group !added bacause !admin!")
             restaurant.addToPending(group)
+            group.emailAdminsUpdate()
         return jsonify({'confirmations': ['Restaurant added succesfully!']})
     return jsonify({'errors': form.errors})
 
@@ -134,6 +136,8 @@ def addRestaurantPut(id, ids):
                 print("Group !added bacause !admin!")
                 restaurant.addToPending(group)
             print(restaurant.calculateGroupRating(group.id), "RATINGS")
+        if g.user.isAdmin(group.id):
+            group.emailAdminsUpdate()
         return jsonify({'confirmations': ['Restaurants added succesfully!']})
     else:
         return jsonify({'nothing': ['Nothing Happened. BUG!']})
@@ -266,6 +270,20 @@ def editPendingRestaurantsPut(id, ids):
     if len(ids) == 0:
         return jsonify({'errors': ['No restaurants!']})
     if g.user.isInGroup(g.user, group) and g.user.isAdmin(group.id):
+        ids = np.array(ids.split(',')).astype(int)
         group.addPendingRestaurants(ids)
         return jsonify({'confirmations': ['Restaurants added succesfully.']})
+    return jsonify({'accessDenied': True})
+
+@app.route('/api/group/<id>/edit/pendingRestaurants/<ids>', methods=['DELETE'])
+@login_required
+def editPendingRestaurantsDelete(id, ids):
+    group = Group.query.filter_by(id = id).first()
+    print(ids, len(ids), "@@@ REMOVE")
+    if len(ids) == 0:
+        return jsonify({'errors': ['No restaurants!']})
+    if g.user.isInGroup(g.user, group) and g.user.isAdmin(group.id):
+        ids = np.array(ids.split(',')).astype(int)
+        group.removePendingRestaurants(ids)
+        return jsonify({'confirmations': ['Restaurants removed succesfully.']})
     return jsonify({'accessDenied': True})

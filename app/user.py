@@ -1,5 +1,6 @@
 import os
 import uuid
+import numpy as np
 from app import app, db, lm
 from config import USERPATH, basedir
 from flask import redirect, render_template, session, request, g, jsonify, flash, redirect
@@ -130,6 +131,20 @@ def editPendingUsersPut(id, ids):
     if len(ids) == 0:
         return jsonify({'errors': ['No users!']})
     if g.user.isInGroup(g.user, group) and g.user.isAdmin(group.id):
+        ids = np.array(ids.split(',')).astype(int)
         group.addPendingUsers(ids)
         return jsonify({'confirmations': ['Users added succesfully.']})
+    return jsonify({'accessDenied': True})
+
+@app.route('/api/group/<id>/edit/pendingUsers/<ids>', methods=['DELETE'])
+@login_required
+def editPendingUsersDelte(id, ids):
+    group = Group.query.filter_by(id = id).first()
+    print(ids, len(ids), "@@@ REMOVE")
+    if len(ids) == 0:
+        return jsonify({'errors': ['No users!']})
+    if g.user.isInGroup(g.user, group) and g.user.isAdmin(group.id):
+        ids = np.array(ids.split(',')).astype(int)
+        group.removePendingUsers(ids)
+        return jsonify({'confirmations': ['Users removed succesfully.']})
     return jsonify({'accessDenied': True})

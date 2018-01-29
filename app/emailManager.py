@@ -83,3 +83,37 @@ class PasswordResetEM(object):
         server.sendmail(msg['From'], msg['To'], msg.as_string())
         server.quit()
         print('message sent')
+
+
+
+class GroupUpdateEM(object):
+    def __init__(self):
+        pass
+
+    def readTemplate(self, filename):
+        path = os.path.join(os.getcwd(), filename)
+        with open(path, 'r') as template_file:
+            template_file_content = template_file.read()
+        return Template(template_file_content)
+
+    def generateTemplate(self, group):
+        template = self.readTemplate('app/templates/groupUpdateEmail.html')
+        body = template.substitute(GROUP_PATH = 'http://localhost:5000/group/{}/edit'.format(group.id),
+                                    GROUP_NAME = group.name)
+        return body
+
+    def sendUpdateEmail(self, emails, group):
+        msg = MIMEMultipart('related')
+        msg['From'] = MAIL_USERNAME
+        msg['BCC'] = ', '.join(emails)
+        msg['Subject'] = 'Group Update'
+        body = self.generateTemplate(group)
+        body = MIMEText(body, 'html')
+        msg.attach(body)
+
+        server = smtplib.SMTP('smtp.gmail.com: 587')
+        server.starttls()
+        server.login(MAIL_USERNAME, MAIL_PASSWORD)
+        server.sendmail(msg['From'], emails, msg.as_string())
+        server.quit()
+        print('message sent')

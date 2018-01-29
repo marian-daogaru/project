@@ -347,9 +347,9 @@ var editGroupAPI = new Vue({
           }
         ).then(  // first then
             function() {
-              // if (this.group.accessDenied) {
-              //   window.location.href = '/accessDenied'
-              // }
+              if (this.group.accessDenied) {
+                window.location.href = '/accessDenied'
+              }
             }
           )
       }  // if

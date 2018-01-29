@@ -119,6 +119,8 @@ class User(db.Model):
 
 
 
+
+
 class UsersInGroups(db.Model):
     __table__ = db.Model.metadata.tables['UsersInGroups']
 
@@ -173,7 +175,6 @@ class Group(db.Model):
         return pending
 
     def addPendingRestaurants(self, ids):
-        ids = np.array(ids.split(',')).astype(int)
         restaurants = db.session.query(Restaurant).\
                 join(PendingRestaurantsInGroups).\
                     filter(and_(PendingRestaurantsInGroups.Group_id == self.id,
@@ -181,6 +182,10 @@ class Group(db.Model):
         for rest in restaurants:
             rest.addToGroup(self)
             rest.assignNewGroupRating(self)
+        self.removePendingRestaurants(ids)
+        print('done')
+
+    def removePendingRestaurants(self, ids):
         PendingRestaurantsInGroups.query.\
             filter(and_(PendingRestaurantsInGroups.Group_id == self.id,
                         PendingRestaurantsInGroups.Restaurant_id.in_(ids))).delete(synchronize_session='fetch')
@@ -202,7 +207,6 @@ class Group(db.Model):
         return pending
 
     def addPendingUsers(self, ids):
-        ids = np.array(ids.split(',')).astype(int)
         users = db.session.query(User).\
                 join(PendingUsersInGroups).\
                     filter(and_(PendingUsersInGroups.Group_id == self.id,
@@ -216,11 +220,25 @@ class Group(db.Model):
             restaurant.assignNewGroupRating(self)
 
         # delete the pending database entries.
+        self.removePendingUsers(ids)
+        print('done')
+
+    def removePendingUsers(self, ids):
         PendingUsersInGroups.query.\
             filter(and_(PendingUsersInGroups.Group_id == self.id,
                         PendingUsersInGroups.User_id.in_(ids))).delete(synchronize_session='fetch')
         db.session.commit()
         print('done')
+        
+    def emailAdminsUpdate(self):
+        adminEmails = db.session.query(User.email).\
+                    join(UsersInGroups).\
+                        filter(and_(UsersInGroups.Group_id == self.id,
+                                    UsersInGroups.admin == 1)).all()
+        adminEmails = np.array(adminEmails).ravel()
+        print(adminEmails, 1111)
+        EM.GroupUpdateEM().sendUpdateEmail(adminEmails, self)
+
 
 
 class Restaurant(db.Model):

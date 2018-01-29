@@ -18,6 +18,7 @@ block content
           .row 
             div
               .btn.btn-primary(v-on:click='addChecked()') Add checked 
+              .btn.btn-danger(v-on:click='removeChecked()') Remove checked
               template.row(v-for="restaurant in restaurants")
                 .row
                   label(:for="restaurant.id")
