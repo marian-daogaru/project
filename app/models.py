@@ -290,10 +290,10 @@ class Restaurant(db.Model):
         ratings = db.session.query(UserRatings.rating).filter(
                     UserRatings.Restaurant_id == self.id).all()
         ratings = np.array(ratings).ravel().astype(int)
-        if ratings.shape[0] == 0 or (ratings != 0).sum() == 0:
+        if ratings.shape[0] == 0 or (ratings > 0).sum() == 0:
             return -1
         else:
-            return np.average(ratings[ratings != 0])
+            return np.average(ratings[ratings > 0])
 
     def currentUserRating(self, user):
         if self.isCurrentUserRating(user):
@@ -332,8 +332,16 @@ class Restaurant(db.Model):
         userRest = UserRatings.query.filter(
                     and_(UserRatings.User_id.like(userID),
                         UserRatings.Restaurant_id.like(self.id))).first()
-        userRest.comment = review
-        userRest.date = datetime.datetime.now()
+        if userRest is not None:
+            userRest.comment = review
+            userRest.date = datetime.datetime.now()
+
+        else:
+            userRest = UserRatings(User_id = userID,
+                                  Restaurant_id = self.id,
+                                  comment = review,
+                                  date = datetime.datetime.now(),
+                                  rating =  -1)
         db.session.add(userRest)
         db.session.commit()
 
