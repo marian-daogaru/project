@@ -124,7 +124,12 @@ def groupApiPost(id):
 
             if form.validate():
                 group = Group.query.filter_by(id = eval(id)).first()
-                return AddPeoplePending(form.emails, group)
+                if g.user.isAdmin(group.id):
+                    print("Group added bacause admin!")
+                    return AddPeopletoGroup(form.emails, group)
+                else:
+                    print("Group !added bacause !admin!")
+                    return AddPeopletoPending(form.emails, group)
 
         return jsonify({'errors': form.errors}), 201
     return ({'errors': ['Not a valid post form!']}), 400
@@ -184,9 +189,13 @@ def AddPeopletoGroup(emails, group):
             return jsonify({'errors': ["The email {} is not registered!".format(email)]}), 201
         else:
             user.joinGroup(user, group)
+    # because we are adding new ppl, the ratings must be recalculated
+    restaurants = group.restaurants()
+    for restaurant in restaurants:
+        restaurant.assignNewGroupRating(group)
     return jsonify({'added': 'All people were added succesfully to this group.'}), 201
 
-def AddPeoplePending(emails, group):
+def AddPeopletoPending(emails, group):
     # emails must be a list
     for email in emails:
         user = User.query.filter_by(email = email).first()

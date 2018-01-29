@@ -260,7 +260,7 @@ class Restaurant(db.Model):
         if not self.inGroup(group):
             new = RestaurantsInGroups(Group_id = group.id,
                                       Restaurants_id = self.id,
-                                      rating = -1)
+                                      rating = self.calculateGroupRating(group.id))
             db.session.add(new)
             db.session.commit()
 
