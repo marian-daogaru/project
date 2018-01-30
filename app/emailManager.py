@@ -59,21 +59,26 @@ class PasswordResetEM(object):
             template_file_content = template_file.read()
         return Template(template_file_content)
 
-    def generateTemplate(self, user):
+    def generateTemplate(self, user, templateType):
         passwordResetSerializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
         token = passwordResetSerializer.dumps(user.email, salt='password-reset-salt')
         print(token)
-        template = self.readTemplate('app/templates/resetPasswordEmail.html')
+        if templateType == 'resetRequest':
+            template = self.readTemplate('app/templates/resetPasswordEmail.html')
+        elif templateType == 'warning':
+            template = self.readTemplate('app/templates/warningEmail.html')
+
         body = template.substitute(RESET_URL = 'http://localhost:5000/reset/{}'.format(token))
         print(body)
         return body
 
-    def sendResetEmail(self, user):
+    def sendResetEmail(self, user, templateType):
+        print("RPASSWORD RESET", templateType)
         msg = MIMEMultipart('related')
         msg['From'] = MAIL_USERNAME
         msg['To'] = user.email
         msg['Subject'] = 'Reset Password'
-        body = self.generateTemplate(user)
+        body = self.generateTemplate(user, templateType)
         body = MIMEText(body, 'html')
         msg.attach(body)
 

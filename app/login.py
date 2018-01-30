@@ -1,7 +1,9 @@
 import os
 import uuid
+import requests
 from app import app, db, lm, recaptcha
 from config import USERPATH, basedir
+from privateData import RECAPTCHA_SITE_KEY, RECAPTCHA_SECRET_KEY
 from flask import render_template, session, request, g, jsonify, redirect, url_for
 from flask_login import login_user, logout_user, login_required
 from .models import Media, User, LoginAttempts, PendingUsers
@@ -56,23 +58,35 @@ def login():
 
 @app.route('/api/login', methods=['POST'])
 def loginApiPost():
-    print("111")
-    form = LoginForm(request.get_json())
+    response = request.get_json()
+    form = LoginForm(response)
+    print(response)
+    if response['loginAttempts'] >= 3:
+        print("HEEEYYY")
+        recaptchaResponse = requests.post('https://www.google.com/recaptcha/api/siteverify',
+                              data = {'secret' : RECAPTCHA_SECRET_KEY,
+                                      'response' : response['recaptcha']})
+        print(recaptchaResponse.json(), '2222')
+        if not recaptchaResponse.json()['success']:
+            print("@@@@@@@")
+            return jsonify({'id': -1,
+                            'loginAttempts': response['loginAttempts'],
+                            'errors': ['Are you human? Then please fill in the reCaptcha!']})
     if form.validate():
         user = User.query.filter_by(email = form.email).first()
         login_user(user, remember=form.rememberMe)
+        user.unlock()
         return jsonify({'id': user.id}), 201
-    print("@@@")
-    return jsonify({'id': -1, 'errors': form.errors}), 201
+    return jsonify(form.response), 201
 
 @app.route('/api/login', methods=['GET'])
 def loginApiGet():
-    print(recaptcha.get_code(), 333)
     if g.user is not None and g.user.is_authenticated:
-        # user = row2dict(g.user)
         return jsonify({'id': g.user.id}), 201
     user = {'id': '-1',
-            'errors': []}
+            'errors': [],
+            'RECAPTCHA_SITE_KEY': RECAPTCHA_SITE_KEY,
+            'loginAttempts': 0}
     return jsonify(user), 201
 
 
@@ -105,13 +119,10 @@ def resetGet(token):
     except:
         email = passwordResetSerializer.loads(token, salt='password-reset-salt')
         user = User.query.filter_by(email = email).first()
-        user.unlock()
+        print("HERE FIRST")
         return jsonify({'expired': True})
 
-    user = User.query.filter_by(email = email).first()
-    if not user.isLocked():
-        return jsonify({'expired': True})
-        user.unlock()
+
     return jsonify({'email': email})
 
 

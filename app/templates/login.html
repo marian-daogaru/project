@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css"/>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"/>
-    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js?render=explicit" async="async" defer="defer"></script>
   </head>
   <body>
     <div class="container">
@@ -55,33 +55,35 @@
                 <div class="div alert alert-danger"> <strong>${error}  </strong></div>
               </template>
             </div>
-            <div> 
-              <div class="form-group"> 
-                <label for="email">Email: 
-                  <input class="form-control" v-on:keypress.enter="login()" v-model="email" type="email" name="email" placeholder="Enter email" requried="requried"/>
-                </label>
-              </div>
-              <div class="form-group"> 
-                <label for="password">Password: 
-                  <input class="form-control" v-on:keypress.enter="login()" v-model="password" type="password" name="password" placeholder="*****" required="required"/>
-                </label>
-              </div>
-              <div class="form-check"> 
-                <label class="form-check-label" for="checkbox">Remember me: 
-                  <input class="form-check-input" v-model="rememberMe" type="checkbox" name="rememberMe"/>
-                </label>
-              </div>
-              <button class="btn btn-primary" v-on:click="login()">Login </button>
-            </div>
-            <div> 
+            <div v-if="user">
               <div> 
-                <div class="btn btn-primary icon-btn" v-on:click="redirectSignUp()"> <i class="btn-glyphicon glyphicon glyphicon-plus img-circle text-success"> </i><span>Sign up!</span></div>
+                <div class="form-group"> 
+                  <label for="email">Email: 
+                    <input class="form-control" v-on:keypress.enter="login()" v-model="email" type="email" name="email" placeholder="Enter email" requried="requried"/>
+                  </label>
+                </div>
+                <div class="form-group"> 
+                  <label for="password">Password: 
+                    <input class="form-control" v-on:keypress.enter="login()" v-model="password" type="password" name="password" placeholder="*****" required="required"/>
+                  </label>
+                </div>
+                <div class="form-check"> 
+                  <label class="form-check-label" for="checkbox">Remember me: 
+                    <input class="form-check-input" v-model="rememberMe" type="checkbox" name="rememberMe"/>
+                  </label>
+                </div>
+                <button class="btn btn-primary" v-on:click="login()">Login </button>
               </div>
               <div> 
-                <div class="btn btn-primary icon-btn" v-on:click="resetPassword()"> <i class="btn-glyphicon glyphicon glyphicon-lock img-circle text-success"> </i><span>Reset Password! </span></div>
+                <div> 
+                  <div class="btn btn-primary icon-btn" v-on:click="redirectSignUp()"> <i class="btn-glyphicon glyphicon glyphicon-plus img-circle text-success"> </i><span>Sign up!</span></div>
+                </div>
+                <div> 
+                  <div class="btn btn-primary icon-btn" v-on:click="resetPassword()"> <i class="btn-glyphicon glyphicon glyphicon-lock img-circle text-success"> </i><span>Reset Password! </span></div>
+                </div>
               </div>
+              <div class="g-recaptcha" v-show="user.loginAttempts &gt;= 3" id="recaptchaDIV" :data-sitekey="secretKey"></div>
             </div>
-            <div>{{ recaptcha }} </div>
           </div>
         </div>
       </div>

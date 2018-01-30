@@ -107,9 +107,10 @@ class User(db.Model):
         return True
 
     def unlock(self):
-        ResetPassword.query.filter_by(User_id = self.id).delete()
-        LoginAttempts.query.filter_by(User_id = self.id).delete()
-        db.session.commit()
+        logAtt = LoginAttempts.query.filter_by(User_id = self.id)
+        if logAtt is not None:
+            logAtt.delete()
+            db.session.commit()
 
     def lock(self):
         logAtmpt = LoginAttempts(User_id = self.id,
@@ -119,7 +120,7 @@ class User(db.Model):
         ResetPassword.lockUser(self)
 
     def sendResetEmail(self):
-        EM.PasswordResetEM().sendResetEmail(self)
+        EM.PasswordResetEM().sendResetEmail(self, templateType='resetRequest')
 
 
 
@@ -435,7 +436,7 @@ class LoginAttempts(db.Model):
     __table__ = db.Model.metadata.tables['LoginAttempts']
 
     @staticmethod
-    def loginAttempt(user):
+    def loginAttemptAdd(user):
         print("HELLO")
         logAtmpt = LoginAttempts.query.filter_by(User_id = user.id).first()
         if logAtmpt is None:
@@ -447,6 +448,13 @@ class LoginAttempts(db.Model):
         db.session.commit()
         return logAtmpt.attempts
 
+    @staticmethod
+    def loginAttempt(user):
+        logAtmp = LoginAttempts.query.filter_by(User_id = user.id).first()
+        if logAtmp is None:
+            return None
+        else:
+            return logAtmp.attempts
 
 
 class ResetPassword(db.Model):
@@ -462,6 +470,11 @@ class ResetPassword(db.Model):
             db.session.commit()
 
             EM.PasswordResetEM().sendResetEmail(user)
+
+    @staticmethod
+    def sendWarningEmail(user):
+        print("IN HERE!")
+        EM.PasswordResetEM().sendResetEmail(user, templateType='warning')
 
 
 

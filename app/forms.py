@@ -38,33 +38,38 @@ class LoginForm(object):
         self.email = newDict['email']
         self.password = newDict['password']
         self.rememberMe = newDict['rememberMe']
-        self.errors = []
 
     def validate(self):
         """email check for @ is done by bootstrap.
         length is also checked, but not an issue if we double check"""
+        self.response = {'id': -1,
+                         'errors': []}
         if len(self.email) ==  0 or len(self.password) == 0:
             print("rosu")
-            self.errors.append("Missing field.")
+            self.response['errors'].append("Missing field.")
             return False
         user = User.query.filter_by(email = self.email).first()
         if not bool(validateEmail(self.email)):
-            self.errors.append('Invalid username / password.')
+            self.response['errors'].append('Invalid username / password.')
             return False
         if user is None:
-            self.errors.append("Invalid username / password.")
+            self.response['errors'].append("Invalid username / password.")
             print("galben")
             return False
         if user.isLocked():
-            self.errors.append("""This account has been locked.
+            self.response['errors'].append("""This account has been locked.
                                   A reset password email has been sent. Please reset your password.""")
             return False
-
         if user.password != self.password:
-            self.errors.append("Invalid username / password.")
-            if LoginAttempts.loginAttempt(user) >= 3:
-                ResetPassword.lockUser(user)
-                self.errors.append("The login details were introduced wrong too many times. This account has been locked. A reset account email has been sent.")
+            self.response['errors'].append("Invalid username / password.")
+            LoginAttempts.loginAttemptAdd(user)
+            self.response['loginAttempts'] = LoginAttempts.loginAttempt(user)
+            if self.response['loginAttempts'] == 3:
+                print("SENDIUNG EMAILSSSSS")
+                ResetPassword.sendWarningEmail(user)
+                self.response['errors'].append("The login details were introduced wrong too many times. This account has been locked. A reset account email has been sent.")
+            if self.response['loginAttempts'] > 3:
+                self.response['errors'].append("The login details were introduced wrong too many times. This account has been locked. A reset account email has been sent.")
             print("portocaliu")
             return False
         print('albastru')

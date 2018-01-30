@@ -8,19 +8,42 @@ var loginAPI = new Vue({
     rememberMe: false,
     errors: null,
     response: '',
+    secretKey: '',
+    recaptchaRenderID: -1,
   },
 
   mounted() {
-    this.loadUser()
+    this.loadUser(),
+    this.initReCaptcha()
   },
 
   methods: {
+    initReCaptcha: function() {
+      var self = this;
+      setTimeout(function() {
+        if(typeof grecaptcha === 'undefined') {
+          self.initReCaptcha();
+        }
+        else {
+          self.recaptchaRenderID = grecaptcha.render('recaptchaDIV', {
+              sitekey: self.secretKey,
+              badge: 'inline',
+              callback: self.submit
+          });
+        }
+      }, 50);
+    },
+    submit: function(token) {
+        console.log(token);
+    },
+
     loadUser: function() {
       this.$http.get(
         '/api/login'
       ).then(
         function(res) {
           this.user = res.data
+          this.secretKey = res.data.RECAPTCHA_SITE_KEY
         },
         function(err) {
           console.error(err),
@@ -30,12 +53,17 @@ var loginAPI = new Vue({
     },
 
     login: function() {
-      console.log(document.getElementsByName("password")[0].valued),
+      console.log(grecaptcha),
+      console.log(typeof grecaptcha),
       form = {
         email: this.email,
         password: this.password,
-        rememberMe: this.rememberMe
-      },
+        rememberMe: this.rememberMe,
+        loginAttempts: this.user.loginAttempts
+      }
+      if (this.user.loginAttempts >= 3){
+        form['recaptcha'] = grecaptcha.getResponse()
+      }
       this.$http.post('/api/login', form).then(
         function(res) {
           this.user = res.data,
@@ -45,11 +73,14 @@ var loginAPI = new Vue({
           console.error(err),
           console.log('error')
         }
-      ).then(function() {
-        if (this.user.id !== -1){
-          window.location.href = '/user/' + this.user.id
-        }
-      })
+      ).then(
+          function() {
+            grecaptcha.reset(this.recaptchaRenderID)
+            if (this.user.id !== -1){
+              window.location.href = '/user/' + this.user.id
+            }
+          }
+        )
     },  // login
 
     redirectSignUp: function(){

@@ -8,27 +8,29 @@ block content
         template(v-for="error in errors")
           .div(class="alert alert-danger") 
             strong ${error}  
-      div  
-        div.form-group 
-          label(for='email') Email: 
-            input(v-on:keypress.enter="login()" v-model="email" type="email" class="form-control" name="email" placeholder="Enter email" requried)
-        div.form-group 
-          label(for='password') Password: 
-            input(v-on:keypress.enter="login()" v-model="password" type="password" class="form-control" name="password" placeholder="*****" required)
-        div.form-check 
-          label(class="form-check-label" for="checkbox") Remember me: 
-            input(v-model="rememberMe" type="checkbox" class="form-check-input" name="rememberMe")
-        button.btn.btn-primary(v-on:click="login()") Login 
-        
-      div 
+      div(v-if='user')
         div  
-          .btn.btn-primary(class='icon-btn' v-on:click="redirectSignUp()") 
-            i(class='btn-glyphicon glyphicon glyphicon-plus img-circle text-success') 
-            span Sign up!
+          div.form-group 
+            label(for='email') Email: 
+              input(v-on:keypress.enter="login()" v-model="email" type="email" class="form-control" name="email" placeholder="Enter email" requried)
+          div.form-group 
+            label(for='password') Password: 
+              input(v-on:keypress.enter="login()" v-model="password" type="password" class="form-control" name="password" placeholder="*****" required)
+          div.form-check 
+            label(class="form-check-label" for="checkbox") Remember me: 
+              input(v-model="rememberMe" type="checkbox" class="form-check-input" name="rememberMe")
+          button.btn.btn-primary(v-on:click="login()") Login 
+          
         div 
-          .btn.btn-primary(class='icon-btn' v-on:click="resetPassword()") 
-            i(class='btn-glyphicon glyphicon glyphicon-lock img-circle text-success') 
-            span Reset Password! 
-      div #{'{{ recaptcha }}'} 
+          div  
+            .btn.btn-primary(class='icon-btn' v-on:click="redirectSignUp()") 
+              i(class='btn-glyphicon glyphicon glyphicon-plus img-circle text-success') 
+              span Sign up!
+          div 
+            .btn.btn-primary(class='icon-btn' v-on:click="resetPassword()") 
+              i(class='btn-glyphicon glyphicon glyphicon-lock img-circle text-success') 
+              span Reset Password! 
+        //- div #{'{{ recaptcha }}'} 
+        div(v-show='user.loginAttempts >= 3' id="recaptchaDIV" class="g-recaptcha" :data-sitekey="secretKey")
 block jsscript
   script(type="text/javascript" src="{{ url_for('static', filename='js/login.js') }}")
