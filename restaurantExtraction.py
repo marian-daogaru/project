@@ -1,11 +1,14 @@
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 import os
 import urllib2
 import urllib
 import ssl
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
-from config import basedir, RESTAURANTPATH
-link = 'https://www.caserola.ro/restaurant/osteriazucca'
+# from config import basedir, RESTAURANTPATH
+link = 'https://www.caserola.ro/restaurant/lacrimisisfinti'
 
 
 def extractRestaurant(url):
@@ -57,6 +60,45 @@ def extractFoodPanda(link):
 
     return (name, avatarName)
 
+def extractDetailsFoodPanda(link):
+    webpage = openWebsite(link).read()
+
+    # coords search
+    searchStartParam = 'staticmap?center='
+    searchEndParam = '&amp'
+    coordsStartIndex = webpage.index(searchStartParam) + len(searchStartParam)
+    coordsEndIndex = webpage[coordsStartIndex:].index(searchEndParam) + coordsStartIndex
+    coords = webpage[coordsStartIndex:coordsEndIndex]
+    lat, lon = [float(coord) for coord in coords.split(',')]
+
+    # tags search
+    searchStartParam = '<ul class="vendor-info-main-details-cuisines">'
+    searchEndParam = '</ul>'
+    tagsStartIndex = webpage.index(searchStartParam) + len(searchStartParam)
+    tagsEndIndex = webpage[tagsStartIndex:].index(searchEndParam) + tagsStartIndex
+    tags = [tag.split('>')[1] for tag in webpage[tagsStartIndex:tagsEndIndex].split("<")[1::2]]
+
+    # delivery times
+    searchStartParam = '<ul class="vendor-delivery-times">'
+    searchEndParam = '</ul>'
+    dtStartIndex = webpage.index(searchStartParam) + len(searchStartParam)
+    dtEndIndex = webpage[dtStartIndex:].index(searchEndParam) + dtStartIndex
+    deliveryTimes = webpage[dtStartIndex:dtEndIndex].split()
+    deliveryTimes = [int(time.split(':')[0]) + int(time.split(':')[1]) / 100 for time in [deliveryTimes[7], deliveryTimes[9]]]
+
+    # address
+    searchStartParam = '<p class="vendor-location">'
+    searchEndParam = '</p>'
+    addrStartIndex = webpage.index(searchStartParam) + len(searchStartParam)
+    addrEndIndex = webpage[addrStartIndex:].index(searchEndParam) + addrStartIndex
+    address = webpage[addrStartIndex:addrEndIndex]
+
+    return {'lat': lat,
+            'lon': lon,
+            'tags': tags,
+            'deliveryTimes': deliveryTimes,
+            'address': str(address)}
+
 
 def extractOliviera(link):
     webpage = openWebsite(link).read()
@@ -69,13 +111,45 @@ def extractOliviera(link):
     avatarLink = webpage[httpStart : httpStop]
     avatarName = RESTAURANTPATH + '{}.png'.format("".join(name.split()).lower())
 
-
     # this is different because we are using certificate authentification
     with open(os.path.join(basedir + '/app/', avatarName[3:]), 'wb') as myfile:
         myfile.write(openWebsiteCert(avatarLink).read())
 
     return name, avatarName
 
+def extractDetailsOliviera(link):
+    link = '/'.join(link.split('/')[:-1]) + '/profile'
+    webpage = openWebsite(link).read()
+
+    """LOCATION IS NOT VERY NICE TO GET, ALMOST IMPOSSIBLE"""
+    """UPDATE: NEVER SAY NEVER BOY!"""
+    # coords search
+    searchStartParam = '&quot;lat&quot;:'
+    searchEndParam = ',&quot;average_food'
+    coordsStartIndex = webpage.index(searchStartParam) + len(searchStartParam)
+    coordsEndIndex = webpage[coordsStartIndex:].index(searchEndParam) + coordsStartIndex
+    coords = webpage[coordsStartIndex:coordsEndIndex]
+    lat, lon = [float(coord) for coord in coords.split(',&quot;lng&quot;:')]
+
+    # tags search
+    searchStartParam = '&quot;cuisines&quot;:'
+    searchEndParam = ',&quot;pictures'
+    tagsStartIndex = webpage.index(searchStartParam) + len(searchStartParam)
+    tagsEndIndex = webpage[tagsStartIndex:].index(searchEndParam) + tagsStartIndex
+    tags = [tag.split(',')[0] for tag in webpage[tagsStartIndex:tagsEndIndex].replace('&quot;','').split('name:')[1:]]
+
+    # address
+    searchStartParam = 'has_special_promotion&quot'
+    searchEndParam = '&quot;,&quot;promotions'
+    addrStartIndex = webpage.index(searchStartParam) + len(searchStartParam)
+    addrEndIndex = webpage[addrStartIndex:].index(searchEndParam) + addrStartIndex
+    address = webpage[addrStartIndex:addrEndIndex].split('&quot;address&quot;:&quot;')[-1]
+    print(address)
+    return {'lat': lat,
+            'lon': lon,
+            'tags': tags,
+            'address': str(address)
+            }
 
 def extractHipMenu(link):
     webpage = openWebsite(link).read()
@@ -92,6 +166,20 @@ def extractHipMenu(link):
     saveImage(avatarName, avatarLink)
 
     return name, avatarName
+
+def extractDetailsHipMenu(link):
+    webpage = openWebsite(link).read()
+
+    """not quite :( """
+    # coords search
+    searchStartParam = 'staticmap?center='
+    searchEndParam = '&amp'
+    coordsStartIndex = webpage.index(searchStartParam) + len(searchStartParam)
+    coordsEndIndex = webpage[coordsStartIndex:].index(searchEndParam) + coordsStartIndex
+    coords = webpage[coordsStartIndex:coordsEndIndex]
+    lat, lon = [float(coord) for coord in coords.split(',')]
+
+    return 0
 
 
 def extractCaserola(link):
@@ -131,9 +219,9 @@ def extractParticular(link):
     captureImage(link, avatarName)
     return name, avatarName
 
-# with open('url.txt', 'w') as myfile:
-#     myfile.write(openWebsite(link).read())
 
-# print(extractRestaurant(link))
+with open('url.txt', 'w') as myfile:
+    myfile.write(openWebsite(link).read())
+# print(extractDetailsOliviera(link))
 
 # print(os.path.join(basedir + '/app/', RESTAURANTPATH[3:]))
