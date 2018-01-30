@@ -62,13 +62,11 @@ def loginApiPost():
     form = LoginForm(response)
     print(response)
     if response['loginAttempts'] >= 3:
-        print("HEEEYYY")
         recaptchaResponse = requests.post('https://www.google.com/recaptcha/api/siteverify',
                               data = {'secret' : RECAPTCHA_SECRET_KEY,
                                       'response' : response['recaptcha']})
-        print(recaptchaResponse.json(), '2222')
+
         if not recaptchaResponse.json()['success']:
-            print("@@@@@@@")
             return jsonify({'id': -1,
                             'loginAttempts': response['loginAttempts'],
                             'errors': ['Are you human? Then please fill in the reCaptcha!']})

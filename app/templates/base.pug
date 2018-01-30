@@ -26,9 +26,11 @@ html
                   li
                     a(href="{{ url_for('home') }}") Home
                   li(v-if="User.id !== '-1'")
-                    a(:href="/user/+User.id") Your profile 
+                    a(:href="/user/+User.id") Your Profile 
                   li(v-else)
                     a(href="{{ url_for('login') }}") Login 
+                  li(v-if="User.id !== '-1'")
+                    a(:href="'/user/' + User.id + '/groups'") Your Groups 
                   li(v-if="User.id !== '-1'")
                     a(href="{{ url_for('logout') }}") Logout 
                   li(v-else)

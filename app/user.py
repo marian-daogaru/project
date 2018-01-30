@@ -29,7 +29,7 @@ def userApi(id, page=1):
         return redirect(url_for('index'))
 
     if g.user.id == user.id:
-        groups = user.joinedGroups().all()
+        groups = user.adminOfGroups()
         user = row2dict(user)
         user['avatar'] = row2dict(Media.query.filter_by(id = user["Media_id"]).first())
         user['Group'] = []
@@ -37,7 +37,6 @@ def userApi(id, page=1):
             group = row2dict(group)
             group['Media'] = row2dict(Media.query.filter_by(id = group["Media_id"]).first())
             user['Group'].append(group)
-
         return jsonify(user)
     else:
         return jsonify({'accessDenied': True})

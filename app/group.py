@@ -11,6 +11,38 @@ from werkzeug.utils import secure_filename
 
 row2dict = lambda r: {c.name: str(getattr(r, c.name)) for c in r.__table__.columns}
 
+# ##############################################################################
+# PROFILE GROUPS
+# ##############################################################################
+@app.route('/user/<id>/groups')
+@login_required
+def userGroups(id):
+    return render_template('groupsUser.html')
+
+@app.route('/api/user/<int:id>/groups', methods=['GET'])
+@login_required
+def userGroupsGet(id):
+    user = User.query.filter_by(id = id).first()
+    if user is not None and g.user.is_authenticated:
+        groups = user.joinedGroups()
+        user = row2dict(user)
+        user.pop('password')
+        user.pop('email')
+        allGroups = []
+        for group in groups:
+            mediaPath = Media.query.filter_by(id = group.Media_id).first().mediaPath
+            group = row2dict(group)
+            group['mediaPath'] = mediaPath
+            allGroups.append(group)
+        output = {'user': user,
+                    'groups': allGroups}
+
+        if g.user.id != id:
+            output['userLocal'] = row2dict(g.user)
+        return jsonify(output)
+    return jsonify({'accessDenied': True})
+
+
 
 # ##############################################################################
 # GROUP CREATE

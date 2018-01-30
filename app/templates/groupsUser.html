@@ -48,25 +48,35 @@
 {% endwith %}
       </div>
       <div>
-        <div class="main container">
-          <h1>Create new Group </h1>
-          <div id="createGroupApi">
-            <div v-if="errors">
-              <template v-for="error in errors">
-                <div class="div alert alert-danger"> <strong>${error} </strong></div>
-              </template>
+        <div id="userGroupsAPI">
+          <div v-if="user">
+            <div class="container">
+              <div class="div" v-if="userLocal">
+                <h1>Hello ${userLocal.nickname}</h1>
+                <h3>Your are current viewing the profile of <strong>${user.nickname}</strong></h3>
+              </div>
+              <div class="div" v-else="v-else">
+                <h1>Hello ${user.nickname}</h1>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="groups">
+                    <h3 v-if="userLocal">Groups of ${user.nickname}</h3>
+                    <h3 v-else="v-else">Your groups</h3>
+                    <div class="row"></div>
+                    <template v-for="group in groups">
+                      <div class="col-sm-4 col-md-3 col-xs-6"><a v-bind:href="/group/ + group.id">
+                          <div class="thumbnail groupThumbnail"><img class="img-responsive img-thumbnail" v-bind:src="'../' + group.mediaPath" width="200" height="auto"/>
+                            <div class="caption">
+                              <h4>${group.name}</h4>
+                              <p v-if="group.aboutGroup !== 'None'">${group.aboutGroup}</p>
+                            </div>
+                          </div></a></div>
+                    </template>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="form-group"> 
-              <label for="groupName">Group Name: 
-                <input class="form-control" v-model="groupName" type="text" name="groupName" placeholder="group name" required="required"/>
-              </label>
-            </div>
-            <div class="form-group"> 
-              <label for="aboutGroup">About this roup: 
-                <textarea class="form-control" v-model="aboutGroup" rows="5" cols="50" name="aboutGroup" placeholder="something about the group. max 200 characters"></textarea>
-              </label>
-            </div>
-            <button class="btn btn-primary" v-on:click="createGroup()">Create Group  </button>
           </div>
         </div>
       </div>

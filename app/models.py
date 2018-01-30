@@ -58,20 +58,25 @@ class User(db.Model):
 
     def leaveGroup(self, user, group):
         if self.isInGroup(user, group):
-            print("@@@", dir(UsersInGroups.query.filter(and_(UsersInGroups.User_id.like(user.id),
-                                                    UsersInGroups.Group_id.like(group.id)))))#.delete()
             UsersInGroups.query.filter(and_(UsersInGroups.User_id.like(user.id),
                                             UsersInGroups.Group_id.like(group.id))).delete(synchronize_session='fetch')
             db.session.commit()
 
     def joinedGroups(self):
-        return Group.query.join(
-            UsersInGroups, (UsersInGroups.Group_id == Group.id)).filter(
-            UsersInGroups.User_id == self.id).order_by(Group.name.desc())
+        return Group.query.\
+                join(UsersInGroups, (UsersInGroups.Group_id == Group.id)).filter(
+                    UsersInGroups.User_id == self.id).order_by(Group.name.desc())
 
     def isAdmin(self, groupID):
         return UsersInGroups.query.filter(and_(UsersInGroups.User_id.like(self.id),
                                                 UsersInGroups.Group_id.like(groupID))).first().admin
+
+    def adminOfGroups(self):
+        return db.session.query(Group).\
+                join(UsersInGroups).\
+                    filter(and_(UsersInGroups.User_id == self.id,
+                                UsersInGroups.admin == 1)).\
+                                    order_by(Group.name.desc()).all()
 
     def rateRestaurant(self, restaurantID, rating):
         userRate = UserRatings.query.filter(

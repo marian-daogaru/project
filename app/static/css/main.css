@@ -1,12 +1,18 @@
 body {
   padding-top: 70px;
-    word-wrap: break-word;
+  word-wrap: break-word;
 }
 
 
 .groupThumbnail {
-  min-height: 400px;
+  height: 400px;
   position: relative;
+  overflow: hidden;
+  -ms-text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  display: block;
+  /* white-space: nowrap; */
 }
 
 .bottom {

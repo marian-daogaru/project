@@ -1,4 +1,3 @@
-
 var userAPI = new Vue({
   el: "#userAPI",
   delimiters: ['${', '}'],

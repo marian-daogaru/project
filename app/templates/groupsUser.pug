@@ -1,0 +1,33 @@
+extends base.pug 
+
+block content
+  div(id='userGroupsAPI')
+    div(v-if="user")
+      .container
+        .div(v-if='userLocal')
+          h1 Hello ${userLocal.nickname}
+          h3 Your are current viewing the profile of 
+            strong ${user.nickname}
+        .div(v-else)
+          h1 Hello ${user.nickname}
+        .row
+          .col
+            .groups
+              h3(v-if='userLocal') Groups of ${user.nickname}
+              h3(v-else) Your groups
+              .row
+              template(v-for="group in groups")
+                .col-sm-4.col-md-3.col-xs-6
+                  a(v-bind:href="/group/ + group.id")
+                    div(class="thumbnail groupThumbnail")
+                      img.img-responsive.img-thumbnail(v-bind:src="'../' + group.mediaPath" width="200" height="auto")                    
+                      div(class='caption')
+                        h4 ${group.name}
+                        p(v-if="group.aboutGroup !== 'None'") ${group.aboutGroup}
+                      
+                
+block jsscript 
+  script(type="text/javascript" src="{{ url_for('static', filename='js/group.js') }}")
+    
+                      
+    
