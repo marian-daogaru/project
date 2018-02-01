@@ -250,11 +250,12 @@ var searchRestaurantAPI = new Vue({
   el: "#searchRestaurantAPI",
   delimiters: ['${','}'],
   data:{
-    restaurants: null,
+    restaurants: '',
     errors: null,
     confirmations: null,
     restaurantName: ''
   },
+
 
   mounted() {
     this.loadSearch()
