@@ -1,6 +1,7 @@
 from hashlib import md5
 from app import db, app
 from sqlalchemy import and_
+from sqlalchemy.orm import aliased
 import re
 import numpy as np
 import datetime
@@ -354,7 +355,7 @@ class Restaurant(db.Model):
         db.session.add(userRest)
         db.session.commit()
 
-    def getReviews(self):
+    def getReviewsGeneral(self):
         reviews = UserRatings.query.\
                     filter(and_(UserRatings.Restaurant_id.like(self.id),
                                 UserRatings.comment.isnot(None))).\
@@ -372,8 +373,52 @@ class Restaurant(db.Model):
                                 'mediaPath': mediaPath,
                                 'rating': review.rating,
                                 'review': review.comment,
-                                'userID': user.id})
+                                'userID': user.id,
+                                'date': review.date})
         return reviewsList
+
+    def addComment(self, groupID, userID, comment):
+        userComment = CommentsInGroups(Restaurant_id = self.id,
+                                  Group_id = groupID,
+                                  User_id = userID,
+                                  comment = comment,
+                                  date = datetime.datetime.now())
+        db.session.add(userComment)
+        db.session.commit()
+
+    def getCommentsGroup(self, groupID):
+        query = db.session.query(CommentsInGroups.User_id).filter(
+                    and_(CommentsInGroups.Restaurant_id == self.id,
+                         CommentsInGroups.Group_id == groupID))
+        users = db.session.query(User.nickname).\
+                    filter(User.id.in_(query.subquery())).\
+                        order_by(User.id.asc()).all()
+        ratings = db.session.query(UserRatings.rating).\
+                    filter(and_(UserRatings.User_id.in_(query.subquery()),
+                                UserRatings.Restaurant_id == self.id)).\
+                        order_by(UserRatings.User_id.asc()).all()
+        comments = CommentsInGroups.query.\
+                    filter(and_(CommentsInGroups.Restaurant_id == self.id,
+                                CommentsInGroups.Group_id == groupID)).\
+                        order_by(CommentsInGroups.date.desc()).all()
+        IDS = query.distinct().order_by(CommentsInGroups.User_id.asc()).all()
+
+        users = np.array(users).ravel()
+        ratings = np.array(ratings).ravel()
+        IDS = np.array(IDS).ravel()
+        commentsList = []  # this can be done with list comprehension, but it will look ugly AF
+        for comment in comments:
+            mediaPath = Media.query.filter_by(id = comment.User_id).first().mediaPath
+            mask = IDS == comment.User_id
+            commentsList.append({'nickname': users[mask][0],
+                                'mediaPath': mediaPath,
+                                'rating': ratings[mask][0],
+                                'review': comment.comment,  #named review so I dont have to change the entire HTML just for this....
+                                'userID': comment.User_id,
+                                'date': comment.date})
+        return commentsList
+
+
 
     def generatedTrafic(self, groupID):
         restInGroup = RestaurantsInGroups.query.filter(and_(
@@ -519,5 +564,12 @@ class PendingUsersInGroups(db.Model):
 class PendingRestaurantsInGroups(db.Model):
     __table__ = db.Model.metadata.tables['PendingRestaurantsInGroups']
 
+
+
 class RestaurantDetails(db.Model):
     __table__ = db.Model.metadata.tables['RestaurantDetails']
+
+
+
+class CommentsInGroups(db.Model):
+    __table__ = db.Model.metadata.tables['CommentsInGroups']

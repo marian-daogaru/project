@@ -7,16 +7,17 @@ import urllib
 import ssl
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
-# from config import basedir, RESTAURANTPATH
-link = 'https://www.caserola.ro/restaurant/lacrimisisfinti'
-
+from config import basedir, RESTAURANTPATH
+# link = 'https://www.tripadvisor.com/Restaurants-g294458-Bucharest.html'
+link = 'https://www.tripadvisor.com/Restaurant_Review-g294458-d3469196-Reviews-The_ARTIST-Bucharest.html'
 
 def extractRestaurant(url):
     extractPlacesFuncDict = {
             'foodpanda': extractFoodPanda,
             'oliviera': extractOliviera,
             'caserola': extractCaserola,
-            'hipmenu': extractHipMenu
+            'hipmenu': extractHipMenu,
+            'tripadvisor': extractTripAdvisor,
         }
     for key, func in extractPlacesFuncDict.items():
         if key in url.lower():
@@ -200,6 +201,20 @@ def extractCaserola(link):
     return name, avatarName
 
 
+def extractTripAdvisor(link):
+    webpage = openWebsite(link).read()
+    print('"name" : "')
+    nameIndexStart = webpage.index('"name" : "') + len('"name" : "')
+    nameIndexStop = webpage[nameIndexStart:].index('",') + nameIndexStart
+    name = webpage[nameIndexStart : nameIndexStop]
+
+    httpStart = webpage.index('"image" : "') + len('"image" : "')
+    httpStop = webpage[httpStart:].index('",') + httpStart
+    avatarLink = webpage[httpStart : httpStop]
+    avatarName =  RESTAURANTPATH + '{}.png'.format("".join(name.split()).lower())
+    print(name, avatarName, avatarLink)
+
+
 def captureImage(link, imageName):
     imagePath = os.path.join(basedir + '/app/', imageName[3:])
     driver = webdriver.PhantomJS()
@@ -220,8 +235,8 @@ def extractParticular(link):
     return name, avatarName
 
 
-with open('url.txt', 'w') as myfile:
-    myfile.write(openWebsite(link).read())
-# print(extractDetailsOliviera(link))
+# with open('url.txt', 'w') as myfile:
+#     myfile.write(openWebsite(link).read())
+print(extractTripAdvisor(link))
 
 # print(os.path.join(basedir + '/app/', RESTAURANTPATH[3:]))

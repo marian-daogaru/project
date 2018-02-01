@@ -42,7 +42,6 @@ def addRestaurantGet(id):
 def addRestaurantGetRestaurantSearch(id, name):
     group = Group.query.filter_by(id = id).first()
     if g.user.isInGroup(g.user, group):
-        print(name, 222)
         restaurants = Restaurant.searchName(name)
         restaurantsList = []
         if restaurants:
@@ -70,7 +69,6 @@ def searchRestaurant(name):
 @login_required
 def searchRestaurantGet(name):
     if len(name) > 0:
-        print(name)
         restaurants = Restaurant.searchName(name)
         restaurantsList = []
         if restaurants:
@@ -207,22 +205,23 @@ def restaurantinGroupPut(groupID, restID):
 
 
 # ##############################################################################
-# RESTAURANT REVIEW
+# RESTAURANT REVIEW GENERAL
 # ##############################################################################
 @app.route('/api/restaurant/<id>/reviews', methods=['GET'])
 @login_required
-def restaurantReviewGet(id):
+def restaurantReviewGeneralGet(id):
+    print("HELLO")
     restaurant = Restaurant.query.filter_by(id = id).first()
     if restaurant is None:
         return jsonify({'notFound': True})
-    reviews = restaurant.getReviews()
+    reviews = restaurant.getReviewsGeneral()
     return jsonify(reviews)
-
 
 
 @app.route('/api/restaurant/<id>/user/<userID>/<review>', methods=['PUT'])
 @login_required
-def restaurantReviewPut(id, userID, review):
+def restaurantReviewGeneralPut(id, userID, review):
+    print("HEY @")
     restaurant = Restaurant.query.filter_by(id = id).first()
     if restaurant is not None:
         if int(g.user.id) == int(userID):
@@ -232,6 +231,40 @@ def restaurantReviewPut(id, userID, review):
                 return jsonify({'added': True})
             return jsonify({'errors': form.errors})
         return jsonify({'accessDenied': True})
+    return jsonify({'error': ['Restaurant not found']})
+
+
+# ##############################################################################
+# RESTAURANT REVIEW GROUP
+# ##############################################################################
+@app.route('/api/group/<groupID>/restaurant/<id>/reviews', methods=['GET'])
+@login_required
+def restaurantReviewGroupGet(groupID, id):
+    print("HELLOOOOOOOOO")
+    restaurant = Restaurant.query.filter_by(id = id).first()
+    if restaurant is None:
+        return jsonify({'notFound': True})
+    reviews = restaurant.getCommentsGroup(groupID)
+
+    return jsonify(reviews)
+
+
+@app.route('/api/group/<groupID>/restaurant/<id>/user/<userID>/<comment>', methods=['PUT'])
+@login_required
+def restaurantReviewGroupPut(groupID, id, userID, comment):
+    print("HEEEYY!")
+    restaurant = Restaurant.query.filter_by(id = id).first()
+    if restaurant is not None:
+        group = Group.query.filter_by(id = groupID).first()
+        if group is not None:
+            if int(g.user.id) == int(userID) or not restaurant.inGroup(group):
+                form = ReviewForm(comment)
+                if form.validate():
+                    restaurant.addComment(groupID, userID, comment)
+                    return jsonify({'added': True})
+                return jsonify({'errors': form.errors})
+            return jsonify({'accessDenied': True})
+        return jsonify({'error': ['Group not found']})
     return jsonify({'error': ['Restaurant not found']})
 
 

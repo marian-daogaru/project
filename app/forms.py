@@ -295,21 +295,21 @@ class RestaurantAddForm():
 
 
 class ReviewForm():
-    def __init__(self, inputReview, *args, **kwargs):
-        inputDict = {'review': inputReview}
+    def __init__(self, userText, *args, **kwargs):
+        inputDict = {'userText': userText}
         newDict = validateForInjections(inputDict)
-        self.review = newDict['review']
+        self.review = newDict['userText']
         self.errors = []
-        self.inputReview = inputReview
+        self.userText = userText
 
     def validate(self):
         if len(self.review) == 0:
-            self.errors.append("Review is invalid!")
+            self.errors.append("Your omment is invalid!")
             return False
         if len(self.review) > 5000:
-            self.errors.append("Review is too long.")
+            self.errors.append("Your comment is too long.")
             return False
-        if self.review != self.inputReview:
-            self.errors.append("Review is invalid!")
+        if self.review != self.userText:
+            self.errors.append("Your comment is invalid!")
             return False
         return True

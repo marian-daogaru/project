@@ -74,19 +74,24 @@
                 </div>
               </div>
               <div class="row">
-                <template v-for="restaurant in restaurants">
-                  <div class="col-md-4 col-sm-4 col-xs-6" v-if="restaurant.rating !== 0">
-                    <div class="thumbnail groupThumbnail"><a v-bind:href="/restaurant/ + restaurant.id">
-                        <div><img class="img-responsive img-thumbnail" v-bind:src="'../' + restaurant.mediaPath" height="300" width="auto"/>
-                          <div class="caption">
-                            <h4>${restaurant.name}</h4>
-                            <h5 v-if="restaurant.rating !== -1">${restaurant.rating} <i class="glyphicon glyphicon-cutlery"></i></h5>
-                            <h5 v-else="v-else">Not yet rated</h5>
-                            <p v-if="restaurant.aboutMe !== 'None'">${restaurant.aboutMe}</p>
-                          </div>
-                        </div></a></div>
-                  </div>
-                </template>
+                <div v-if="restaurants.length &gt; 0">
+                  <template v-for="restaurant in restaurants">
+                    <div class="col-md-4 col-sm-4 col-xs-6" v-if="restaurant.rating !== 0">
+                      <div class="thumbnail groupThumbnail"><a v-bind:href="/restaurant/ + restaurant.id">
+                          <div><img class="img-responsive img-thumbnail" v-bind:src="'../' + restaurant.mediaPath" height="300" width="auto"/>
+                            <div class="caption">
+                              <h4>${restaurant.name}</h4>
+                              <h5 v-if="restaurant.rating !== -1">${restaurant.rating} <i class="glyphicon glyphicon-cutlery"></i></h5>
+                              <h5 v-else="v-else">Not yet rated</h5>
+                              <p v-if="restaurant.aboutMe !== 'None'">${restaurant.aboutMe}</p>
+                            </div>
+                          </div></a></div>
+                    </div>
+                  </template>
+                </div>
+                <div v-else="v-else">
+                  <h3>No results. Are you sure the name is correct? </h3>
+                </div>
               </div>
             </div>
           </div>

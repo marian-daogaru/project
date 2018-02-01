@@ -170,7 +170,7 @@ var restaurantAPI = new Vue({
 
     loadReviews: function() {
       this.$http.get(
-        '/api/restaurant/' + this.restaurant.id + '/reviews'
+        '/api' + window.location.pathname + '/reviews'
       ).then(
         function(response) {
           this.reviews = response.data,
@@ -206,7 +206,7 @@ var restaurantAPI = new Vue({
       console.log('/api/restaurant/' + this.restaurant.id + '/user/' + this.user.id + '/' + this.userReview)
       if (this.userReview.length > 0) {
         this.$http.put(
-          '/api/restaurant/' + this.restaurant.id + '/user/' + this.user.id + '/' + this.userReview
+          '/api' + window.location.pathname + '/user/' + this.user.id + '/' + this.userReview
         ).then(
           function(response) {
             this.response = response.data,
@@ -222,18 +222,20 @@ var restaurantAPI = new Vue({
             if (this.response.accessDenied){
               window.location.href = '/accessDenied'
             }
-            if (this.reviews.length > 0) {
-              for (review in this.reviews){
-                console.log(this.reviews[review].userID),
-                console.log(parseInt(this.user.id)),
-                console.log(parseInt(this.user.id) === parseInt(this.reviews[review].userID))
-                if (parseInt(this.user.id) === parseInt(this.reviews[review].userID)){
-                  this.reviews[review].review = this.userReview
-                }
-              }
-            } else {
-              this.loadReviews()
-            }
+            this.userReview = null,
+            this.loadReviews()
+            // if (this.reviews.length > 0) {
+            //   for (review in this.reviews){
+            //     console.log(this.reviews[review].userID),
+            //     console.log(parseInt(this.user.id)),
+            //     console.log(parseInt(this.user.id) === parseInt(this.reviews[review].userID))
+            //     if (parseInt(this.user.id) === parseInt(this.reviews[review].userID)){
+            //       this.reviews[review].review = this.userReview
+            //     }
+            //   }
+            // } else {
+            //   this.loadReviews()
+            // }
           }
         )
       }
