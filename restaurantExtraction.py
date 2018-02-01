@@ -9,7 +9,7 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 # from config import basedir, RESTAURANTPATH
 # link = 'https://www.tripadvisor.com/Restaurants-g294458-Bucharest.html'
-link = 'https://www.tripadvisor.com/Restaurant_Review-g294458-d7747651-Reviews-La_Pescaria_Dorobantilor-Bucharest.html'
+link = 'https://www.tripadvisor.com/Restaurant_Review-g294458-d7813701-Reviews-Borsalino-Bucharest.html'
 
 def extractRestaurant(url):
     extractPlacesFuncDict = {
@@ -66,6 +66,7 @@ def extractFoodPanda(link):
 def extractDetailsFoodPanda(link):
     webpage = openWebsite(link).read()
     details = {}
+    details['phoneNumber'] = None
     # coords search
     try:
         searchStartParam = 'staticmap?center='
@@ -101,7 +102,7 @@ def extractDetailsFoodPanda(link):
         dtEndIndex = webpage[dtStartIndex:].index(searchEndParam) + dtStartIndex
         deliveryTimes = webpage[dtStartIndex:dtEndIndex].split()
         deliveryTimes = [int(time.split(':')[0]) + int(time.split(':')[1]) / 100 for time in [deliveryTimes[7], deliveryTimes[9]]]
-        details['workingHours'] = deliveryTimes
+        details['workingHours'] = str(deliveryTimes[0]) + ' - ' + str(deliveryTimes[1])
     except:
         details['workingHours'] = None
 
@@ -143,6 +144,10 @@ def extractDetailsOliviera(link):
     link = '/'.join(link.split('/')[:-1]) + '/profile'
     webpage = openWebsite(link).read()
     details = {}
+    details['priceRange'] = None
+    details['workingHours'] = None
+    details['phoneNumber'] = None
+
     """LOCATION IS NOT VERY NICE TO GET, ALMOST IMPOSSIBLE"""
     """UPDATE: NEVER SAY NEVER BOY!"""
     # coords search
@@ -160,25 +165,32 @@ def extractDetailsOliviera(link):
         details['lon'] = None
 
     # tags search
-    searchStartParam = '&quot;cuisines&quot;:'
-    searchEndParam = ',&quot;pictures'
-    tagsStartIndex = webpage.index(searchStartParam) + len(searchStartParam)
-    tagsEndIndex = webpage[tagsStartIndex:].index(searchEndParam) + tagsStartIndex
-    tags = [tag.split(',')[0] for tag in webpage[tagsStartIndex:tagsEndIndex].replace('&quot;','').split('name:')[1:]]
+    try:
+        searchStartParam = '&quot;cuisines&quot;:'
+        searchEndParam = ',&quot;pictures'
+        tagsStartIndex = webpage.index(searchStartParam) + len(searchStartParam)
+        tagsEndIndex = webpage[tagsStartIndex:].index(searchEndParam) + tagsStartIndex
+        tags = [tag.split(',')[0] for tag in webpage[tagsStartIndex:tagsEndIndex].replace('&quot;','').split('name:')[1:]]
+        details['tags'] = tags
+    except:
+        details['tags'] = None
 
     # address
-    searchStartParam = 'has_special_promotion&quot'
-    searchEndParam = '&quot;,&quot;promotions'
-    addrStartIndex = webpage.index(searchStartParam) + len(searchStartParam)
-    addrEndIndex = webpage[addrStartIndex:].index(searchEndParam) + addrStartIndex
-    address = webpage[addrStartIndex:addrEndIndex].split('&quot;address&quot;:&quot;')[-1]
-    print(address)
-    return {'lat': lat,
-            'lon': lon,
-            'tags': tags,
-            'address': str(address)
-            }
+    try:
+        searchStartParam = 'has_special_promotion&quot'
+        searchEndParam = '&quot;,&quot;promotions'
+        addrStartIndex = webpage.index(searchStartParam) + len(searchStartParam)
+        addrEndIndex = webpage[addrStartIndex:].index(searchEndParam) + addrStartIndex
+        address = webpage[addrStartIndex:addrEndIndex].split('&quot;address&quot;:&quot;')[-1]
+        details['address'] = address
+    except:
+        details['address'] = None
+    return details
 
+
+# ##############################################################################
+# HIPMENU
+# ##############################################################################
 def extractHipMenu(link):
     webpage = openWebsite(link).read()
     nameIndexStart = webpage.index('<div class="top-bar-name"><span>') + 32
@@ -198,6 +210,12 @@ def extractHipMenu(link):
 def extractDetailsHipMenu(link):
     webpage = openWebsite(link).read()
     details = {}
+    details['workingHours'] = None
+    details['address'] = None
+    details['tags'] = None
+    details['priceRange'] = None
+    details['phoneNumber'] = None
+
     """not quite :( """
     # coords search
     try:
@@ -213,9 +231,11 @@ def extractDetailsHipMenu(link):
         details['lat'] = None
         details['lon'] = None
 
-    return 0
+    return details
 
-
+# ##############################################################################
+# CASEROLA
+# ##############################################################################
 def extractCaserola(link):
     webpage = openWebsite(link).read()
     nameIndexStart = webpage.index('h1 itemprop="name"') + 19
@@ -233,6 +253,10 @@ def extractCaserola(link):
 
     return name, avatarName
 
+
+# ##############################################################################
+# TRIPADVISOR
+# ##############################################################################
 def extractTripAdvisor(link):
     webpage = openWebsite(link).read()
     nameIndexStart = webpage.index('"name" : "') + len('"name" : "')
@@ -263,46 +287,63 @@ def extractDetailsTripAdvisor(link):
     except:
         details['lat'] = None
         details['lon'] = None
-    # # tags search
-    # searchStartParam = '<ul class="vendor-info-main-details-cuisines">'
-    # searchEndParam = '</ul>'
-    # tagsStartIndex = webpage.index(searchStartParam) + len(searchStartParam)
-    # tagsEndIndex = webpage[tagsStartIndex:].index(searchEndParam) + tagsStartIndex
-    # tags = [tag.split('>')[1] for tag in webpage[tagsStartIndex:tagsEndIndex].split("<")[1::2]]
-    #
-    # # delivery times
-    # searchStartParam = '<ul class="vendor-delivery-times">'
-    # searchEndParam = '</ul>'
-    # dtStartIndex = webpage.index(searchStartParam) + len(searchStartParam)
-    # dtEndIndex = webpage[dtStartIndex:].index(searchEndParam) + dtStartIndex
-    # deliveryTimes = webpage[dtStartIndex:dtEndIndex].split()
-    # deliveryTimes = [int(time.split(':')[0]) + int(time.split(':')[1]) / 100 for time in [deliveryTimes[7], deliveryTimes[9]]]
-    #
+
+    # tags search
+    try:
+        searchStartParam = 'CUISINES '
+        searchEndParam = '">'
+        tagsStartIndex = webpage.index(searchStartParam) + len(searchStartParam)
+        searchStartParam = 'data-content="'
+        tagsStartIndex += webpage[tagsStartIndex:].index(searchStartParam) + len(searchStartParam)
+        tagsEndIndex = webpage[tagsStartIndex:].index(searchEndParam) + tagsStartIndex
+        tags = webpage[tagsStartIndex : tagsEndIndex].split(", ")
+        details['tags'] = tags
+    except:
+        details['tags'] = None
+
+    #priceRange
+    try:
+        searchStartParam = '"priceRange" : "'
+        searchEndParam = '",'
+        priceStartIndex = webpage.index(searchStartParam) + len(searchStartParam)
+        priceEndIndex = webpage[priceStartIndex:].index(searchEndParam) + priceStartIndex
+        details['priceRange'] = webpage[priceStartIndex : priceEndIndex]
+    except:
+        details['priceRange'] = None
+
+    # delivery times
+    try:
+        searchStartParam = '<div class="timeRange" style="white-space: nowrap;">'
+        searchEndParam = '</div>'
+        dtStartIndex = webpage.index(searchStartParam) + len(searchStartParam)
+        dtEndIndex = webpage[dtStartIndex:].index(searchEndParam) + dtStartIndex
+        deliveryTimes = webpage[dtStartIndex:dtEndIndex]
+        details['deliveryTimes'] = deliveryTimes
+    except:
+        details['deliveryTimes'] = None
+
     # address
     try:
-        searchStartParam = '"street-address">'
-        searchEndParam = '</span>'
+        searchStartParam = '"streetAddress" : "'
+        searchEndParam = '",'
         addrStartIndex = webpage.index(searchStartParam) + len(searchStartParam)
         addrEndIndex = webpage[addrStartIndex:].index(searchEndParam) + addrStartIndex
         address = webpage[addrStartIndex:addrEndIndex]
-
-        searchStartParam = '"locality">'
-        searchEndParam = '</span>'
-        addrStartIndex = webpage.index(searchStartParam) + len(searchStartParam)
-        addrEndIndex = webpage[addrStartIndex:].index(searchEndParam) + addrStartIndex
-        address = address + ", " + webpage[addrStartIndex:addrEndIndex]
-
         details['address'] = str(address)
     except:
         details['address'] = None
-    print(lat, lon, address)
 
-    # return {'lat': lat,
-    #         'lon': lon,
-    #         'tags': tags,
-    #         'deliveryTimes': deliveryTimes,
-    #         'address': str(address)}
-
+    # phone Number
+    try:
+        searchStartParam = 'data-phonenumber="'
+        searchEndParam = '" dat'
+        phoneStartIndex = webpage.index(searchStartParam) + len(searchStartParam)
+        phoneEndIndex = webpage[phoneStartIndex:].index(searchEndParam) + phoneStartIndex
+        phoneNumber = webpage[phoneStartIndex : phoneEndIndex]
+        details['phoneNumber'] = phoneNumber
+    except:
+        details['phoneNumber'] = None
+    return details
 
 def captureImage(link, imageName):
     imagePath = os.path.join(basedir + '/app/', imageName[3:])
@@ -326,7 +367,7 @@ def extractParticular(link):
     return name, avatarName
 
 
-# with open('url.txt', 'w') as myfile:
+# with open('url.txt', 'wb') as myfile:
 #     myfile.write(openWebsite(link).read())
 print(extractDetailsTripAdvisor(link))
 
