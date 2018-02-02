@@ -38,3 +38,4 @@ recaptcha.init_app(app)
 # print(dir(db))
 
 from app import views  # this will be always at the end
+from app import scrapeTripAdvisor

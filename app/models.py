@@ -268,7 +268,30 @@ class Restaurant(db.Model):
             return False
 
     @staticmethod
-    def addToDatabase(name, url, mediaPath):
+    def advancedSearchName(name):
+        restaurantNames = np.array(db.session.query(Restaurant.name).distinct().all()).ravel()
+        names = np.array(name.split())
+        isName = np.zeros((names.shape[0], restaurantNames.shape[0])).astype(bool)
+
+        for i in range(names.shape[0]):
+            isName[i] = [names[i].lower() in restName.lower() for restName in restaurantNames]
+        results = isName.sum(axis=0)
+        print("$$$")
+        if results.sum() > 0:
+            mask = results > 0
+            restNames = restaurantNames[mask]
+            results = results[mask]
+            restList = np.array(db.session.query(Restaurant).\
+                        filter(
+                            Restaurant.name.in_(
+                                restNames[np.argsort(results)[::-1]])).\
+                                    all()).ravel()
+            return restList[np.argsort(results)[::-1]]
+        return False
+
+
+    @staticmethod
+    def addToDatabase(name, url, mediaPath, details):
         media = Media(mediaPath = mediaPath)
         db.session.add(media)
         db.session.commit()
@@ -277,6 +300,7 @@ class Restaurant(db.Model):
                                 Media_id = media.id)
         db.session.add(restaurant)
         db.session.commit()
+        RestaurantDetails.addToDatabase(restaurant.id, details)
         return restaurant
 
 
@@ -569,6 +593,19 @@ class PendingRestaurantsInGroups(db.Model):
 class RestaurantDetails(db.Model):
     __table__ = db.Model.metadata.tables['RestaurantDetails']
 
+    @staticmethod
+    def addToDatabase(restaurantID, details):
+        if RestaurantDetails.query.filter_by(Restaurant_id = restaurantID).first() is None:
+            restDetails = RestaurantDetails(Restaurant_id = restaurantID,
+                                            phoneNumber = details['phoneNumber'],
+                                            address = details['address'],
+                                            workingHours = details['workingHours'],
+                                            lat = details['lat'],
+                                            lon = details['lon'],
+                                            priceRange = details['priceRange'],
+                                            tags = ','.join(details['tags']))
+            db.session.add(restDetails)
+            db.session.commit()
 
 
 class CommentsInGroups(db.Model):

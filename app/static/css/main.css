@@ -1,8 +1,15 @@
 body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
   padding-top: 70px;
   word-wrap: break-word;
 }
-
+html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
 
 .groupThumbnail {
   height: 400px;
@@ -96,4 +103,34 @@ width: auto;
 .icon-btn {
     padding: 1px 15px 3px 2px;
     border-radius:50px;
+}
+
+#map {
+    height: 350px;
+    width: 350px;
+    overflow: auto;
+    position: fixed;
+    display: block;
+    z-index: 10;
+  }
+.liInline {
+    float: left;
+    min-width: auto;
+    text-decoration: none;
+    list-style-type: none;
+    padding-right: 10px;
+}
+.liInline:after {
+  content: ', '
+}
+.liInline:last-child:after {
+  content: "";
+}
+.ulInline {
+  /* float: left;
+    margin: 0;
+    padding: 0; */
+    display: inline-block;
+  vertical-align: top;
+  padding-left: 0;
 }

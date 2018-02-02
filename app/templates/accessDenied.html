@@ -1,12 +1,12 @@
-
+<!DOCTYPE html>
 <html>
   <head>
     <title>Rodica 2.0</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous"/>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css"/>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"/>
-    <script src="https://www.google.com/recaptcha/api.js?render=explicit" async="async" defer="defer"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <script src="https://www.google.com/recaptcha/api.js?render=explicit" async defer></script>
   </head>
   <body>
     <div class="container">
@@ -15,22 +15,22 @@
           <nav class="navbar navbar-default navbar-fixed-top container">
             <div class="container-fluid">
               <div class="navbar-header">
-                <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false"><span class="sr-only">Toggle Navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="{{ url_for('home') }}"><img alt="brand" v-bind:src="brandLocation" height="30px" width="auto"/></a>
+                <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false"><span class="sr-only">Toggle Navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="{{ url_for('home') }}"><img alt="brand" v-bind:src="brandLocation" height="30px" width="auto"></a>
               </div>
               <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                   <li><a href="{{ url_for('home') }}">Home</a></li>
                   <li v-if="User.id !== '-1'"><a :href="/user/+User.id">Your Profile </a></li>
-                  <li v-else="v-else"><a href="{{ url_for('login') }}">Login </a></li>
+                  <li v-else><a href="{{ url_for('login') }}">Login </a></li>
                   <li v-if="User.id !== '-1'"><a :href="'/user/' + User.id + '/groups'">Your Groups </a></li>
                   <li v-if="User.id !== '-1'"><a href="{{ url_for('logout') }}">Logout </a></li>
-                  <li v-else="v-else"><a href="{{ url_for('signup') }}">Signup </a></li>
+                  <li v-else><a href="{{ url_for('signup') }}">Signup </a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                   <li v-if="User.id !== '-1'">
                     <div class="navbar-form navbar-left navbar-input-group">
                       <div class="form-group">
-                        <input class="form-control" v-model="restaurantName" v-on:keypress.enter="searchRestaurantRedirect()" type="text" placeholder="Search existing restaurant" name="search"/>
+                        <input class="form-control" v-model="restaurantName" v-on:keypress.enter="searchRestaurantRedirect()" type="text" placeholder="Search existing restaurant" name="search">
                       </div>
                       <div class="btn btn-default" v-on:click="searchRestaurantRedirect()"><i class="glyphicon glyphicon-search">  </i></div>
                     </div>
@@ -61,6 +61,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
     <script src="https://unpkg.com/vue"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.5"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA5KdA5p-EG13w5-L6g-IiXjMI-_9zyacc"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/base.js') }}"></script>
     <div> 
     </div>

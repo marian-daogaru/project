@@ -5,7 +5,7 @@ from app import app, db, lm
 from config import USERPATH, basedir
 from flask import render_template, session, request, g, jsonify, flash, redirect
 from flask_login import login_required
-from .models import Media, User, Group, Restaurant, RestaurantsInGroups
+from .models import Media, User, Group, Restaurant, RestaurantsInGroups, RestaurantDetails
 from .forms import RestaurantAddForm, ReviewForm
 from werkzeug.utils import secure_filename
 
@@ -42,9 +42,9 @@ def addRestaurantGet(id):
 def addRestaurantGetRestaurantSearch(id, name):
     group = Group.query.filter_by(id = id).first()
     if g.user.isInGroup(g.user, group):
-        restaurants = Restaurant.searchName(name)
+        restaurants = Restaurant.advancedSearchName(name)
         restaurantsList = []
-        if restaurants:
+        if restaurants is not None:
             for restaurant in restaurants:
                 if not restaurant.inGroup(group):
                     restaurant = row2dict(restaurant)
@@ -69,9 +69,9 @@ def searchRestaurant(name):
 @login_required
 def searchRestaurantGet(name):
     if len(name) > 0:
-        restaurants = Restaurant.searchName(name)
+        restaurants = Restaurant.advancedSearchName(name)
         restaurantsList = []
-        if restaurants:
+        if restaurants is not None:
             for restaurant in restaurants:
                 rating = restaurant.currentOverallRating()
                 restaurant = row2dict(restaurant)
@@ -96,14 +96,15 @@ def addRestaurantPost(id):
     form = RestaurantAddForm(response)
 
     if form.validate():
-        restaurantName, restaurantMediaPath = extractRestaurant(form.url)
-        print(restaurantName, restaurantMediaPath)
+        restaurantBasic, details = extractRestaurant(form.url)
+        print(restaurant)
         restaurant = Restaurant.query.filter_by(website = form.url).first()
         print(restaurant)
         if restaurant is None:
-            restaurant = Restaurant.addToDatabase(restaurantName[:30],
+            restaurant = Restaurant.addToDatabase(restaurantBasic[0],
                                                   form.url,
-                                                  restaurantMediaPath)
+                                                  restaurantBasic[1],
+                                                  details)
         group = Group.query.filter_by(id = id).first()
         if g.user.isAdmin(group.id):
             print("Group added bacause admin!")
@@ -161,6 +162,12 @@ def restaurantGet(id):
     restaurant = row2dict(restaurant)
     restaurant['mediaPath'] = mediaPath
     restaurant['rating'] = rating
+    details = RestaurantDetails.query.filter_by(Restaurant_id = restaurant['id']).first()
+    if details is not None:
+        details.tags = str(details.tags.replace(', ', ',').replace(',', ', '))  # some legacy problems
+        restaurant['details'] = row2dict(details)
+        print((restaurant['details']['tags']).split(', '), 222)
+        restaurant['details']['tags'] = restaurant['details']['tags'].split(', ')
     return jsonify(restaurant)
 
 
@@ -188,6 +195,11 @@ def restaurantinGroupGet(groupID, restID):
     restaurant['mediaPath'] = mediaPath
     restaurant['rating'] = rating
     restaurant['groupID'] = groupID
+    details = RestaurantDetails.query.filter_by(Restaurant_id = restaurant['id']).first()
+    if details is not None:
+        details.tags = str(details.tags.replace(', ', ',').replace(',', ', '))  # some legacy problems
+        restaurant['details'] = row2dict(details)
+        print(restaurant['details'])
     return jsonify(restaurant)
 
 @app.route('/api/group/<groupID>/restaurant/<restID>', methods=['PUT'])

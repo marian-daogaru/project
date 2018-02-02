@@ -5,24 +5,29 @@ import os
 import urllib2
 import urllib
 import ssl
+import numpy as np
+import re
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
-# from config import basedir, RESTAURANTPATH
+from config import basedir, RESTAURANTPATH
 # link = 'https://www.tripadvisor.com/Restaurants-g294458-Bucharest.html'
 link = 'https://www.tripadvisor.com/Restaurant_Review-g294458-d7813701-Reviews-Borsalino-Bucharest.html'
 
 def extractRestaurant(url):
     extractPlacesFuncDict = {
-            'foodpanda': extractFoodPanda,
-            'oliviera': extractOliviera,
-            'caserola': extractCaserola,
-            'hipmenu': extractHipMenu,
-            'tripadvisor': extractTripAdvisor,
+            'foodpanda': [extractFoodPanda, extractDetailsFoodPanda],
+            'oliviera': [extractOliviera, extractDetailsOliviera],
+            'caserola': [extractCaserola, extractDetailsCaserola],
+            'hipmenu': [extractHipMenu, extractDetailsHipMenu],
+            'tripadvisor': [extractTripAdvisor, extractDetailsTripAdvisor]
         }
-    for key, func in extractPlacesFuncDict.items():
+    for key, funcs in extractPlacesFuncDict.items():
         if key in url.lower():
-            return func(url)
-    return extractParticular(url)
+            rest = funcs[0](url)
+            details = funcs[1](url)
+            return [rest, details]
+    print("NOT HERE")
+    return extractParticular(url), extractDetailsParticular(url)
 
 
 
@@ -52,6 +57,7 @@ def extractFoodPanda(link):
     nameIndex = webpage.index('"name"') + 8
     firstCommaIndex = webpage[nameIndex:nameIndex+100].index(',')
     name = webpage[nameIndex+1 : nameIndex+firstCommaIndex-1]
+    name = re.sub('/', '', name)
 
     bannerIndex = webpage.index("b-lazy hero-banner")
     httpStart = webpage[bannerIndex:].index("https://") + bannerIndex
@@ -128,6 +134,7 @@ def extractOliviera(link):
     nameIndex = webpage.index('meta property="og:title" content="') + 34
     firstBraketIndex = webpage[nameIndex:].index('>') + nameIndex - 1  # exclude the "
     name = webpage[nameIndex : firstBraketIndex]
+    name = re.sub('/', '', name)
 
     httpStart = firstBraketIndex + 42  # \n\t\t<meta property="og:image" content=" length
     httpStop = webpage[httpStart:].index('">') + httpStart
@@ -144,9 +151,9 @@ def extractDetailsOliviera(link):
     link = '/'.join(link.split('/')[:-1]) + '/profile'
     webpage = openWebsite(link).read()
     details = {}
-    details['priceRange'] = None
-    details['workingHours'] = None
-    details['phoneNumber'] = None
+    details['priceRange'] = ''
+    details['workingHours'] = ''
+    details['phoneNumber'] = ''
 
     """LOCATION IS NOT VERY NICE TO GET, ALMOST IMPOSSIBLE"""
     """UPDATE: NEVER SAY NEVER BOY!"""
@@ -173,7 +180,7 @@ def extractDetailsOliviera(link):
         tags = [tag.split(',')[0] for tag in webpage[tagsStartIndex:tagsEndIndex].replace('&quot;','').split('name:')[1:]]
         details['tags'] = tags
     except:
-        details['tags'] = None
+        details['tags'] = ''
 
     # address
     try:
@@ -184,7 +191,7 @@ def extractDetailsOliviera(link):
         address = webpage[addrStartIndex:addrEndIndex].split('&quot;address&quot;:&quot;')[-1]
         details['address'] = address
     except:
-        details['address'] = None
+        details['address'] = ''
     return details
 
 
@@ -196,6 +203,7 @@ def extractHipMenu(link):
     nameIndexStart = webpage.index('<div class="top-bar-name"><span>') + 32
     nameIndexStop = webpage[nameIndexStart:].index("</span>") + nameIndexStart
     name = webpage[nameIndexStart : nameIndexStop]
+    name = re.sub('/', '', name)
 
     logoIndex = webpage.index('id="logoInfo"')
     httpStart = webpage[logoIndex:].index("https://") + logoIndex
@@ -210,11 +218,11 @@ def extractHipMenu(link):
 def extractDetailsHipMenu(link):
     webpage = openWebsite(link).read()
     details = {}
-    details['workingHours'] = None
-    details['address'] = None
-    details['tags'] = None
-    details['priceRange'] = None
-    details['phoneNumber'] = None
+    details['workingHours'] = ''
+    details['address'] = ''
+    details['tags'] = ''
+    details['priceRange'] = ''
+    details['phoneNumber'] = ''
 
     """not quite :( """
     # coords search
@@ -241,6 +249,7 @@ def extractCaserola(link):
     nameIndexStart = webpage.index('h1 itemprop="name"') + 19
     nameIndexStop = webpage[nameIndexStart:].index('</h1>') + nameIndexStart
     name = webpage[nameIndexStart : nameIndexStop]
+    name = re.sub('/', '', name)
 
     logoIndex = webpage.index('restaurant-logo')
     httpStart = webpage[logoIndex:].index("/images") + logoIndex
@@ -253,6 +262,17 @@ def extractCaserola(link):
 
     return name, avatarName
 
+def extractDetailsCaserola(link):
+    details = {}
+    details['workingHours'] = ''
+    details['address'] = ''
+    details['tags'] = ''
+    details['priceRange'] = ''
+    details['phoneNumber'] = ''
+    details['lat'] = None
+    details['lon'] = None
+    return details
+
 
 # ##############################################################################
 # TRIPADVISOR
@@ -262,6 +282,8 @@ def extractTripAdvisor(link):
     nameIndexStart = webpage.index('"name" : "') + len('"name" : "')
     nameIndexStop = webpage[nameIndexStart:].index('",') + nameIndexStart
     name = webpage[nameIndexStart : nameIndexStop]
+    name = re.sub('/', '', name)
+    name = re.sub('_', ' ', name)
 
     httpStart = webpage.index('"image" : "') + len('"image" : "')
     httpStop = webpage[httpStart:].index('",') + httpStart
@@ -299,7 +321,7 @@ def extractDetailsTripAdvisor(link):
         tags = webpage[tagsStartIndex : tagsEndIndex].split(", ")
         details['tags'] = tags
     except:
-        details['tags'] = None
+        details['tags'] = ''
 
     #priceRange
     try:
@@ -309,7 +331,7 @@ def extractDetailsTripAdvisor(link):
         priceEndIndex = webpage[priceStartIndex:].index(searchEndParam) + priceStartIndex
         details['priceRange'] = webpage[priceStartIndex : priceEndIndex]
     except:
-        details['priceRange'] = None
+        details['priceRange'] = ''
 
     # delivery times
     try:
@@ -318,9 +340,9 @@ def extractDetailsTripAdvisor(link):
         dtStartIndex = webpage.index(searchStartParam) + len(searchStartParam)
         dtEndIndex = webpage[dtStartIndex:].index(searchEndParam) + dtStartIndex
         deliveryTimes = webpage[dtStartIndex:dtEndIndex]
-        details['deliveryTimes'] = deliveryTimes
+        details['workingHours'] = deliveryTimes
     except:
-        details['deliveryTimes'] = None
+        details['workingHours'] = ''
 
     # address
     try:
@@ -331,7 +353,7 @@ def extractDetailsTripAdvisor(link):
         address = webpage[addrStartIndex:addrEndIndex]
         details['address'] = str(address)
     except:
-        details['address'] = None
+        details['address'] = ''
 
     # phone Number
     try:
@@ -342,9 +364,14 @@ def extractDetailsTripAdvisor(link):
         phoneNumber = webpage[phoneStartIndex : phoneEndIndex]
         details['phoneNumber'] = phoneNumber
     except:
-        details['phoneNumber'] = None
+        details['phoneNumber'] = ''
+
     return details
 
+
+# ##############################################################################
+# GENERAL
+# ##############################################################################
 def captureImage(link, imageName):
     imagePath = os.path.join(basedir + '/app/', imageName[3:])
     driver = webdriver.PhantomJS()
@@ -360,6 +387,7 @@ def extractParticular(link):
     nameIndexStop = webpage[nameIndexStart:].index('</title>') + nameIndexStart - 1
     name = webpage[nameIndexStart : nameIndexStop].split('-')[0]
     name = " ".join(name.split())
+    name = re.sub('/', '', name)
 
     avatarName = RESTAURANTPATH + '{}.png'.format("".join(name.split()).lower())
     captureImage(link, avatarName)
@@ -367,8 +395,19 @@ def extractParticular(link):
     return name, avatarName
 
 
+def extractDetailsParticular(link):
+    details = {}
+    details['workingHours'] = ''
+    details['address'] = ''
+    details['tags'] = ''
+    details['priceRange'] = ''
+    details['phoneNumber'] = ''
+    details['lat'] = None
+    details['lon'] = None
+    return details
+
+
 # with open('url.txt', 'wb') as myfile:
 #     myfile.write(openWebsite(link).read())
-print(extractDetailsTripAdvisor(link))
 
-# print(os.path.join(basedir + '/app/', RESTAURANTPATH[3:]))
+# print(extractDetailsTripAdvisor(link))

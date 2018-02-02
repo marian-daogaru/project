@@ -123,7 +123,8 @@ var restaurantAPI = new Vue({
     user: '',
     response: '',
     reviews: '',
-    extension: '../'
+    extension: '../',
+    map: null
   },
 
   mounted() {
@@ -132,6 +133,25 @@ var restaurantAPI = new Vue({
   },
 
   methods: {
+    loadMap: function() {
+      console.log('maps: ', google.maps),
+      console.log(document.getElementById('map')),
+      position = {
+                  lat: parseFloat(this.restaurant.details.lat),
+                  lng: parseFloat(this.restaurant.details.lon)
+                }
+      this.map = new google.maps.Map(document.getElementById('map'), {
+          center: position,
+          zoom: 16,
+          mapTypeId: 'roadmap'
+        });
+      marker = new google.maps.Marker({
+          position: position,
+          map: this.map
+        });
+      // google.maps.event.trigger(this.map, "resize")
+    },
+
     loadRestaurant: function(){
       this.$http.get(
         '/api' + window.location.pathname
@@ -150,6 +170,9 @@ var restaurantAPI = new Vue({
       ).then(
           function() {
             this.loadReviews()
+            if (this.restaurant.details && this.restaurant.details.lon) {
+              this.loadMap()
+            }
           }
         )
     },  // loadRestaurant

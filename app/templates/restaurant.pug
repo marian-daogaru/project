@@ -19,6 +19,16 @@ block content
                 h3(v-if="restaurant.aboutMe !== 'None'") ${restaurant.aboutMe}  
               .row 
                 .btn.btn-info(v-on:click="redirectWebsite()") Visit restaurant page
+                div(v-if='restaurant.details')
+                  h5(v-if='restaurant.details.phoneNumber') Phone number: ${restaurant.details.phoneNumber} 
+                  h5(v-if='restaurant.details.address') Address: ${restaurant.details.address}
+                  h5(v-if='restaurant.details.workingHours') Working hours: ${restaurant.details.workingHours}
+                  h5(v-if='restaurant.details.priceRange') Prince range: ${restaurant.details.priceRange}
+                  h5(v-if='restaurant.details.tags' ) Cuisine : 
+                    ul(class='ulInline')
+                      template(v-for='tag in restaurant.details.tags')
+                        li(class='liInline') ${tag}
+                  
           .row
             div.form-group 
               label(for="review") Add a review
@@ -39,7 +49,12 @@ block content
                     p ${review.review}
           .row(v-else)
             h4 No current reviews. 
+        .col-md-4
+          div(v-if='restaurant.details && restaurant.details.lon')
+            div(id='map')
             
 block jsscript 
   script(type="text/javascript" src="{{ url_for('static', filename='js/restaurant.js') }}")
     
+ 
+ 
