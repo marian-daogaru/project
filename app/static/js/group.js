@@ -9,7 +9,8 @@ var groupAPI = new Vue({
     response: null,
     isActive: false,
     ratingValue: 2,
-    response: ''
+    response: '',
+    map: null,
   },
 
   mounted() {
@@ -53,10 +54,13 @@ var groupAPI = new Vue({
           console.log('error')
         }).then( // first then
           function() {
-            if (this.group){
+            if (this.group) {
               if (this.group.id === -1){
                 window.location.href = '/home'
-            }}
+              } else {
+                this.getLocation()
+              }
+            }
           })  // second then
     },  // loadGroup
 
@@ -225,6 +229,46 @@ var groupAPI = new Vue({
           }
         }
       )
+    },  // remove Restaurant
+
+    getLocation: function() {
+      if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(this.generateMap)
+      } else {
+          console.log("Geolocation is not supported by this browser.")
+      }
+    },
+
+    generateMap: function(pozition) {
+      console.log(pozition),
+      pos = {
+                  lat: parseFloat(pozition.coords.latitude),
+                  lng: parseFloat(pozition.coords.longitude)
+                },
+      console.log(pos)
+      this.map = new google.maps.Map(document.getElementById('mapCanvas'), {
+          center: pos,
+          zoom: 12,
+          mapTypeId: 'roadmap'
+        });
+      marker = new google.maps.Marker({
+          position: pos,
+          map: this.map
+        });
+
+      for (var i = 0; i < this.group.restaurants.length; i ++) {
+        if (this.group.restaurants[i].lon) {
+          marker = new google.maps.Marker({
+              position: {
+                lat: this.group.restaurants[i].lat,
+                lng: this.group.restaurants[i].lon
+              },
+              map: this.map
+            });
+        }
+      }
+
+      // google.maps.event.trigger(this.map, "resize")
     }
   }  // methods
 })  //groupAPI

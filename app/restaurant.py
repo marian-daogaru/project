@@ -200,6 +200,7 @@ def restaurantinGroupGet(groupID, restID):
         details.tags = str(details.tags.replace(', ', ',').replace(',', ', '))  # some legacy problems
         restaurant['details'] = row2dict(details)
         print(restaurant['details'])
+        restaurant['details']['tags'] = restaurant['details']['tags'].split(', ')
     return jsonify(restaurant)
 
 @app.route('/api/group/<groupID>/restaurant/<restID>', methods=['PUT'])

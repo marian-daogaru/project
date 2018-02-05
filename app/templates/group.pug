@@ -13,11 +13,11 @@ block content
           strong ${confirmation}  
       div(v-if="group")
         .row
-          .col-lg-9.col-md-9.col-sm-9
+          .col-lg-6.col-md-9.col-sm-12
             .row
-              .col-lg-3.col-sm-6
+              .col-lg-3.col-md-3.col-sm-4
                 img.img-thumbnail.img-responsive(:src="group.mediaPath" width="750" height="auto")
-              .col-lg-2.col-sm-6
+              .col-lg-3.col-md-6.col-sm-8
                 h1 ${group.name}
                 h3(v-if="group.aboutGroup !== 'None'") ${group.aboutGroup}
             .div(v-if='group.inGroup')
@@ -32,7 +32,10 @@ block content
                     p If you want to add multiple people, please separate the emails by comma(,) or whitespace( ). 
                     textarea(v-model='emails' rows="5" cols="30" class='form-control' name='aboutMe')
                     button.btn.btn-primary(v-on:click='addPeople()') Add people 
-          .col-lg-3.col-md-3.col-sm-3
+          .col-lg-3.col-md-6.col-sm-6.col-xm-6
+            .row
+              div(id='mapCanvas')
+          .col-lg-3.col-md-6.col-sm-6.col-xm-6
             .row(v-if='group.suggestedRestaurant')
               h3 Today's suggestion is: 
               div(class="thumbnail groupThumbnail")

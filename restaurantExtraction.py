@@ -94,12 +94,14 @@ def extractDetailsFoodPanda(link):
         tagsStartIndex = webpage.index(searchStartParam) + len(searchStartParam)
         tagsEndIndex = webpage[tagsStartIndex:].index(searchEndParam) + tagsStartIndex
         tags = [tag.split('>')[1] for tag in webpage[tagsStartIndex:tagsEndIndex].split("<")[1::2]]
+        print(tags)
         details['tags'] = tags[1:]
-        details['priceRange'] = rags[0]
+        details['priceRange'] = tags[0]
     except:
+        print("not here")
         details['tags'] = None
-        details['pricerange'] = None
-
+        details['priceRange'] = None
+    print(details)
     # delivery times
     try:
         searchStartParam = '<ul class="vendor-delivery-times">'

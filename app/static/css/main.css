@@ -4,13 +4,22 @@ body {
   padding: 0;
   padding-top: 70px;
   word-wrap: break-word;
+  font-family: 'Gentium Basic', serif;
 }
 html {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-  }
-
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Gentium Basic', serif;
+}
+ul.navbar-left {
+  height: calc(100% - 10px);
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+ul.navbar-nav > li {
+  font-size: 20px;
+}
 .groupThumbnail {
   height: 400px;
   position: relative;
@@ -19,118 +28,110 @@ html {
   -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
   display: block;
-  /* white-space: nowrap; */
+/* white-space: nowrap */
 }
-
 .bottom {
-  position:absolute;
-  bottom:10px;
+  position: absolute;
+  bottom: 10px;
   left: 20px;
 }
-
-/* .glyphicon-cutlery {
-  font-size: 2em;
-} */
-
+/* .glyphicon-cutlery
+  font-size: 2em
+ */
 .glyphicon-remove {
-  color: red;
+  color: #f00;
 }
 .glyphicon-search {
   font-size: 1.45em;
 }
 .ratingDefault {
-  color: black;
+  color: #000;
 }
-
 .ratingClicked {
-  color: yellow;
+  color: #ff0;
 }
-
 .ratingButton {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    outline: none;
-    border: 0;
-    background: transparent;
-    -webkit-box-shadow: 0 5px 15px rgba(0,0,0,0);
-    padding: 5px;
-    font-size: 2em;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  outline: none;
+  border: 0;
+  background: transparent;
+  -webkit-box-shadow: 0 5px 15px rgba(0,0,0,0);
+  padding: 5px;
+  font-size: 2em;
 }
-
-.leftRating{
+.leftRating {
   float: left;
   width: 40%;
 }
-
 .rightRating {
   float: right;
   width: 56%;
 }
-
-.ratingButtonGroup{
+.ratingButtonGroup {
   width: 100%;
   left: 5px;
 }
-
 .navbar-form .input-group-btn,
 .navbar-form .input-group-addon {
-width: auto;
+  width: auto;
 }
-
-
 .ratingCutlery {
   font-size: 2em;
 }
-
 #reviewUserImage {
   height: 125px;
   width: auto;
 }
-
 #reviewThumbnail {
   min-height: 215px;
   width: 100%;
   position: relative;
 }
-
-
 .btn-glyphicon {
-    padding:8px;
-    background:#ffffff;
-    margin-right:4px;
+  padding: 8px;
+  background: #fff;
+  margin-right: 4px;
 }
 .icon-btn {
-    padding: 1px 15px 3px 2px;
-    border-radius:50px;
+  padding: 1px 15px 3px 2px;
+  border-radius: 50px;
 }
-
+#mapCanvas {
+  height: 350px;
+  width: 100%;
+  overflow: auto;
+  position: fixed;
+  display: block;
+  z-index: 10;
+}
 #map {
-    height: 350px;
-    width: 350px;
-    overflow: auto;
-    position: fixed;
-    display: block;
-    z-index: 10;
-  }
+  height: 350px;
+  width: 350px;
+  overflow: auto;
+  position: fixed;
+  display: block;
+  z-index: 10;
+}
 .liInline {
-    float: left;
-    min-width: auto;
-    text-decoration: none;
-    list-style-type: none;
-    padding-right: 10px;
+  float: left;
+  min-width: auto;
+  text-decoration: none;
+  list-style-type: none;
+  padding-right: 10px;
 }
 .liInline:after {
-  content: ', '
+  content: ', ';
 }
 .liInline:last-child:after {
   content: "";
 }
 .ulInline {
-  /* float: left;
-    margin: 0;
-    padding: 0; */
-    display: inline-block;
+/* float: left
+    margin: 0
+    padding: 0 */
+  display: inline-block;
   vertical-align: top;
   padding-left: 0;
 }

@@ -13,7 +13,7 @@ SECRET_KEY = 'hello'
 SEND_FILE_MAX_AGE_DEFAULT = 0
 
 # SQL ALCHEMY MySQL path
-SQLALCHEMY_DATABASE_URI = 'mysql://root:root@localhost:3306/projectDB'
+SQLALCHEMY_DATABASE_URI = 'mysql://root:root@localhost:3306/projectDB?charset=utf8'
 
 # PATHS
 GROUPPATH = '../static/data/media/avatars/groups/'

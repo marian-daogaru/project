@@ -2,6 +2,7 @@ var gulp = require('gulp');
 var pug = require('gulp-pug');
 var watch = require('gulp-watch');
 var livereload = require('gulp-livereload');
+var stylus = require('gulp-stylus');
 
 gulp.task('html', function(){
   return gulp.src('app/templates/*pug')
@@ -10,9 +11,16 @@ gulp.task('html', function(){
   // .pipe(livereload());
 });
 
+gulp.task('css', function(){
+  return gulp.src('app/static/css/*styl')
+  .pipe(stylus())
+  .pipe(gulp.dest('app/static/css/'));
+  // .pipe(livereload());
+});
 
 gulp.task('watch', function() {
   gulp.watch('app/templates/*.pug', gulp.series('html'));
+  gulp.watch('app/static/css/*.styl', gulp.series('css'));
 });
 
 

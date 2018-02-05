@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link href="https://fonts.googleapis.com/css?family=Nova+Slim" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Gentium+Basic:400,700" rel="stylesheet">
     <script src="https://www.google.com/recaptcha/api.js?render=explicit" async defer></script>
   </head>
   <body>
@@ -18,7 +20,7 @@
                 <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false"><span class="sr-only">Toggle Navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="{{ url_for('home') }}"><img alt="brand" v-bind:src="brandLocation" height="30px" width="auto"></a>
               </div>
               <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
+                <ul class="nav navbar-nav navbar-left">
                   <li><a href="{{ url_for('home') }}">Home</a></li>
                   <li v-if="User.id !== '-1'"><a :href="/user/+User.id">Your Profile </a></li>
                   <li v-else><a href="{{ url_for('login') }}">Login </a></li>
@@ -69,11 +71,11 @@
                   <div class="row"> 
                     <div class="btn btn-info" v-on:click="redirectWebsite()">Visit restaurant page</div>
                     <div v-if="restaurant.details">
-                      <h5 v-if="restaurant.details.phoneNumber">Phone number: ${restaurant.details.phoneNumber} </h5>
-                      <h5 v-if="restaurant.details.address">Address: ${restaurant.details.address}</h5>
-                      <h5 v-if="restaurant.details.workingHours">Working hours: ${restaurant.details.workingHours}</h5>
-                      <h5 v-if="restaurant.details.priceRange">Prince range: ${restaurant.details.priceRange}</h5>
-                      <h5 v-if="restaurant.details.tags">Cuisine : 
+                      <h5 v-if="restaurant.details.phoneNumber &amp;&amp; restaurant.details.phoneNumber !== &quot;None&quot;">Phone number: ${restaurant.details.phoneNumber} </h5>
+                      <h5 v-if="restaurant.details.address &amp;&amp; restaurant.details.address !== &quot;None&quot;">Address: ${restaurant.details.address}</h5>
+                      <h5 v-if="restaurant.details.workingHours &amp;&amp; restaurant.details.workingHours !== &quot;None&quot;">Working hours: ${restaurant.details.workingHours}</h5>
+                      <h5 v-if="restaurant.details.priceRange &amp;&amp; restaurant.details.priceRange !== &quot;None&quot;">Prince range: ${restaurant.details.priceRange}</h5>
+                      <h5 v-if="restaurant.details.tags &amp;&amp; restaurant.details.tags !== &quot;None&quot;">Cuisine : 
                         <ul class="ulInline">
                           <template v-for="tag in restaurant.details.tags">
                             <li class="liInline">${tag}</li>
@@ -114,7 +116,7 @@
                 </div>
               </div>
               <div class="col-md-4">
-                <div v-if="restaurant.details &amp;&amp; restaurant.details.lon">
+                <div v-if="restaurant.details &amp;&amp; restaurant.details.lon &amp;&amp; restaurant.details.lon !== &quot;None&quot;">
                   <div id="map"></div>
                 </div>
               </div>

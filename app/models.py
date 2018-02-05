@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from hashlib import md5
 from app import db, app
 from sqlalchemy import and_
@@ -292,10 +293,10 @@ class Restaurant(db.Model):
 
     @staticmethod
     def addToDatabase(name, url, mediaPath, details):
-        media = Media(mediaPath = mediaPath)
+        media = Media(mediaPath = re.sub(r'[^\x00-\x7f]',r'', mediaPath))
         db.session.add(media)
         db.session.commit()
-        restaurant = Restaurant(name = name,
+        restaurant = Restaurant(name = re.sub(r'[^\x00-\x7f]',r'', name),
                                 website = url,
                                 Media_id = media.id)
         db.session.add(restaurant)

@@ -5,7 +5,7 @@ from app import app, db, lm
 from config import GROUPPATH, basedir
 from flask import render_template, session, request, g, jsonify
 from flask_login import login_user, logout_user, current_user, login_required
-from .models import Group, Media, User, UsersInGroups, RestaurantsInGroups, Restaurant, PendingUsersInGroups
+from .models import Group, Media, User, UsersInGroups, RestaurantsInGroups, Restaurant, PendingUsersInGroups, RestaurantDetails
 from .forms import GroupCreateForm,  EditGroupForm, PeopleGroupForm
 from werkzeug.utils import secure_filename
 
@@ -84,10 +84,10 @@ def createGroupPost():
 
     return jsonify({'created': False,
                     'errors': form.errors})
+
 # ##############################################################################
 # GROUP MANAGEMENT
 # ##############################################################################
-
 @app.route('/group/<id>')
 @login_required
 def group(id):
@@ -132,6 +132,10 @@ def groupApiGet(id):
         restaurant['mediaPath'] = mediaPath
         restaurant['rating'] = rating
         restaurant['userRating'] = userRating
+        details = RestaurantDetails.query.filter_by(Restaurant_id = restaurant['id']).first()
+        if details is not None:
+            restaurant['lon'] = details.lon
+            restaurant['lat'] = details.lat
         group['restaurants'].append(restaurant)
     # todays recommendation
     if suggested is not None:

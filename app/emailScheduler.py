@@ -91,5 +91,5 @@ class RecommendationEmailManager(object):
         for user in users:
             self.sendEmailUser(user, server)
         server.quit()
-        print('done sending email @ {}'.format(time.time()))
+        # print('done sending email @ {}'.format(time.time()))
         self.Suggestor.resetTraffic()
