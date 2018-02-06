@@ -1,0 +1,30 @@
+.jumbotron {
+  box-shadow: 0 8px 16px -6px #000;
+  background-color: #f3f3f3;
+}
+.lead {
+  float: right;
+}
+.reviewThumbnail {
+  min-height: 215px;
+  width: 100%;
+  position: relative;
+}
+.reviewUserImage {
+  height: 125px;
+  width: auto;
+}
+.groupThumbnail {
+  height: 400px;
+  position: relative;
+}
+.caption {
+  color: #f00;
+}
+.bottom {
+  position: absolute;
+  bottom: 10px;
+  left: 20px;
+}
+/* .glyphicon-cutlery
+  font-size: 2em */

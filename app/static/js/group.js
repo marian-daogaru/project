@@ -251,9 +251,16 @@ var groupAPI = new Vue({
           zoom: 12,
           mapTypeId: 'roadmap'
         });
+
+      this.icon = {
+        url:'http://maps.google.com/mapfiles/kml/paddle/blu-circle.png', // url
+        scaledSize: new google.maps.Size(35, 35)
+      },
+
       marker = new google.maps.Marker({
           position: pos,
-          map: this.map
+          map: this.map,
+          icon: this.icon
         });
 
       for (var i = 0; i < this.group.restaurants.length; i ++) {

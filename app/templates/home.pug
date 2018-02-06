@@ -1,11 +1,16 @@
 extends base.pug 
 
+block cssscript 
+  link(rel="stylesheet", href="{{ url_for('static', filename='css/home.css') }}")
+  
+
 block content
   .container
-    .div
-      h1 Welcome to this site. Here are some new stuff that happened. 
+    .div(class='jumbotron')
+      h1(class="display-3") Welcome to Rodica 2. 
+        p(class='lead') This project helps the undecided decide. Thanks for coming about. 
       
-    .div(id='home')
+    .div(id='home') 
       .div(v-if='latestRestaurants')
         .col-lg-6.col-md-6.col-sm-6.col-xs-12 
           template(v-for='restaurant in latestRestaurants')
@@ -19,10 +24,10 @@ block content
                     p Added on: ${restaurant.joinDate}
         .col-lg-6.col-md-6.col-sm-6.col-xs-12 
           template(v-for='review in latestReviews')
-            div(class='thumbnail' id='reviewThumbnail')
+            div(class='thumbnail reviewThumbnail')
               a(v-bind:href="'/restaurant/' + review.restaurant.id")
                 .col-md-3.col-sm-3.col-xs-3
-                  img.img-responsive.img-thumbnail(v-bind:src="review.mediaPath" id='reviewUserImage')                    
+                  img.img-responsive.img-thumbnail(v-bind:src="review.mediaPath" class='reviewUserImage')                    
                   h4(v-if='review.rating !== "-1"') ${review.rating} #[i(class="glyphicon glyphicon-cutlery")]
                   h4(v-else) Not yet rated!
                   p ${review.date}

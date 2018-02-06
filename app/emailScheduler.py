@@ -79,7 +79,7 @@ class RecommendationEmailManager(object):
         # this should be put onto a multy threading instance so it will not
         # just hog when thousands of users are present...
         # server.sendmail(msg['From'], msg['To'], msg.as_string())
-
+        #
         # print("!!!", user.email, time.time(), time.strftime("%c"))
 
     def sendAll(self):
