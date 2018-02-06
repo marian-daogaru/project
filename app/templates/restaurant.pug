@@ -29,7 +29,7 @@ block content
                       template(v-for='tag in restaurant.details.tags')
                         li(class='liInline') ${tag}
                   
-          .row
+          .row(v-if='user.id !== "-1"')
             div.form-group 
               label(for="review") Add a review
                 textarea(v-model='userReview' rows='5' cols='100' placeholder='What have you thought about this place? ...' class='form-control' name='review')

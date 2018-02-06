@@ -30,7 +30,7 @@
                   <li v-else><a href="{{ url_for('signup') }}">Signup </a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                  <li v-if="User.id !== '-1'">
+                  <li>
                     <div class="navbar-form navbar-left navbar-input-group">
                       <div class="form-group">
                         <input class="form-control" v-model="restaurantName" v-on:keypress.enter="searchRestaurantRedirect()" type="text" placeholder="Search existing restaurant" name="search">
@@ -51,20 +51,21 @@
 {% endwith %}
       </div>
       <div>
-        <div class="container">
-          <div class="div jumbotron">
-            <h1 class="display-3">Welcome to Rodica 2. 
+        <container>
+          <div class="jumbotron">
+            <h1 class="display-3">Welcome to NAMEHERE 
               <p class="lead">This project helps the undecided decide. Thanks for coming about. </p>
             </h1>
           </div>
           <div class="div" id="home"> 
             <div class="div" v-if="latestRestaurants">
-              <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12"> 
+              <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <h2>Newest restaurants added </h2>
                 <template v-for="restaurant in latestRestaurants">
                   <div class="thumbnail groupThumbnail"><a v-bind:href="'/restaurant/' + restaurant.id">
-                      <div><img class="img-responsive img-thumbnail" v-bind:src="restaurant.mediaPath" height="300" width="auto">
+                      <div><img class="img-responsive img-thumbnail restaurantImage" v-bind:src="restaurant.mediaPath">
                         <div class="caption">
-                          <h4>${restaurant.name}</h4>
+                          <h3>${restaurant.name}</h3>
                           <p v-if="restaurant.aboutMe !== 'None'">${restaurant.aboutMe}</p>
                           <p>Added on: ${restaurant.joinDate}</p>
                         </div>
@@ -72,26 +73,29 @@
                 </template>
               </div>
               <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12"> 
+                <h2>Newest user reviews </h2>
                 <template v-for="review in latestReviews">
                   <div class="thumbnail reviewThumbnail"><a v-bind:href="'/restaurant/' + review.restaurant.id">
-                      <div class="col-md-3 col-sm-3 col-xs-3"><img class="img-responsive img-thumbnail reviewUserImage" v-bind:src="review.mediaPath">
-                        <h4 v-if="review.rating !== &quot;-1&quot;">${review.rating} <i class="glyphicon glyphicon-cutlery"></i></h4>
-                        <h4 v-else>Not yet rated!</h4>
-                        <p>${review.date}</p>
-                      </div>
-                      <div class="col-md-9 col-sm-9 col-xs-9"> 
-                        <div class="row"> 
-                          <h3><strong>${review.nickname}</strong> from <strong>${review.restaurant.name}</strong></h3>
+                      <div>
+                        <div class="col-md-3 col-sm-3 col-xs-3"><img class="img-responsive img-thumbnail commentImage" v-bind:src="review.mediaPath">
+                          <h4 v-if="review.rating !== &quot;-1&quot;">${review.rating} <i class="glyphicon glyphicon-cutlery"></i></h4>
+                          <h4 v-else>Not yet rated!</h4>
+                          <p>${review.date}</p>
                         </div>
-                        <div class="row"> 
-                          <p>${review.comment}</p>
+                        <div class="col-md-9 col-sm-9 col-xs-9"> 
+                          <div class="row"> 
+                            <h3><strong>${review.nickname}</strong> commented on <strong>${review.restaurant.name}</strong></h3>
+                          </div>
+                          <div class="row"> 
+                            <p class="comment">${review.comment}</p>
+                          </div>
                         </div>
                       </div></a></div>
                 </template>
               </div>
             </div>
           </div>
-        </div>
+        </container>
       </div>
     </div>
     <script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>

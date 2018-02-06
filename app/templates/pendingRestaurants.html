@@ -29,7 +29,7 @@
                   <li v-else><a href="{{ url_for('signup') }}">Signup </a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                  <li v-if="User.id !== '-1'">
+                  <li>
                     <div class="navbar-form navbar-left navbar-input-group">
                       <div class="form-group">
                         <input class="form-control" v-model="restaurantName" v-on:keypress.enter="searchRestaurantRedirect()" type="text" placeholder="Search existing restaurant" name="search">

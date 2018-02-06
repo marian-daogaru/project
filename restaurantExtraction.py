@@ -376,6 +376,7 @@ def extractDetailsTripAdvisor(link):
 # ##############################################################################
 def captureImage(link, imageName):
     imagePath = os.path.join(basedir + '/app/', imageName[3:])
+    print(link, imagePath, "$%^")
     driver = webdriver.PhantomJS()
     driver.set_window_size(1024, 768)
     driver.get(link)

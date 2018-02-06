@@ -61,12 +61,10 @@ def addRestaurantGetRestaurantSearch(id, name):
 # GENERAL SEARCH
 # ##############################################################################
 @app.route('/restaurant/search/<name>')
-@login_required
 def searchRestaurant(name):
     return render_template('searchRestaurant.html')
 
 @app.route('/api/restaurant/search/<name>', methods=['GET'])
-@login_required
 def searchRestaurantGet(name):
     if len(name) > 0:
         restaurants = Restaurant.advancedSearchName(name)
@@ -97,7 +95,6 @@ def addRestaurantPost(id):
 
     if form.validate():
         restaurantBasic, details = extractRestaurant(form.url)
-        print(restaurant)
         restaurant = Restaurant.query.filter_by(website = form.url).first()
         print(restaurant)
         if restaurant is None:
@@ -147,12 +144,10 @@ def addRestaurantPut(id, ids):
 # RESTAURANT PROFILE
 # ##############################################################################
 @app.route('/restaurant/<id>')
-@login_required
 def restaurant(id):
     return render_template('restaurant.html')
 
 @app.route('/api/restaurant/<id>', methods=['GET'])
-@login_required
 def restaurantGet(id):
     restaurant = Restaurant.query.filter_by(id = id).first()
     if restaurant is None:
@@ -221,11 +216,10 @@ def restaurantinGroupPut(groupID, restID):
 # RESTAURANT REVIEW GENERAL
 # ##############################################################################
 @app.route('/api/restaurant/<id>/reviews', methods=['GET'])
-@login_required
 def restaurantReviewGeneralGet(id):
-    print("HELLO")
     restaurant = Restaurant.query.filter_by(id = id).first()
     if restaurant is None:
+        print("!!!!!!!!!!!!")
         return jsonify({'notFound': True})
     reviews = restaurant.getReviewsGeneral()
     return jsonify(reviews)

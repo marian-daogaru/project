@@ -4,7 +4,9 @@ body
   padding: 0
   padding-top: 70px
   word-wrap: break-word
+  text-overflow: ellipsis;
   font-family: 'Gentium Basic', serif
+  background-color: #A7D2CB
 
 html
   height: 100%
@@ -20,3 +22,47 @@ ul.navbar-left
 
 ul.navbar-nav > li
   font-size: 20px
+
+.navbar-default.navbar.navbar-fixed-top.container
+  width: 100%
+  padding: 0
+  border: 0
+
+.container-fluid
+  background-color: #A7D2CB
+  padding: 0 5%
+
+.btn.btn-primary
+  background-image: linear-gradient(to bottom,#c98474 0,#c98474 100%)
+  border-color: #c98474
+  color: black
+  font-weight: 500
+  background-color: #c98474
+
+
+.btn
+  margin: 2px 3px
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1)
+  border-radius: 5px
+  -webkit-transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1)
+  transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1)
+
+
+.btn::after
+  position: absolute
+  z-index: -1
+  top: 0
+  left: 0
+  width: 100%
+  height: 100%
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3)
+  opacity: 0
+  -webkit-transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1)
+  transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1)
+
+.btn:hover
+  -webkit-transform: scale(1.25, 1.25)
+  transform: scale(1.25, 1.25)
+
+.btn:hover::after
+  opacity: 1
