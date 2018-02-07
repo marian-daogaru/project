@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}">
     <link href="https://fonts.googleapis.com/css?family=Nova+Slim" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Gentium+Basic:400,700" rel="stylesheet">
     <script src="https://www.google.com/recaptcha/api.js?render=explicit" async defer></script>
@@ -17,16 +18,16 @@
           <nav class="navbar navbar-default navbar-fixed-top container">
             <div class="container-fluid">
               <div class="navbar-header">
-                <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false"><span class="sr-only">Toggle Navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="{{ url_for('home') }}"><img alt="brand" v-bind:src="brandLocation" height="30px" width="auto"></a>
+                <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false"><span class="sr-only">Toggle Navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="a-special navbar-brand" href="{{ url_for('home') }}"><img alt="brand" v-bind:src="brandLocation" height="30px" width="auto"></a>
               </div>
               <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-left">
-                  <li><a href="{{ url_for('home') }}">Home</a></li>
-                  <li v-if="User.id !== '-1'"><a :href="/user/+User.id">Your Profile </a></li>
-                  <li v-else><a href="{{ url_for('login') }}">Login </a></li>
-                  <li v-if="User.id !== '-1'"><a :href="'/user/' + User.id + '/groups'">Your Groups </a></li>
-                  <li v-if="User.id !== '-1'"><a href="{{ url_for('logout') }}">Logout </a></li>
-                  <li v-else><a href="{{ url_for('signup') }}">Signup </a></li>
+                  <li><a class="a-special" href="{{ url_for('home') }}">Home</a></li>
+                  <li v-if="User.id !== '-1'"><a class="a-special" :href="/user/+User.id">Your Profile </a></li>
+                  <li v-else><a class="a-special" href="{{ url_for('login') }}">Login </a></li>
+                  <li v-if="User.id !== '-1'"><a class="a-special" :href="'/user/' + User.id + '/groups'">Your Groups </a></li>
+                  <li v-if="User.id !== '-1'"><a class="a-special" href="{{ url_for('logout') }}">Logout </a></li>
+                  <li v-else><a class="a-special" href="{{ url_for('signup') }}">Signup </a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                   <li>
@@ -34,7 +35,7 @@
                       <div class="form-group">
                         <input class="form-control" v-model="restaurantName" v-on:keypress.enter="searchRestaurantRedirect()" type="text" placeholder="Search existing restaurant" name="search">
                       </div>
-                      <div class="btn btn-default" v-on:click="searchRestaurantRedirect()"><i class="glyphicon glyphicon-search">  </i></div>
+                      <div class="btn btn-default btn-special" v-on:click="searchRestaurantRedirect()"><i class="glyphicon glyphicon-search">  </i></div>
                     </div>
                   </li>
                 </ul>
@@ -55,13 +56,16 @@
             <div class="container">
               <h1>Hello ${userLocal.nickname}</h1>
               <div class="div" v-if="user.id !== userLocal.id">
-                <h3>Your are current viewing the profile of <strong>${user.nickname}</strong></h3>
+                <h3>Your are current viewing the profile of 
+                  <h3><strong>${user.nickname}</strong></h3>
+                </h3>
               </div>
               <div class="row"> 
-                <div class="col-lg-3 col-sm-6"><img class="img-responsive img-thumbnail" :src="user.avatar.mediaPath" width="200" height="auto"></div>
-                <div class="col-lg-3 col-sm-6">
-                  <div class="row"><strong>About: </strong>
-                    <div class="p">${user.aboutMe}</div>
+                <div class="col-lg-3 col-md-4 col-sm-6"><img class="img-responsive img-thumbnail img-profile" :src="user.avatar.mediaPath"></div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                  <div class="row">
+                    <h3><strong>About:</strong> </h3>
+                    <p>${user.aboutMe}</p>
                   </div>
                   <div class="row" v-if="user.id === userLocal.id">
                     <div class="btn btn-primary" v-on:click="redirectEdit()">Edit your profile </div>
@@ -73,13 +77,12 @@
                 <div class="col">
                   <div class="groups">
                     <h3>Groups you are admin of: </h3>
-                    <div class="row"></div>
                     <template v-for="group in user.Group">
-                      <div class="col-sm-4 col-md-3 col-xs-6"><a v-bind:href="/group/ + group.id">
-                          <div class="thumbnail groupThumbnail"><img class="img-responsive img-thumbnail" v-bind:src="group.Media.mediaPath" width="200" height="auto">
+                      <div class="col-sm-4 col-md-3 col-xs-6 group-post"><a v-bind:href="/group/ + group.id">
+                          <div class="thumbnail group-thumbnail"><img class="img-responsive img-thumbnail img-group" v-bind:src="group.Media.mediaPath">
                             <div class="caption">
                               <h4>${group.name}</h4>
-                              <p v-if="group.aboutGroup !== 'None'">${group.aboutGroup}</p>
+                              <p class="about-group" v-if="group.aboutGroup !== 'None'">${group.aboutGroup}</p>
                             </div>
                           </div></a></div>
                     </template>

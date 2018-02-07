@@ -75,6 +75,7 @@ def loginApiPost():
         login_user(user, remember=form.rememberMe)
         user.unlock()
         return jsonify({'id': user.id}), 201
+        
     return jsonify(form.response), 201
 
 @app.route('/api/login', methods=['GET'])

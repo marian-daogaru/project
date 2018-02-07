@@ -38,6 +38,7 @@ class LoginForm(object):
         self.email = newDict['email']
         self.password = newDict['password']
         self.rememberMe = newDict['rememberMe']
+        self.logAtmp = inputDict['loginAttempts']
 
     def validate(self):
         """email check for @ is done by bootstrap.
@@ -50,9 +51,11 @@ class LoginForm(object):
             return False
         user = User.query.filter_by(email = self.email).first()
         if not bool(validateEmail(self.email)):
+            self.response['loginAttempts'] = self.logAtmp + 1
             self.response['errors'].append('Invalid username / password.')
             return False
         if user is None:
+            self.response['loginAttempts'] = self.logAtmp + 1
             self.response['errors'].append("Invalid username / password.")
             print("galben")
             return False

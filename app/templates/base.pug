@@ -24,28 +24,28 @@ html
                   span.icon-bar
                   span.icon-bar
                   span.icon-bar
-                a(class='navbar-brand' href="{{ url_for('home') }}")
+                a.a-special(class='navbar-brand' href="{{ url_for('home') }}")
                   img(alt='brand' v-bind:src='brandLocation' height="30px" width="auto")
               div(class="collapse navbar-collapse" id="bs-example-navbar-collapse-1")
                 ul(class="nav navbar-nav navbar-left")
                   li
-                    a(href="{{ url_for('home') }}") Home
+                    a.a-special(href="{{ url_for('home') }}") Home
                   li(v-if="User.id !== '-1'")
-                    a(:href="/user/+User.id") Your Profile 
+                    a.a-special(:href="/user/+User.id") Your Profile 
                   li(v-else)
-                    a(href="{{ url_for('login') }}") Login 
+                    a.a-special(href="{{ url_for('login') }}") Login 
                   li(v-if="User.id !== '-1'")
-                    a(:href="'/user/' + User.id + '/groups'") Your Groups 
+                    a.a-special(:href="'/user/' + User.id + '/groups'") Your Groups 
                   li(v-if="User.id !== '-1'")
-                    a(href="{{ url_for('logout') }}") Logout 
+                    a.a-special(href="{{ url_for('logout') }}") Logout 
                   li(v-else)
-                    a(href="{{ url_for('signup') }}") Signup 
+                    a.a-special(href="{{ url_for('signup') }}") Signup 
                 ul(class="nav navbar-nav navbar-right")
                   li
                     div(class="navbar-form navbar-left navbar-input-group")
                       div(class="form-group")
                         input(v-model='restaurantName' v-on:keypress.enter="searchRestaurantRedirect()" type="text" class="form-control" placeholder="Search existing restaurant" name="search")
-                      .btn.btn-default(v-on:click="searchRestaurantRedirect()")
+                      .btn.btn-default.btn-special(v-on:click="searchRestaurantRedirect()")
                         i(class="glyphicon glyphicon-search")   
           
         | #{'{% with messages = get_flashed_messages() %} '}

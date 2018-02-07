@@ -1,5 +1,9 @@
 extends base.pug 
 
+block cssscript 
+  link(rel="stylesheet", href="{{ url_for('static', filename='css/login.css') }}")
+
+
 block content
   .main.container
     h1 Sign up

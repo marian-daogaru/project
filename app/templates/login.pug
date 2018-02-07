@@ -1,5 +1,8 @@
 extends base.pug 
 
+block cssscript 
+  link(rel="stylesheet", href="{{ url_for('static', filename='css/login.css') }}")
+
 block content
   .main.container
     h1 Login
@@ -19,16 +22,15 @@ block content
           div.form-check 
             label(class="form-check-label" for="checkbox") Remember me: 
               input(v-model="rememberMe" type="checkbox" class="form-check-input" name="rememberMe")
-          button.btn.btn-primary(v-on:click="login()") Login 
+          .btn.btn-primary(v-on:click="login()") 
+            span Login 
           
         div 
           div  
-            .btn.btn-primary(class='icon-btn' v-on:click="redirectSignUp()") 
-              i(class='btn-glyphicon glyphicon glyphicon-plus img-circle text-success') 
+            .btn.btn-primary(v-on:click="redirectSignUp()") 
               span Sign up!
           div 
-            .btn.btn-primary(class='icon-btn' v-on:click="resetPassword()") 
-              i(class='btn-glyphicon glyphicon glyphicon-lock img-circle text-success') 
+            .btn.btn-primary(v-on:click="resetPassword()") 
               span Reset Password! 
         //- div #{'{{ recaptcha }}'} 
         div(v-show='user.loginAttempts >= 3' id="recaptchaDIV" class="g-recaptcha" :data-sitekey="secretKey")

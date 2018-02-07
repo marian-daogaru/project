@@ -1,0 +1,45 @@
+.img-thumbnail {
+  margin: 0;
+  padding: 0;
+}
+.img-profile {
+  max-width: 300px;
+  max-height: 250px;
+  background-color: #e9e9e9;
+  border: 0;
+  box-shadow: 5px 5px 25px -3px #000;
+}
+.img-group {
+  height: 100%;
+  max-height: 200px;
+  background: #e9e9e9;
+  border: 0;
+  box-shadow: 5px 5px 25px -3px #000;
+}
+p {
+  font-size: 1.2em;
+}
+.group-thumbnail {
+  position: relative;
+  background: #e9e9e9;
+  min-height: 300px;
+  height: 100%;
+  max-height: 500px;
+}
+h4 {
+  font-weight: 700;
+}
+p.about-group {
+  height: 100%;
+  max-height: calc(100% - 100px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 10;
+  -webkit-box-orient: vertical;
+}
+.group-post {
+  display: block;
+  position: relative;
+  float: inline-start;
+}

@@ -3,14 +3,15 @@ extends base.pug
 block content
   .main.container
     div(id='confirmAPI')
-      h3(v-if='response.logged') You are already logged into another account. Please logout to activate the new account. 
-      h2(v-else-if="response.confirmation") Your account has been confirmed succesfully. Please login. 
-        div 
-          .btn.btn-primary(v-on:click='loginRedirect()') Login
-      h2(v-else-if="response.expired") Your confirmation email has expired. Please reuse the SignUp form. 
-      h2(v-else-if="response.alreadyConfirmed") This email address has been already confirmed. Please login! 
-        div 
-          .btn.btn-primary(v-on:click='loginRedirect()') Login
+      h1 Confirm your email
+        h2(v-if='response.logged') You are already logged into another account. Please logout to activate the new account. 
+        h2(v-else-if="response.confirmation") Your account has been confirmed succesfully. Please login. 
+          div 
+            .btn.btn-primary(v-on:click='loginRedirect()') Login
+        h2(v-else-if="response.expired") Your confirmation email has expired. Please reuse the SignUp form. 
+        h2(v-else-if="response.alreadyConfirmed") This email address has been already confirmed. Please login! 
+          div 
+            .btn.btn-primary(v-on:click='loginRedirect()') Login
 block jsscript 
   script(type="text/javascript" src="{{ url_for('static', filename='js/login.js') }}")
       

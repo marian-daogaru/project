@@ -1,0 +1,11 @@
+label {
+  font-size: 2em;
+  font-weight: 550;
+}
+.form-control {
+  width: 300px;
+}
+.form-check-input {
+  width: 15px;
+  height: 15px;
+}
