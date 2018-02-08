@@ -71,7 +71,7 @@
                       <h3 v-if="group.aboutGroup !== 'None'">${group.aboutGroup}</h3>
                     </div>
                   </div>
-                  <div class="div" v-if="group.inGroup">
+                  <div v-if="group.inGroup">
                     <div class="row">
                       <div class="btn btn-danger" v-if="group.inGroup" v-on:click="leaveGroupAlert()">Leave Group</div>
                       <div class="btn btn-primary" v-if="group.inGroup" v-on:click="addRestaurantRedirect()">Add another restaurant</div>
@@ -80,7 +80,8 @@
                     </div>
                     <div class="row">
                       <div class="form-group"> 
-                        <label for="emails">Add new People to the group:
+                        <label for="emails"> 
+                          <h3>Add new People to the group:</h3>
                           <p>If you want to add multiple people, please separate the emails by comma(,) or whitespace( ). </p>
                           <textarea class="form-control" v-model="emails" rows="5" cols="30" name="aboutMe"></textarea>
                           <button class="btn btn-primary" v-on:click="addPeople()">Add people </button>
@@ -89,39 +90,40 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="col-lg-4 col-md-4 col-sm-6">
                   <div class="row" v-if="group.suggestedRestaurant">
                     <h3>Today's suggestion: </h3>
-                    <div class="thumbnail groupThumbnail"><a v-bind:href="/group/ + group.id + /restaurant/ + group.suggestedRestaurant.id">
-                        <div><img class="img-responsive img-thumbnail" v-bind:src="group.suggestedRestaurant.mediaPath" height="400" width="auto">
+                    <div class="thumbnail restaurant-thumbnail suggested"><a v-bind:href="/group/ + group.id + /restaurant/ + group.suggestedRestaurant.id">
+                        <div><img class="img-responsive img-thumbnail img-restaurant" v-bind:src="group.suggestedRestaurant.mediaPath">
                           <div class="caption">
-                            <h4>${group.suggestedRestaurant.name}</h4>
-                            <h5 v-if="group.suggestedRestaurant.rating !== -1">${group.suggestedRestaurant.rating} <i class="glyphicon glyphicon-cutlery"></i></h5>
-                            <h5 v-else>Not yet rated</h5>
+                            <h3>${group.suggestedRestaurant.name}</h3>
+                            <h4 v-if="group.suggestedRestaurant.rating !== -1">${group.suggestedRestaurant.rating} <i class="glyphicon glyphicon-cutlery"></i></h4>
+                            <h4 v-else>Not yet rated</h4>
                           </div>
                         </div></a></div>
                   </div>
                 </div>
-                <div class="row">
+              </div>
+              <div class="row">
+                <div class="restaurants">
                   <div class="col-md-4 col-sm-4 col-xs-6">
                     <div id="mapCanvas"></div>
                   </div>
                   <template v-for="restaurant in group.restaurants">
-                    <div class="col-md-4 col-sm-4 col-xs-6" v-if="restaurant.rating !== 0">
-                      <div class="thumbnail groupThumbnail"><a v-bind:href="/group/ + group.id + /restaurant/ + restaurant.id">
-                          <div><img class="img-responsive img-thumbnail" v-bind:src="restaurant.mediaPath" height="300" width="auto">
+                    <div class="col-md-4 col-sm-6 col-xs-6 restaurant-post" v-if="restaurant.rating !== 0">
+                      <div class="thumbnail restaurant-thumbnail">
+                        <div class="pull-top"><a v-bind:href="/group/ + group.id + /restaurant/ + restaurant.id"><img class="img-responsive img-thumbnail img-restaurant" v-bind:src="restaurant.mediaPath">
                             <div class="caption">
                               <h4>${restaurant.name}</h4>
                               <h5 v-if="restaurant.rating !== -1">${restaurant.rating} <i class="glyphicon glyphicon-cutlery"></i></h5>
                               <h5 v-else>Not yet rated</h5>
                               <p v-if="restaurant.aboutMe !== 'None'">${restaurant.aboutMe}</p>
-                            </div>
-                          </div></a>
-                        <div class="bottom input-group ratingButtonGroup">
-                          <div class="leftRating" v-if="group.isAdmin">
+                            </div></a></div>
+                        <div class="pull-bottom input-group ratingButtonGroup">
+                          <div class="left-rating" v-if="group.isAdmin">
                             <div class="btn btn-default ratingButton" v-on:click="removeRestaurant(restaurant)"><i class="glyphicon glyphicon-remove"></i></div>
                           </div>
-                          <div class="rightRating">
+                          <div class="right-rating">
                             <template v-for="i in 5">
                               <div class="btn btn-default ratingButton" v-on:click="giveRating(restaurant, i)"><i class="glyphicon glyphicon-cutlery ratingDefault" v-bind:class="{ ratingClicked: restaurant.userRating &gt;= i }" :id="restaurant.id + &quot;,&quot; + i"></i></div>
                             </template>
