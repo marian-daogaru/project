@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/userGroups.css') }}">
     <link href="https://fonts.googleapis.com/css?family=Nova+Slim" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Gentium+Basic:400,700" rel="stylesheet">
     <script src="https://www.google.com/recaptcha/api.js?render=explicit" async defer></script>
@@ -34,7 +35,7 @@
                       <div class="form-group">
                         <input class="form-control" v-model="restaurantName" v-on:keypress.enter="searchRestaurantRedirect()" type="text" placeholder="Search existing restaurant" name="search">
                       </div>
-                      <div class="btn btn-default btn-special" v-on:click="searchRestaurantRedirect()"><i class="glyphicon glyphicon-search">  </i></div>
+                      <button class="btn-special" v-on:click="searchRestaurantRedirect()"><i class="glyphicon glyphicon-search">  </i></button>
                     </div>
                   </li>
                 </ul>
@@ -61,17 +62,16 @@
                 <h1>Hello ${user.nickname}</h1>
               </div>
               <div class="row">
-                <div class="col">
+                <h3 v-if="userLocal">Groups of ${user.nickname}</h3>
+                <h3 v-else>Your groups</h3>
+                <div class="row">
                   <div class="groups">
-                    <h3 v-if="userLocal">Groups of ${user.nickname}</h3>
-                    <h3 v-else>Your groups</h3>
-                    <div class="row"></div>
                     <template v-for="group in groups">
-                      <div class="col-sm-4 col-md-3 col-xs-6"><a v-bind:href="/group/ + group.id">
-                          <div class="thumbnail groupThumbnail"><img class="img-responsive img-thumbnail" v-bind:src="'../' + group.mediaPath" width="200" height="auto">
+                      <div class="col-sm-4 col-md-3 col-xs-6 group-post"><a v-bind:href="/group/ + group.id">
+                          <div class="thumbnail group-thumbnail"><img class="img-responsive img-thumbnail img-group" v-bind:src="'../' + group.mediaPath">
                             <div class="caption">
                               <h4>${group.name}</h4>
-                              <p v-if="group.aboutGroup !== 'None'">${group.aboutGroup}</p>
+                              <p class="about-group" v-if="group.aboutGroup !== 'None'">${group.aboutGroup}</p>
                             </div>
                           </div></a></div>
                     </template>

@@ -1,8 +1,10 @@
 extends base.pug 
 
+block cssscript 
+  link(rel="stylesheet", href="{{ url_for('static', filename='css/group.css') }}")
+
 block content
   .main.container
-    
     div(id='groupAPI')
       div(v-if="errors")
         template(v-for="error in errors")
@@ -13,10 +15,10 @@ block content
           strong ${confirmation}  
       div(v-if="group")
         .row
-          .col-lg-6.col-md-9.col-sm-12
+          .col-lg-8.col-md-8.col-sm-12
             .row
               .col-lg-4.col-md-4.col-sm-4
-                img.img-thumbnail.img-responsive(:src="group.mediaPath" width="750" height="auto")
+                img.img-thumbnail.img-responsive.img-profile(:src="group.mediaPath")
               .col-lg-8.col-md-8.col-sm-8
                 h1 ${group.name}
                 h3(v-if="group.aboutGroup !== 'None'") ${group.aboutGroup}
@@ -27,15 +29,13 @@ block content
                 .btn.btn-primary(v-if="group.isAdmin" v-on:click='editRedirect()') Edit Group #[span(v-if="group.pending > 0" class='badge') ${group.pending}]
                 .btn.btn-danger(v-if="group.isAdmin" v-on:click='deleteGroupAlert()') Delete Group
               .row
-                div.form-group 
+                .form-group 
                   label(for='emails') Add new People to the group:
                     p If you want to add multiple people, please separate the emails by comma(,) or whitespace( ). 
                     textarea(v-model='emails' rows="5" cols="30" class='form-control' name='aboutMe')
                     button.btn.btn-primary(v-on:click='addPeople()') Add people 
-          .col-lg-3.col-md-6.col-sm-6.col-xm-6
-            .row
-              div(id='mapCanvas')
-          .col-lg-3.col-md-6.col-sm-6.col-xm-6
+          
+          .col-lg-4.col-md-4.col-sm-12
             .row(v-if='group.suggestedRestaurant')
               h3 Today's suggestion: 
               div(class="thumbnail groupThumbnail")
@@ -47,6 +47,8 @@ block content
                       h5(v-if="group.suggestedRestaurant.rating !== -1") ${group.suggestedRestaurant.rating} #[i(class="glyphicon glyphicon-cutlery")]
                       h5(v-else) Not yet rated
           .row
+            .col-md-4.col-sm-4.col-xs-6
+              div(id='mapCanvas')
             template(v-for='restaurant in group.restaurants')
               .col-md-4.col-sm-4.col-xs-6(v-if='restaurant.rating !== 0')
                   div(class="thumbnail groupThumbnail")

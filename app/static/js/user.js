@@ -39,6 +39,9 @@ var userAPI = new Vue({
         },
         function(err) {
           console.error(err)
+          if (err.status === 404) {
+            window.location.href = '/404'
+          }
         },
       ).then(
         function() {

@@ -5,22 +5,22 @@ var livereload = require('gulp-livereload');
 var stylus = require('gulp-stylus');
 
 gulp.task('html', function(){
-  return gulp.src('app/templates/*pug')
+  return gulp.src('app/raw/pug/*pug')
   .pipe(pug({pretty: true}))
   .pipe(gulp.dest('app/templates/'));
   // .pipe(livereload());
 });
 
 gulp.task('css', function(){
-  return gulp.src('app/static/css/*styl')
+  return gulp.src('app/raw/styl/*styl')
   .pipe(stylus())
   .pipe(gulp.dest('app/static/css/'));
   // .pipe(livereload());
 });
 
 gulp.task('watch', function() {
-  gulp.watch('app/templates/*.pug', gulp.series('html'));
-  gulp.watch('app/static/css/*.styl', gulp.series('css'));
+  gulp.watch('app/raw/pug/*.pug', gulp.series('html'));
+  gulp.watch('app/raw/styl/*.styl', gulp.series('css'));
 });
 
 

@@ -7,6 +7,7 @@ from flask import render_template
 # ##############################################################################
 @app.errorhandler(404)
 def not_found_error(error):
+    print('heelllloooo')
     return render_template('404.html'), 404
 
 

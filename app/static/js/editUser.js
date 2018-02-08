@@ -1,5 +1,5 @@
 var editUserAPI = new Vue({
-  el: "#editUserAPI",
+  el: "#editUserApi",
   delimiters: ['${','}'],
   data:{
     user: null,

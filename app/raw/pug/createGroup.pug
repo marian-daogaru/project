@@ -1,5 +1,8 @@
 extends base.pug 
 
+block cssscript 
+  link(rel="stylesheet", href="{{ url_for('static', filename='css/createGroup.css') }}")
+
 block content
   .main.container
     h1 Create new Group 
@@ -10,11 +13,11 @@ block content
           .div(class="alert alert-danger") 
             strong ${error} 
             
-      div.form-group 
+      .form-group 
         label(for='groupName') Group Name: 
           input(v-model='groupName' type='text' class='form-control' name='groupName' placeholder="group name" required)
-      div.form-group 
-        label(for='aboutGroup') About this roup: 
+      .form-group 
+        label(for='aboutGroup') About this group: 
           textarea(v-model='aboutGroup' rows="5" cols="50" class='form-control' name='aboutGroup' placeholder="something about the group. max 200 characters")
       button.btn.btn-primary(v-on:click='createGroup()') Create Group  
 

@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/group.css') }}">
     <link href="https://fonts.googleapis.com/css?family=Nova+Slim" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Gentium+Basic:400,700" rel="stylesheet">
     <script src="https://www.google.com/recaptcha/api.js?render=explicit" async defer></script>
@@ -34,7 +35,7 @@
                       <div class="form-group">
                         <input class="form-control" v-model="restaurantName" v-on:keypress.enter="searchRestaurantRedirect()" type="text" placeholder="Search existing restaurant" name="search">
                       </div>
-                      <div class="btn btn-default btn-special" v-on:click="searchRestaurantRedirect()"><i class="glyphicon glyphicon-search">  </i></div>
+                      <button class="btn-special" v-on:click="searchRestaurantRedirect()"><i class="glyphicon glyphicon-search">  </i></button>
                     </div>
                   </li>
                 </ul>
@@ -62,9 +63,9 @@
             </div>
             <div v-if="group">
               <div class="row">
-                <div class="col-lg-6 col-md-9 col-sm-12">
+                <div class="col-lg-8 col-md-8 col-sm-12">
                   <div class="row">
-                    <div class="col-lg-4 col-md-4 col-sm-4"><img class="img-thumbnail img-responsive" :src="group.mediaPath" width="750" height="auto"></div>
+                    <div class="col-lg-4 col-md-4 col-sm-4"><img class="img-thumbnail img-responsive img-profile" :src="group.mediaPath"></div>
                     <div class="col-lg-8 col-md-8 col-sm-8">
                       <h1>${group.name}</h1>
                       <h3 v-if="group.aboutGroup !== 'None'">${group.aboutGroup}</h3>
@@ -88,12 +89,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-lg-3 col-md-6 col-sm-6 col-xm-6">
-                  <div class="row">
-                    <div id="mapCanvas"></div>
-                  </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-6 col-xm-6">
+                <div class="col-lg-4 col-md-4 col-sm-12">
                   <div class="row" v-if="group.suggestedRestaurant">
                     <h3>Today's suggestion: </h3>
                     <div class="thumbnail groupThumbnail"><a v-bind:href="/group/ + group.id + /restaurant/ + group.suggestedRestaurant.id">
@@ -107,6 +103,9 @@
                   </div>
                 </div>
                 <div class="row">
+                  <div class="col-md-4 col-sm-4 col-xs-6">
+                    <div id="mapCanvas"></div>
+                  </div>
                   <template v-for="restaurant in group.restaurants">
                     <div class="col-md-4 col-sm-4 col-xs-6" v-if="restaurant.rating !== 0">
                       <div class="thumbnail groupThumbnail"><a v-bind:href="/group/ + group.id + /restaurant/ + restaurant.id">

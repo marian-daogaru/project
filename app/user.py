@@ -3,10 +3,11 @@ import uuid
 import numpy as np
 from app import app, db, lm
 from config import USERPATH, basedir
-from flask import redirect, render_template, session, request, g, jsonify, flash, redirect
+from flask import redirect, abort, render_template, session, request, g, jsonify, flash, redirect
 from flask_login import login_required
 from .models import Media, User, Group
 from .forms import EditForm
+from .errorHandling import not_found_error
 from werkzeug.utils import secure_filename
 
 row2dict = lambda r: {c.name: str(getattr(r, c.name)) for c in r.__table__.columns}
@@ -26,20 +27,20 @@ def userApi(id, page=1):
     user = User.query.filter_by(id = id).first()
     if user is None:
         flash('User {} not found.'.format(id))
-        return redirect(url_for('index'))
+        return abort(404)
 
-    if g.user.id == user.id:
-        groups = user.adminOfGroups()
-        user = row2dict(user)
-        user['avatar'] = row2dict(Media.query.filter_by(id = user["Media_id"]).first())
-        user['Group'] = []
-        for group in groups:
-            group = row2dict(group)
-            group['Media'] = row2dict(Media.query.filter_by(id = group["Media_id"]).first())
-            user['Group'].append(group)
-        return jsonify(user)
-    else:
-        return jsonify({'accessDenied': True})
+    groups = user.adminOfGroups()
+    user = row2dict(user)
+    user['avatar'] = row2dict(Media.query.filter_by(id = user["Media_id"]).first())
+    user['Group'] = []
+
+    for group in groups:
+        group = row2dict(group)
+        group['Media'] = row2dict(Media.query.filter_by(id = group["Media_id"]).first())
+        user['Group'].append(group)
+    user.pop('password')
+    user.pop('email')
+    return jsonify(user)
 
 
 # ##############################################################################

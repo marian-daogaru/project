@@ -45,7 +45,7 @@ html
                     div(class="navbar-form navbar-left navbar-input-group")
                       div(class="form-group")
                         input(v-model='restaurantName' v-on:keypress.enter="searchRestaurantRedirect()" type="text" class="form-control" placeholder="Search existing restaurant" name="search")
-                      .btn.btn-default.btn-special(v-on:click="searchRestaurantRedirect()")
+                      button.btn-special(v-on:click="searchRestaurantRedirect()")
                         i(class="glyphicon glyphicon-search")   
           
         | #{'{% with messages = get_flashed_messages() %} '}
@@ -60,7 +60,7 @@ html
         
       div
         block content
-        
+         
     
     //- end of body
     script(src="https://code.jquery.com/jquery-2.2.4.js", integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=", crossorigin="anonymous")

@@ -1,5 +1,9 @@
 extends base.pug 
 
+block cssscript 
+  link(rel="stylesheet", href="{{ url_for('static', filename='css/editUser.css') }}")
+
+
 block content
   .main.container
     h1 Edit your profile
@@ -9,21 +13,20 @@ block content
           .div(class="alert alert-danger") 
             strong ${error}  
       div      
-        div.form-group 
+        .form-group 
           label(for='nickname') Nickname: 
             input(v-model='nickname' type='text' class='form-control' name='nickname' required)
-        div.form-group 
+        .form-group 
           label(for='aboutMe') About me: 
             textarea(v-model='aboutMe' rows="5" cols="50" class='form-control' name='aboutMe')
-        div.form-group
-        div.form-group 
-        div.form-group 
+        
+        .form-group 
           label(for='password') Password: 
             input(v-model="password" type="password" class="form-control" name="password" placeholder="*****" required)
-        div.form-group 
+        .form-group 
           label(for='password') Confirm Password: 
             input(v-model="confpwd" type="password" class="form-control" name="confpwd" placeholder="*****" required) 
-        div.form-group 
+        .form-group 
           label(for='avatarImage') Change profile picture: 
             input(type='file' name='file' @change="onFileChange")
               
