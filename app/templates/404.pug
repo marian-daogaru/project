@@ -6,3 +6,6 @@ block content
     h3 We are sorry, the page you are trying to access does not exist. 
     div(id='general')
       .btn.btn-primary(v-on:click='goHome()') Go home 
+
+block jsscript 
+  script(type="text/javascript" src="{{ url_for('static', filename='js/general.js') }}")

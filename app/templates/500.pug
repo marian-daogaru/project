@@ -5,3 +5,7 @@ block content
   h3 The admins are hopefully onto it, but they are most likely drunk... 
   div(id='general')
     .btn.btn-primary(v-on:click='goHome()') Go home 
+
+
+block jsscript 
+  script(type="text/javascript" src="{{ url_for('static', filename='js/general.js') }}")

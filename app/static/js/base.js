@@ -39,15 +39,3 @@ var baseAPI = new Vue({
     }  //searchRestaurant
   },  //methods
 })
-
-var general = new Vue({
-  el: "#general",
-  delimiters: ['${', '}'],
-  data: {
-  },
-  methods: {
-    goHome: function() {
-      window.location.href = '/home'
-    }
-  }
-})

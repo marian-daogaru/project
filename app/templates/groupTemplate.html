@@ -1,8 +1,0 @@
-<a href="{{ url_for('group', id=group.id) }}">
-  <table>
-    <td><img class="image" src="{{ groupPath }}" width="100" height="auto"/></td>
-    <td>{% autoescape false %}
-      <h4>{{ group.name }}</h4> {% endautoescape %}
-      <p>{{ group.aboutGroup }}</p>
-    </td>
-  </table></a>
