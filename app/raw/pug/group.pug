@@ -15,7 +15,7 @@ block content
           strong ${confirmation}  
       div(v-if="group")
         .row
-          .col-lg-8.col-md-8.col-sm-12
+          .col-lg-8.col-md-8.col-sm-12.col-xs-12
             .row
               .col-lg-4.col-md-4.col-sm-4
                 img.img-thumbnail.img-responsive.img-profile(:src="group.mediaPath")
@@ -36,41 +36,42 @@ block content
                     textarea(v-model='emails' rows="5" cols="30" class='form-control' name='aboutMe')
                     button.btn.btn-primary(v-on:click='addPeople()') Add people 
           
-          .col-lg-4.col-md-4.col-sm-6
+          .col-lg-4.col-md-4.col-sm-6.col-xs-12
             .row(v-if='group.suggestedRestaurant')
               h3 Today's suggestion: 
-              div(class="thumbnail restaurant-thumbnail suggested")
-                div
-                  a(v-bind:href='/group/ + group.id + /restaurant/ + group.suggestedRestaurant.id')
-                    img.img-responsive.img-thumbnail.img-restaurant(v-bind:src="group.suggestedRestaurant.mediaPath")                    
-                    div(class='caption')
-                      h3 ${group.suggestedRestaurant.name}
+              .thumbnail.suggested.restaurant-thumbnail
+                a(v-bind:href='/group/ + group.id + /restaurant/ + group.suggestedRestaurant.id')
+                  img.img-responsive.img-thumbnail.img-restaurant(v-bind:src="group.suggestedRestaurant.mediaPath")                    
+                  .caption
+                    h3 ${group.suggestedRestaurant.name}
                       h4(v-if="group.suggestedRestaurant.rating !== -1") ${group.suggestedRestaurant.rating} #[i(class="glyphicon glyphicon-cutlery")]
-                      h4(v-else) Not yet rated
+                      h4(v-else) Not yet rated  
         .row
           .restaurants
-            .col-md-4.col-sm-6.col-xs-12
+            .col-md-4.col-sm-6.col-xs-6
               div(id='map-canvas')
             template(v-for='restaurant in group.restaurants')
-              .col-md-4.col-sm-6.col-xs-6(v-if='restaurant.rating !== 0').restaurant-post
+              .col-md-4.col-sm-6.col-xs-12(v-if='restaurant.rating !== 0').restaurant-post
                   .thumbnail.restaurant-thumbnail
-                    .pull-top
-                      a(v-bind:href='/group/ + group.id + /restaurant/ + restaurant.id')
+                    .flex-container
+                      .pull-top
+                        a(v-bind:href='/group/ + group.id + /restaurant/ + restaurant.id')
                           img.img-responsive.img-thumbnail.img-restaurant(v-bind:src="restaurant.mediaPath")                    
                           .caption
                             h4 ${restaurant.name}
                             h5(v-if="restaurant.rating !== -1") ${restaurant.rating} #[i(class="glyphicon glyphicon-cutlery")]
                             h5(v-else) Not yet rated
                             p(v-if="restaurant.aboutMe !== 'None'") ${restaurant.aboutMe}
-            
-                    .pull-bottom.input-group.ratingButtonGroup
-                      .left-rating(v-if='group.isAdmin')
-                        .btn.btn-default(class="ratingButton" v-on:click="removeRestaurant(restaurant)")
-                          i(class="glyphicon glyphicon-remove")
-                      .right-rating
-                        template(v-for="i in 5")
-                          .btn.btn-default(class="ratingButton" v-on:click="giveRating(restaurant, i)" )
-                            i(v-bind:class="{ ratingClicked: restaurant.userRating >= i }" class="glyphicon glyphicon-cutlery ratingDefault" :id='restaurant.id + "," + i' )
+               
+                      .pull-bottom.input-group.rating-button-group
+                        .left-rating(v-if='group.isAdmin')
+                          .btn.btn-default(class="rating-button" v-on:click="removeRestaurant(restaurant)")
+                            i(class="glyphicon glyphicon-remove")
+                        .right-rating
+                          .rating-group
+                            template(v-for="i in 5")
+                              .btn.btn-default(class="rating-button" v-on:click="giveRating(restaurant, i)" )
+                                i(v-bind:class="{ ratingClicked: restaurant.userRating >= i }" class="glyphicon glyphicon-cutlery ratingDefault" :id='restaurant.id + "," + i' )
 
 
 
