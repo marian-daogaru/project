@@ -11,6 +11,10 @@ var groupAPI = new Vue({
     ratingValue: 2,
     response: '',
     map: null,
+    currentLocation: {
+      lat: 44.4267288,
+      lng: 26.1024337
+    }  // default Unirii fountain location
   },
 
   mounted() {
@@ -58,7 +62,8 @@ var groupAPI = new Vue({
               if (this.group.id === -1){
                 window.location.href = '/home'
               } else {
-                this.getLocation()
+                var createMap = this.createMap
+                this.getLocation().then(createMap)
               }
             }
           })  // second then
@@ -233,35 +238,57 @@ var groupAPI = new Vue({
 
     getLocation: function() {
       if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(this.generateMap)
+          var self = this
+          return new Promise(
+            function(resolve, reject) {
+              navigator.geolocation.getCurrentPosition(
+                function(position) {
+                  self.currentLocation.lat = parseFloat(position.coords.latitude),
+                  self.currentLocation.lng = parseFloat(position.coords.longitude),
+                  resolve(false)
+                },
+                function(err) {
+                  console.log(err),
+                  console.log("GMAPS ERROR"),
+                  resolve(true)
+                },
+                {
+                  enableHighAccuracy: true,
+                  timeout: 10000,
+                  maximumAge: 0
+                })
+              }
+            )
       } else {
-          console.log("Geolocation is not supported by this browser.")
-      }
+          return new Promise (
+            function(resolve) {
+              console.log("Geolocation is not supported by this browser."),
+              resolve(true)
+            }
+          )
+        }
     },
 
-    generateMap: function(pozition) {
-      console.log(pozition),
-      pos = {
-                  lat: parseFloat(pozition.coords.latitude),
-                  lng: parseFloat(pozition.coords.longitude)
-                },
-      console.log(pos)
-      this.map = new google.maps.Map(document.getElementById('mapCanvas'), {
-          center: pos,
+    createMap: function(defaultLocation) {
+      console.log(this.currentLocation)
+      this.map = new google.maps.Map(document.getElementById('map-canvas'), {
+          center: this.currentLocation,
           zoom: 12,
           mapTypeId: 'roadmap'
         });
 
-      this.icon = {
-        url:'http://maps.google.com/mapfiles/kml/paddle/blu-circle.png', // url
-        scaledSize: new google.maps.Size(35, 35)
-      },
+      if (!defaultLocation) {
+        this.icon = {
+          url:'http://maps.google.com/mapfiles/kml/paddle/blu-circle.png', // url
+          scaledSize: new google.maps.Size(35, 35)
+        },
 
-      marker = new google.maps.Marker({
-          position: pos,
-          map: this.map,
-          icon: this.icon
-        });
+        marker = new google.maps.Marker({
+            position: this.currentLocation,
+            map: this.map,
+            icon: this.icon
+          });
+      }
 
       for (var i = 0; i < this.group.restaurants.length; i ++) {
         if (this.group.restaurants[i].lon) {
